@@ -3,6 +3,7 @@
     "start": "react-scripts start"
   },
   "dependencies": {
+    "axios": "^1.10.0",
     "classnames": "^2.5.1",
     "d3": "^7.9.0",
     "react-router-dom": "^7.6.3",
