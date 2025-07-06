@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>D3 Heap & Stack Visualization</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    body { font-family: sans-serif; }
+    .container { display: flex; gap: 80px; }
+    h2 { margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div>
+      <h2>Heap</h2>
+      <svg id="heap-svg" width="300" height="250"></svg>
+    </div>
+    <div>
+      <h2>Stack</h2>
+      <svg id="stack-svg" width="300" height="250"></svg>
+    </div>
+  </div>
+  <script>
+    // Heap 데이터
+    const heapData = {
+      name: "10",
+      children: [
+        { name: "5" },
+        { name: "8" }
+      ]
+    };
+
+    // Heap 시각화
+    const heapSvg = d3.select("#heap-svg");
+    const treeLayout = d3.tree().size([220, 120]);
+    const root = d3.hierarchy(heapData);
+    treeLayout(root);
+
+    // 링크
+    heapSvg.selectAll("line")
+      .data(root.links())
+      .enter()
+      .append("line")
+      .attr("x1", d => d.source.x + 40)
+      .attr("y1", d => d.source.y + 40)
+      .attr("x2", d => d.target.x + 40)
+      .attr("y2", d => d.target.y + 40)
+      .attr("stroke", "black");
+
+    // 노드
+    heapSvg.selectAll("circle")
+      .data(root.descendants())
+      .enter()
+      .append("circle")
+      .attr("cx", d => d.x + 40)
+      .attr("cy", d => d.y + 40)
+      .attr("r", 25)
+      .attr("fill", "#90caf9");
+
+    // 텍스트
+    heapSvg.selectAll("text")
+      .data(root.descendants())
+      .enter()
+      .append("text")
+      .attr("x", d => d.x + 40)
+      .attr("y", d => d.y + 45)
+      .attr("text-anchor", "middle")
+      .attr("font-size", "18px")
+      .attr("font-weight", "bold")
+      .text(d => d.data.name);
+
+    // Stack 데이터
+    const stackData = [
+      { value: "B" },
+      { value: "A" },
+      { value: "main" }
+    ];
+
+    // Stack 시각화
+    const stackSvg = d3.select("#stack-svg");
+    const boxWidth = 90, boxHeight = 35, gap = 10;
+    stackData.forEach((item, i) => {
+      stackSvg.append("rect")
+        .attr("x", 25)
+        .attr("y", 30 + i * (boxHeight + gap))
+        .attr("width", boxWidth)
+        .attr("height", boxHeight)
+        .attr("fill", "orange")
+        .attr("stroke", "black");
+
+      stackSvg.append("text")
+        .attr("x", 25 + boxWidth / 2)
+        .attr("y", 30 + i * (boxHeight + gap) + boxHeight / 2 + 6)
+        .attr("text-anchor", "middle")
+        .attr("font-size", "16px")
+        .attr("font-weight", "bold")
+        .text(item.value);
+    });
+  </script>
+</body>
+</html>
+
+
+
