@@ -1,40 +1,87 @@
-// 전체적인 UI 지정하는 파일 2025.07.01 ing~
-import React, { useState } from "react";
-import "./App.css";  // CSS 파일 src 바로 밑에 있음여
+import React, { useRef, useState } from 'react';
+import './App.css';
 
 function App() {
-  const [code, setCode] = useState("");
-  const [output, setOutput] = useState("출력 결과가 여기에 표시됩니다");
+  const [code, setCode] = useState('');
+  const inputRef = useRef(null);
+  const lineRef = useRef(null);
 
-  const handleRun = () => {
-    setOutput("실행 버튼 클릭됨 (FastAPI 연결 예정)");  //나중에 fastapi 연결되면 fetch() 넣을 거임, 지금은 걍 텍스트만 출력됨
+  const handleScroll = () => {
+    if (inputRef.current && lineRef.current) {
+      lineRef.current.scrollTop = inputRef.current.scrollTop;
+    }
+  };
+
+  const generateLineNumbers = () => {
+    const lineCount = Math.max(code.split('\n').length, 200);
+    return Array.from({ length: lineCount }, (_, i) => (
+      <div className="line-number" key={i}>{String(i + 1).padStart(2, '0')}</div>
+    ));
   };
 
   return (
     <div className="container">
-      {/* 좌측: 코드 입력창 */}
       <div className="left-panel">
         <h2>코드입력창</h2>
-        <textarea
-          value={code}
-          onChange={(e) => setCode(e.target.value)}
-          rows={22}
-          placeholder="여기에 코드를 입력하세요"
-        />
-        <button onClick={handleRun}>실행</button>
+        <div className="scrollable-container">
+          <div className="line-numbers" ref={lineRef}>
+            {generateLineNumbers()}
+          </div>
+          <textarea
+            className="code-input"
+            placeholder="코드를 입력하세요"
+            ref={inputRef}
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+            onScroll={handleScroll}
+          />
+        </div>
+        <button>실행</button>
+        <div className="bottom-divider" />
       </div>
 
-      {/* 우측: 메모리 시각화 */}
       <div className="right-panel">
         <h2>메모리 시각화</h2>
-        <div className="memory-area">
-          <div className="mem-box">Stack <span title="스택 영역 설명">❔</span></div>
-          <div className="mem-box">Heap <span title="힙 영역 설명">❔</span></div>
-          <div className="mem-box">Data <span title="데이터 영역 설명">❔</span></div>
-        </div>
-        <div className="output-area">
-          <h4>출력 결과</h4>
-          <div className="output-box">{output}</div>
+        <div className="memory-container">
+          <div className="memory-row">
+            <div className="mem-section">
+              <div className="mem-title">
+                Stack
+                <img src="/question_mark.png" alt="스택 정보" className="help-icon" title="스택 정보" />
+              </div>
+              <div className="mem-box">
+                <div className="mem-content"></div>
+                <img src="/hci_logo.png" alt="HCI Logo" className="hci-logo" />
+              </div>
+            </div>
+
+            <div className="mem-section">
+              <div className="mem-title">
+                Heap
+                <img src="/question_mark.png" alt="힙 정보" className="help-icon" title="힙 정보" />
+              </div>
+              <div className="mem-box">
+                <div className="mem-content"></div>
+              </div>
+            </div>
+
+            <div className="right-column">
+              <div className="mem-section">
+                <div className="mem-title">
+                  Code
+                  <img src="/question_mark.png" alt="코드 정보" className="help-icon" title="코드 정보" />
+                </div>
+                <div className="mem-box code-box">
+                  <div className="mem-content"></div>
+                </div>
+              </div>
+
+              <div className="output-area">
+                <div className="mem-title">출력 결과</div>
+                <div className="output-box">출력 결과가 여기에 표시됩니다</div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
