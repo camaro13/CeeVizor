@@ -15,7 +15,12 @@ function CodeEditor() {
 
     try {
       const response = await axios.post('http://localhost:8000/compile', formData);
+<<<<<<< Updated upstream
       setOutput(response.data.output || '출력이 없습니다');
+=======
+      const { output, analysis, timeline } = response.data;
+      setOutput(response.data.output || '출력 없음');
+>>>>>>> Stashed changes
     } catch (error) {
       const err = error.response?.data?.error || '실행 실패';
       setOutput(err);

@@ -1,0 +1,28 @@
+[
+  {
+    "name": "x",
+    "type": "int",
+    "scope": "local",
+    "location": "stack",
+    "value": "3",
+    "pointer": false,
+    "points_to": null
+  },
+  {
+    "name": "y",
+    "type": "int",
+    "scope": "local",
+    "location": "stack",
+    "value": "4",
+    "pointer": false,
+    "points_to": null
+  },
+  {
+    "name": "main",
+    "type": "function",
+    "return_type": "int",
+    "parameters": [],
+    "location": "code",
+    "scope": "global"
+  }
+]

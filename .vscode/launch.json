@@ -8,8 +8,13 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
+<<<<<<< Updated upstream
       "cwd": "d:/CeeVizor/CeeVizor/Backend/apitest/workspace",
       "program": "d:/CeeVizor/CeeVizor/Backend/apitest/workspace/build/Debug/outDebug",
+=======
+      "cwd": "d:/CeeVizor/Backend/apitest/workspace",
+      "program": "d:/CeeVizor/Backend/apitest/workspace/build/Debug/outDebug",
+>>>>>>> Stashed changes
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

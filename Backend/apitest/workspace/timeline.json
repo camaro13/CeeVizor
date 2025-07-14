@@ -1,0 +1,105 @@
+[
+  {
+    "time": 1,
+    "stack": [],
+    "heap": []
+  },
+  {
+    "time": 2,
+    "stack": [],
+    "heap": []
+  },
+  {
+    "time": 3,
+    "stack": [
+      {
+        "name": "x",
+        "type": "int",
+        "value": 3,
+        "pointer": false,
+        "points_to": null
+      }
+    ],
+    "heap": []
+  },
+  {
+    "time": 4,
+    "stack": [
+      {
+        "name": "x",
+        "type": "int",
+        "value": 3,
+        "pointer": false,
+        "points_to": null
+      },
+      {
+        "name": "y",
+        "type": "int",
+        "value": 4,
+        "pointer": false,
+        "points_to": null
+      }
+    ],
+    "heap": []
+  },
+  {
+    "time": 5,
+    "stack": [
+      {
+        "name": "x",
+        "type": "int",
+        "value": 3,
+        "pointer": false,
+        "points_to": null
+      },
+      {
+        "name": "y",
+        "type": "int",
+        "value": 4,
+        "pointer": false,
+        "points_to": null
+      }
+    ],
+    "heap": []
+  },
+  {
+    "time": 6,
+    "stack": [
+      {
+        "name": "x",
+        "type": "int",
+        "value": 3,
+        "pointer": false,
+        "points_to": null
+      },
+      {
+        "name": "y",
+        "type": "int",
+        "value": 4,
+        "pointer": false,
+        "points_to": null
+      }
+    ],
+    "heap": []
+  },
+  {
+    "time": 7,
+    "stack": [
+      {
+        "name": "x",
+        "type": "int",
+        "value": 3,
+        "pointer": false,
+        "points_to": null
+      },
+      {
+        "name": "y",
+        "type": "int",
+        "value": 4,
+        "pointer": false,
+        "points_to": null
+      }
+    ],
+    "heap": []
+  }
+]
