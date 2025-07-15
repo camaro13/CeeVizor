@@ -10,3 +10,6 @@ __pycache__/
 
 # 환경변수
 *.env
+
+node_modules/
+.cache/
