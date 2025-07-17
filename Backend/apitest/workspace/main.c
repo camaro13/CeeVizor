@@ -1,15 +1,25 @@
-#include <stdio.h>
-
-int main() {
-<<<<<<< Updated upstream
-    printf("Å×½ºÆ® Ãâ·ÂÀÔ´Ï´Ù\\n");
-=======
-    int x = 3;               
-    int y = 4;
-    printf("%d, %d", x, y);
->>>>>>> Stashed changes
-    return 0;
-}
-
-
-
+#include <stdio.h>
+
+
+
+int main() {
+
+    printf("ï¿½×½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½\\n");
+
+
+    int x = 3;               
+
+    int y = 4;
+
+    printf("%d, %d", x, y);
+
+    return 0;
+
+}
+
+
+
+
+
+
+
