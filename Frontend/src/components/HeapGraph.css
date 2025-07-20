@@ -1,0 +1,21 @@
+.heap-graph {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  gap: 10px;
+}
+
+.heap-block {
+  background-color: #fdf7d6;
+  border: 2px solid #aaa;
+  border-radius: 12px;
+  padding: 10px 16px;
+  font-family: 'Courier New', monospace;
+  font-size: 1.1rem; 
+  width: 100%;
+  text-align: left;
+  box-sizing: border-box;
+  max-width: 100%;
+  word-break: break-word;
+}
