@@ -4,7 +4,7 @@ export function parseCodeToSteps(code) {
   const steps = [];
   const arrValues = [1, 2, 3, 4, 5];
 
-  // ✅ 항상 유지되는 Data 영역 전역 변수
+  // ✅ 항상 유지되는 Data 영역 전역변수
   const dataSection = [
     { key: 'global_var', value: 100 }
   ];
