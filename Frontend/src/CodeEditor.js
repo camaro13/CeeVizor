@@ -7,24 +7,6 @@ function CodeEditor() {
   const [output, setOutput] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleRun = async () => {
-    setLoading(true);
-    setOutput('');
-
-    const formData = new FormData();
-    formData.append('code', code);
-    formData.append('input', input);  // 사용자 입력 추가
-
-    try {
-      const response = await axios.post('http://localhost:8000/compile', formData);
-      setOutput(response.data.output || '출력 없음');
-    } catch (error) {
-      const err = error.response?.data?.error || '실행 실패';
-      setOutput(err);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <div>

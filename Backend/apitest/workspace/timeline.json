@@ -1,0 +1,255 @@
+[
+  {
+    "time": 1,
+    "line": "#include <stdio.h>",
+    "stack": [],
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 2,
+    "line": "int as (int a, int b)",
+    "stack": [],
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 3,
+    "line": "{",
+    "stack": [],
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 4,
+    "line": "    int num = 190;",
+    "stack": [
+      {
+        "name": "num",
+        "type": "int",
+        "value": "190",
+        "pointer": false,
+        "points_to": null,
+        "scope": "as"
+      }
+    ],
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 5,
+    "line": "    a += num;",
+    "stack": [
+      {
+        "name": "num",
+        "type": "int",
+        "value": "190",
+        "pointer": false,
+        "points_to": null,
+        "scope": "as"
+      }
+    ],
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 6,
+    "line": "    return a + b;",
+    "stack": [
+      {
+        "name": "num",
+        "type": "int",
+        "value": "190",
+        "pointer": false,
+        "points_to": null,
+        "scope": "as"
+      }
+    ],
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 7,
+    "line": "}",
+    "stack": [
+      {
+        "name": "num",
+        "type": "int",
+        "value": "190",
+        "pointer": false,
+        "points_to": null,
+        "scope": "as"
+      }
+    ],
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 8,
+    "line": "",
+    "stack": [
+      {
+        "name": "num",
+        "type": "int",
+        "value": "190",
+        "pointer": false,
+        "points_to": null,
+        "scope": "as"
+      }
+    ],
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 9,
+    "line": "int main()",
+    "stack": [
+      {
+        "name": "num",
+        "type": "int",
+        "value": "190",
+        "pointer": false,
+        "points_to": null,
+        "scope": "as"
+      }
+    ],
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 10,
+    "line": "{",
+    "stack": [
+      {
+        "name": "num",
+        "type": "int",
+        "value": "190",
+        "pointer": false,
+        "points_to": null,
+        "scope": "as"
+      }
+    ],
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 11,
+    "line": "    int a = 193;",
+    "stack": [
+      {
+        "name": "num",
+        "type": "int",
+        "value": "190",
+        "pointer": false,
+        "points_to": null,
+        "scope": "as"
+      },
+      {
+        "name": "a",
+        "type": "int",
+        "value": "193",
+        "pointer": false,
+        "points_to": null,
+        "scope": "main"
+      }
+    ],
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 12,
+    "line": "    int b = 184;",
+    "stack": [
+      {
+        "name": "num",
+        "type": "int",
+        "value": "190",
+        "pointer": false,
+        "points_to": null,
+        "scope": "as"
+      },
+      {
+        "name": "a",
+        "type": "int",
+        "value": "193",
+        "pointer": false,
+        "points_to": null,
+        "scope": "main"
+      },
+      {
+        "name": "b",
+        "type": "int",
+        "value": "184",
+        "pointer": false,
+        "points_to": null,
+        "scope": "main"
+      }
+    ],
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 13,
+    "line": "    printf(\"%d\", as(a, b));",
+    "stack": [
+      {
+        "name": "num",
+        "type": "int",
+        "value": "190",
+        "pointer": false,
+        "points_to": null,
+        "scope": "as"
+      },
+      {
+        "name": "a",
+        "type": "int",
+        "value": "193",
+        "pointer": false,
+        "points_to": null,
+        "scope": "main"
+      },
+      {
+        "name": "b",
+        "type": "int",
+        "value": "184",
+        "pointer": false,
+        "points_to": null,
+        "scope": "main"
+      }
+    ],
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 14,
+    "line": "}",
+    "stack": [
+      {
+        "name": "num",
+        "type": "int",
+        "value": "190",
+        "pointer": false,
+        "points_to": null,
+        "scope": "as"
+      },
+      {
+        "name": "a",
+        "type": "int",
+        "value": "193",
+        "pointer": false,
+        "points_to": null,
+        "scope": "main"
+      },
+      {
+        "name": "b",
+        "type": "int",
+        "value": "184",
+        "pointer": false,
+        "points_to": null,
+        "scope": "main"
+      }
+    ],
+    "heap": [],
+    "data": []
+  }
+]

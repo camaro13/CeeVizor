@@ -1,0 +1,59 @@
+[
+  {
+    "name": "num",
+    "type": "int",
+    "scope": "as",
+    "location": "stack",
+    "value": "190",
+    "pointer": false,
+    "points_to": null,
+    "line": 4
+  },
+  {
+    "name": "a",
+    "type": "int",
+    "scope": "main",
+    "location": "stack",
+    "value": "193",
+    "pointer": false,
+    "points_to": null,
+    "line": 11
+  },
+  {
+    "name": "b",
+    "type": "int",
+    "scope": "main",
+    "location": "stack",
+    "value": "184",
+    "pointer": false,
+    "points_to": null,
+    "line": 12
+  },
+  {
+    "name": "as",
+    "type": "function",
+    "return_type": "int",
+    "parameters": [
+      {
+        "name": "a",
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "type": "int"
+      }
+    ],
+    "location": "code",
+    "scope": "global",
+    "line": 2
+  },
+  {
+    "name": "main",
+    "type": "function",
+    "return_type": "int",
+    "parameters": [],
+    "location": "code",
+    "scope": "global",
+    "line": 9
+  }
+]

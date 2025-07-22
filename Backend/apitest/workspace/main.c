@@ -1,7 +1,14 @@
 #include <stdio.h>
-int main() {
-    int x, y;
-    scanf("%d %d", &x, &y);
-    printf("%d + %d = %d\n", x, y, x + y);
-    return 0;
+int as (int a, int b)
+{
+    int num = 190;
+    a += num;
+    return a + b;
 }
+
+int main()
+{
+    int a = 193;
+    int b = 184;
+    printf("%d", as(a, b));
+}
