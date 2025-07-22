@@ -69,7 +69,7 @@ def simulate_execution(code: str):
 
 
 
-# ✅ 컴파일 + 실행 + 분석 + 시뮬레이션
+#  컴파일 + 실행 + 분석 + 시뮬레이션
 @app.post("/compile")
 async def compile_and_analyze(code: str = Form(...), input: str = Form("")):
     if os.path.exists(UPLOAD_DIR):

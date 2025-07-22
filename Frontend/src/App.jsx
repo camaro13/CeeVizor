@@ -18,7 +18,7 @@ function App() {
   const lineRef = useRef(null);
 
   const handleRun = async () => {
-    console.log("🚀 실행 버튼 클릭됨");
+    console.log("실행 버튼 클릭됨");
     setLoading(true);
     setOutput('');
 
@@ -31,10 +31,10 @@ function App() {
       const { output, analysis, timeline } = response.data;
       //setOutput(response.data.output || '출력 없음');
       setOutput(output || '출력 없음');
-      console.log("✅ 응답:", response.data);
+      console.log(" 응답:", response.data);
     } catch (error) {
       const err = error.response?.data?.error || '실행 실패';
-      console.error("❌ 백엔드 에러:", err);
+      console.error("백엔드 에러:", err);
       setOutput(err);
     } finally {
       setLoading(false);
@@ -109,7 +109,7 @@ function App() {
         <div className="memory-container">
           <div className="memory-row">
 
-            {/* ✅ Stack 영역 */}
+            {/* Stack 영역 */}
             <div className="mem-section">
               <div className="mem-title">
                 Stack
