@@ -1,0 +1,173 @@
+body {
+  margin: 0;
+  overflow: hidden; /* ← 스크롤바 강제 제거 */
+}
+
+
+.main-menu-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  background-color: white;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.center-content {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+}
+
+.main-title {
+  font-size: 5vw;
+  font-weight: bold;
+  font-family: 'Nanum Gothic', sans-serif;
+  margin: 0;
+  user-select: none;
+
+}
+
+.sub-title {
+  font-size: 2.4vw;
+  color: #333;
+  margin-top: 1vh;
+  user-select: none;
+
+}
+
+.button-group {
+  position: absolute;
+  top: 10%;
+  right: 8vw;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 3vh;  /* ← 이게 간격 조절하는 거야! */
+  list-style: none;
+}
+
+.button-group li {
+  margin: -74px 0;
+  padding: 10px 20px;
+}
+
+
+.menu-btn {
+  padding: 10px 20px;
+
+  width: 12vw;
+  height: 9vh;
+  min-width: 120px; /* ← 최소 너비 보장 */
+  white-space: nowrap;
+  font-size: clamp(14px, 1.2vw, 20px); 
+  background-color: #f0f0f0; 
+  color: rgb(0, 0, 0);
+  border: none;
+  border: 1px solid #999;
+  border-radius: 0.5vw;
+  font-size: 1.4vw;
+  font-weight: bold;
+  white-space: nowrap;  /* ← 줄바꿈 금지 */
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+}
+.menu-btn:hover {
+  background-color: #e0e0e0;
+}
+.menu-btn:active {
+  background-color: #cecece;
+}
+
+.circle {
+  position: absolute;
+  border-radius: 50%;
+  z-index: 0;
+  opacity: 0.3;
+}
+
+.top-left-circle {
+  top: -20vh;
+  left: -10vw;
+  width: 35vw;
+  height: 35vw;
+  background-color: #b3e5fc;
+}
+
+.bottom-right-circle {
+  bottom: -8vh;
+  right: -8vw;
+  width: 25vw;
+  height: 25vw;
+  border: 4px solid #b3e5fc;
+  background-color: transparent;
+}
+
+/*설정, 메모리구조 설명 창*/
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background-color: white;
+  padding: 4vh 4vw;
+  border-radius: 1vw;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  min-width: 300px;
+  max-width: 600px;
+  font-family: 'Nanum Gothic', sans-serif;  /* ← 글꼴 설정 */
+  text-align: left; /* ← 전체 왼쪽 정렬 */
+  line-height: 1.6;
+}
+.modal h2 {
+  text-align: center; /* 제목만 가운데 정렬 */
+  margin-bottom: 2vh;
+}
+.modal p,
+.modal ul {
+  margin-bottom: 1.5vh;
+}
+.modal ul {
+  padding-left: 1.2em;
+}
+.modal li {
+  margin-bottom: 1vh;
+}
+
+
+
+.modal button {
+  padding: 1vh 2vw;
+  margin-top: 1.5vh;
+  font-family: 'Nanum Gothic', sans-serif;
+  font-size: 1vw;
+  font-weight: bold;
+  border: none;
+  border-radius: 0.5vw;
+  background-color: #f0f0f0;
+  color: rgb(0, 0, 0);
+  cursor: pointer;
+}
+.modal button:hover {
+  background-color: #e0e0e0;
+}
+
+.sub-btn {
+  display: block;
+  font-family: 'Nanum Gothic', sans-serif;
+  margin: 1vh auto;
+  width: 70%;
+}

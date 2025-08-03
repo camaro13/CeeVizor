@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './App.css';
 
 function App() {
@@ -6,6 +7,8 @@ function App() {
   const [infoVisible, setInfoVisible] = useState(null); // 'stack' | 'heap' | 'data' | null
   const inputRef = useRef(null);
   const lineRef = useRef(null);
+
+  const navigate = useNavigate();
 
   const handleScroll = () => {
     if (inputRef.current && lineRef.current) {
@@ -22,6 +25,8 @@ function App() {
 
   const toggleInfo = (type) => {
     setInfoVisible((prev) => (prev === type ? null : type));
+
+  
   };
 
   return (
@@ -29,6 +34,7 @@ function App() {
       {/* 상단 전체 컨텐츠 */}
       <div className="container">
         {/* 왼쪽 코드 입력창 */}
+        <button onClick={() => navigate('/')} className="back-button">메인화면으로</button> {/* 뒤로가기 버튼*/}
         <div className="left-panel">
           <h2>코드입력창</h2>
           <div className="scrollable-container">
