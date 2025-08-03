@@ -8,48 +8,50 @@ function App() {
   const [code, setCode] = useState('');
   const [steps, setSteps] = useState([]);
   const [stepIndex, setStepIndex] = useState(0);
+
   const inputRef = useRef(null);
   const lineRef = useRef(null);
 
-  // 🚩 여기만 크게 바뀜
+  // 🚩 백엔드와 연동하는 부분만 수정!
   const handleRun = async () => {
     const trimmedCode = code.trim();
     if (!trimmedCode) {
       alert('코드를 입력해주세요.');
       return;
     }
+
     try {
-      // ✅ 백엔드 API로 코드 전송
+      // 실제 API 엔드포인트 주소와 포트는 상황에 맞게 수정!
       const res = await fetch('http://localhost:3000/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ code: trimmedCode })
       });
-      if (!res.ok) {
-        throw new Error('서버 오류!');
-      }
+
+      if (!res.ok) throw new Error('서버 오류!');
       const data = await res.json();
-      // data.steps 가 있다고 가정. (백엔드 반환 형태에 맞춰야 함)
-      if (!data.steps || data.steps.length === 0) {
-        alert('분석된 실행 단계가 없습니다.');
-        return;
-      }
-      setSteps(data.steps);
+
+      // 샘플 백엔드 응답: { "received_code": "...코드..." }
+      // 실제 응답이 추후 { steps:[{stack, heap, ...}] } 형태라면 아래 예시처럼 매핑 필요
+
+      // 임시 사용: 백엔드가 샘플 응답만 줄 경우
+      setSteps([
+        {
+          stack: [],
+          heap: [],
+          data: [{ key: 'received_code', value: data.received_code }],
+          output: '',
+          code: null,
+        }
+      ]);
       setStepIndex(0);
 
-      // step별로 1초 간격 애니메이션 (이전 코드와 동일)
-      let current = 0;
-      const interval = setInterval(() => {
-        current += 1;
-        if (current >= data.steps.length) {
-          clearInterval(interval);
-        } else {
-          setStepIndex(current);
-        }
-      }, 1000);
+      // 실제 steps가 넘오면 아래와 같이 처리!
+      // setSteps(data.steps); setStepIndex(0);
+      // (애니메이션 반복문 등은 필요시 아래 참고 예시처럼 추가)
 
     } catch (e) {
-      alert('서버 오류! 다시 시도해주세요.\n' + e.message);
+      alert('서버 오류! 다시 시도해주세요.');
     }
   };
 
@@ -66,7 +68,7 @@ function App() {
     ));
   };
 
-  // 현재 스텝 정보
+  // 현재 스텝 정보 (steps가 비어 있을 시 기본 값)
   const currentStep = steps[stepIndex] || { stack: [], heap: [], output: '', data: [], code: null };
 
   return (
@@ -97,7 +99,7 @@ function App() {
         <div className="memory-container">
           <div className="memory-row">
 
-            {/* Stack */}
+            {/* Stack 영역 */}
             <div className="mem-section">
               <div className="mem-title">
                 Stack
@@ -111,7 +113,7 @@ function App() {
               </div>
             </div>
 
-            {/* Heap */}
+            {/* Heap 영역 */}
             <div className="mem-section">
               <div className="mem-title">
                 Heap
@@ -124,7 +126,7 @@ function App() {
               </div>
             </div>
 
-            {/* Code(Data), Output */}
+            {/* Code + Data & 출력영역 */}
             <div className="right-column">
               <div className="mem-section">
                 <div className="mem-title">
@@ -137,7 +139,6 @@ function App() {
                   </div>
                 </div>
               </div>
-
               <div className="output-area">
                 <div className="mem-title">출력 결과</div>
                 <div className="output-box">
@@ -145,12 +146,11 @@ function App() {
                 </div>
               </div>
             </div>
-            
+
           </div>
         </div>
       </div>
     </div>
   );
 }
-
 export default App;
