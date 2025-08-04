@@ -1,255 +1,388 @@
 [
   {
-    "time": 1,
-    "line": "#include <stdio.h>",
+    "time": 0,
+    "line_num": 2,
+    "line": "int c = 0;",
     "stack": [],
     "heap": [],
-    "data": []
+    "data": [
+      {
+        "name": "c",
+        "type": "int",
+        "value": "0",
+        "pointer": false,
+        "points_to": null,
+        "scope": "global"
+      }
+    ]
+  },
+  {
+    "time": 1,
+    "line_num": 8,
+    "line": "    int a = 8;",
+    "stack": [
+      {
+        "function": "main",
+        "variables": [
+          {
+            "name": "a",
+            "type": "int",
+            "value": "8",
+            "pointer": false,
+            "points_to": null,
+            "scope": "main"
+          }
+        ]
+      }
+    ],
+    "heap": [],
+    "data": [
+      {
+        "name": "c",
+        "type": "int",
+        "value": "0",
+        "pointer": false,
+        "points_to": null,
+        "scope": "global"
+      }
+    ]
   },
   {
     "time": 2,
-    "line": "int as (int a, int b)",
-    "stack": [],
+    "line_num": 9,
+    "line": "    int *p = &a;",
+    "stack": [
+      {
+        "function": "main",
+        "variables": [
+          {
+            "name": "a",
+            "type": "int",
+            "value": "8",
+            "pointer": false,
+            "points_to": null,
+            "scope": "main"
+          },
+          {
+            "name": "p",
+            "type": "int",
+            "value": "&a",
+            "pointer": false,
+            "points_to": null,
+            "scope": "main"
+          }
+        ]
+      }
+    ],
     "heap": [],
-    "data": []
+    "data": [
+      {
+        "name": "c",
+        "type": "int",
+        "value": "0",
+        "pointer": false,
+        "points_to": null,
+        "scope": "global"
+      }
+    ]
   },
   {
     "time": 3,
-    "line": "{",
-    "stack": [],
+    "line_num": 10,
+    "line": "    aii();",
+    "stack": [
+      {
+        "function": "main",
+        "variables": [
+          {
+            "name": "a",
+            "type": "int",
+            "value": "8",
+            "pointer": false,
+            "points_to": null,
+            "scope": "main"
+          },
+          {
+            "name": "p",
+            "type": "int",
+            "value": "&a",
+            "pointer": false,
+            "points_to": null,
+            "scope": "main"
+          }
+        ]
+      }
+    ],
     "heap": [],
-    "data": []
+    "data": [
+      {
+        "name": "c",
+        "type": "int",
+        "value": "0",
+        "pointer": false,
+        "points_to": null,
+        "scope": "global"
+      }
+    ]
   },
   {
     "time": 4,
-    "line": "    int num = 190;",
+    "line_num": 4,
+    "line": "    int b = 9;",
     "stack": [
       {
-        "name": "num",
-        "type": "int",
-        "value": "190",
-        "pointer": false,
-        "points_to": null,
-        "scope": "as"
+        "function": "main",
+        "variables": [
+          {
+            "name": "a",
+            "type": "int",
+            "value": "8",
+            "pointer": false,
+            "points_to": null,
+            "scope": "main"
+          },
+          {
+            "name": "p",
+            "type": "int",
+            "value": "&a",
+            "pointer": false,
+            "points_to": null,
+            "scope": "main"
+          }
+        ]
+      },
+      {
+        "function": "aii",
+        "variables": [
+          {
+            "name": "b",
+            "type": "int",
+            "value": "9",
+            "pointer": false,
+            "points_to": null,
+            "scope": "aii"
+          }
+        ]
       }
     ],
     "heap": [],
-    "data": []
+    "data": [
+      {
+        "name": "c",
+        "type": "int",
+        "value": "0",
+        "pointer": false,
+        "points_to": null,
+        "scope": "global"
+      }
+    ]
   },
   {
     "time": 5,
-    "line": "    a += num;",
+    "line_num": 5,
+    "line": "    printf(\"%d\", b);",
     "stack": [
       {
-        "name": "num",
-        "type": "int",
-        "value": "190",
-        "pointer": false,
-        "points_to": null,
-        "scope": "as"
+        "function": "main",
+        "variables": [
+          {
+            "name": "a",
+            "type": "int",
+            "value": "8",
+            "pointer": false,
+            "points_to": null,
+            "scope": "main"
+          },
+          {
+            "name": "p",
+            "type": "int",
+            "value": "&a",
+            "pointer": false,
+            "points_to": null,
+            "scope": "main"
+          }
+        ]
+      },
+      {
+        "function": "aii",
+        "variables": [
+          {
+            "name": "b",
+            "type": "int",
+            "value": "9",
+            "pointer": false,
+            "points_to": null,
+            "scope": "aii"
+          }
+        ]
       }
     ],
     "heap": [],
-    "data": []
+    "data": [
+      {
+        "name": "c",
+        "type": "int",
+        "value": "0",
+        "pointer": false,
+        "points_to": null,
+        "scope": "global"
+      }
+    ]
   },
   {
     "time": 6,
-    "line": "    return a + b;",
+    "line_num": 11,
+    "line": "    return 0;",
     "stack": [
       {
-        "name": "num",
-        "type": "int",
-        "value": "190",
-        "pointer": false,
-        "points_to": null,
-        "scope": "as"
+        "function": "main",
+        "variables": [
+          {
+            "name": "a",
+            "type": "int",
+            "value": "8",
+            "pointer": false,
+            "points_to": null,
+            "scope": "main"
+          },
+          {
+            "name": "p",
+            "type": "int",
+            "value": "&a",
+            "pointer": false,
+            "points_to": null,
+            "scope": "main"
+          }
+        ]
+      },
+      {
+        "function": "aii",
+        "variables": [
+          {
+            "name": "b",
+            "type": "int",
+            "value": "9",
+            "pointer": false,
+            "points_to": null,
+            "scope": "aii"
+          }
+        ]
       }
     ],
     "heap": [],
-    "data": []
+    "data": [
+      {
+        "name": "c",
+        "type": "int",
+        "value": "0",
+        "pointer": false,
+        "points_to": null,
+        "scope": "global"
+      }
+    ]
   },
   {
     "time": 7,
+    "line_num": 6,
     "line": "}",
     "stack": [
       {
-        "name": "num",
-        "type": "int",
-        "value": "190",
-        "pointer": false,
-        "points_to": null,
-        "scope": "as"
+        "function": "main",
+        "variables": [
+          {
+            "name": "a",
+            "type": "int",
+            "value": "8",
+            "pointer": false,
+            "points_to": null,
+            "scope": "main"
+          },
+          {
+            "name": "p",
+            "type": "int",
+            "value": "&a",
+            "pointer": false,
+            "points_to": null,
+            "scope": "main"
+          }
+        ]
+      },
+      {
+        "function": "aii",
+        "variables": [
+          {
+            "name": "b",
+            "type": "int",
+            "value": "9",
+            "pointer": false,
+            "points_to": null,
+            "scope": "aii"
+          }
+        ]
       }
     ],
     "heap": [],
-    "data": []
+    "data": [
+      {
+        "name": "c",
+        "type": "int",
+        "value": "0",
+        "pointer": false,
+        "points_to": null,
+        "scope": "global"
+      }
+    ]
   },
   {
     "time": 8,
-    "line": "",
-    "stack": [
-      {
-        "name": "num",
-        "type": "int",
-        "value": "190",
-        "pointer": false,
-        "points_to": null,
-        "scope": "as"
-      }
-    ],
-    "heap": [],
-    "data": []
-  },
-  {
-    "time": 9,
-    "line": "int main()",
-    "stack": [
-      {
-        "name": "num",
-        "type": "int",
-        "value": "190",
-        "pointer": false,
-        "points_to": null,
-        "scope": "as"
-      }
-    ],
-    "heap": [],
-    "data": []
-  },
-  {
-    "time": 10,
-    "line": "{",
-    "stack": [
-      {
-        "name": "num",
-        "type": "int",
-        "value": "190",
-        "pointer": false,
-        "points_to": null,
-        "scope": "as"
-      }
-    ],
-    "heap": [],
-    "data": []
-  },
-  {
-    "time": 11,
-    "line": "    int a = 193;",
-    "stack": [
-      {
-        "name": "num",
-        "type": "int",
-        "value": "190",
-        "pointer": false,
-        "points_to": null,
-        "scope": "as"
-      },
-      {
-        "name": "a",
-        "type": "int",
-        "value": "193",
-        "pointer": false,
-        "points_to": null,
-        "scope": "main"
-      }
-    ],
-    "heap": [],
-    "data": []
-  },
-  {
-    "time": 12,
-    "line": "    int b = 184;",
-    "stack": [
-      {
-        "name": "num",
-        "type": "int",
-        "value": "190",
-        "pointer": false,
-        "points_to": null,
-        "scope": "as"
-      },
-      {
-        "name": "a",
-        "type": "int",
-        "value": "193",
-        "pointer": false,
-        "points_to": null,
-        "scope": "main"
-      },
-      {
-        "name": "b",
-        "type": "int",
-        "value": "184",
-        "pointer": false,
-        "points_to": null,
-        "scope": "main"
-      }
-    ],
-    "heap": [],
-    "data": []
-  },
-  {
-    "time": 13,
-    "line": "    printf(\"%d\", as(a, b));",
-    "stack": [
-      {
-        "name": "num",
-        "type": "int",
-        "value": "190",
-        "pointer": false,
-        "points_to": null,
-        "scope": "as"
-      },
-      {
-        "name": "a",
-        "type": "int",
-        "value": "193",
-        "pointer": false,
-        "points_to": null,
-        "scope": "main"
-      },
-      {
-        "name": "b",
-        "type": "int",
-        "value": "184",
-        "pointer": false,
-        "points_to": null,
-        "scope": "main"
-      }
-    ],
-    "heap": [],
-    "data": []
-  },
-  {
-    "time": 14,
+    "line_num": 12,
     "line": "}",
     "stack": [
       {
-        "name": "num",
-        "type": "int",
-        "value": "190",
-        "pointer": false,
-        "points_to": null,
-        "scope": "as"
+        "function": "main",
+        "variables": [
+          {
+            "name": "a",
+            "type": "int",
+            "value": "8",
+            "pointer": false,
+            "points_to": null,
+            "scope": "main"
+          },
+          {
+            "name": "p",
+            "type": "int",
+            "value": "&a",
+            "pointer": false,
+            "points_to": null,
+            "scope": "main"
+          }
+        ]
       },
       {
-        "name": "a",
-        "type": "int",
-        "value": "193",
-        "pointer": false,
-        "points_to": null,
-        "scope": "main"
-      },
-      {
-        "name": "b",
-        "type": "int",
-        "value": "184",
-        "pointer": false,
-        "points_to": null,
-        "scope": "main"
+        "function": "aii",
+        "variables": [
+          {
+            "name": "b",
+            "type": "int",
+            "value": "9",
+            "pointer": false,
+            "points_to": null,
+            "scope": "aii"
+          }
+        ]
       }
     ],
     "heap": [],
-    "data": []
+    "data": [
+      {
+        "name": "c",
+        "type": "int",
+        "value": "0",
+        "pointer": false,
+        "points_to": null,
+        "scope": "global"
+      }
+    ]
   }
 ]

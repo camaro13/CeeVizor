@@ -1,0 +1,718 @@
+Temporary breakpoint 1 at 0x140001484: file main.c, line 8.
+[New Thread 3196.0x941c]
+
+Thread 1 hit Temporary breakpoint 1, main () at main.c:8
+8	    int a = 8;
+##STEP##
+#0  main () at main.c:8
+8	    int a = 8;
+Line 8 of "main.c" starts at address 0x7ff6503c1484 <main+13> and ends at 0x7ff6503c148b <main+20>.
+a = 0
+p = 0x7ff6503ce050 <__native_startup_lock>
+9	    int *p = &a;
+##STEP##
+#0  main () at main.c:9
+9	    int *p = &a;
+Line 9 of "main.c" starts at address 0x7ff6503c148b <main+20> and ends at 0x7ff6503c1493 <main+28>.
+a = 8
+p = 0x7ff6503ce050 <__native_startup_lock>
+10	    aii();
+##STEP##
+#0  main () at main.c:10
+10	    aii();
+Line 10 of "main.c" starts at address 0x7ff6503c1493 <main+28> and ends at 0x7ff6503c1498 <main+33>.
+a = 8
+p = 0x5ffe74
+aii () at main.c:4
+4	    int b = 9;
+##STEP##
+#0  aii () at main.c:4
+4	    int b = 9;
+Line 4 of "main.c" starts at address 0x7ff6503c1458 <aii+8> and ends at 0x7ff6503c145f <aii+15>.
+b = 32758
+5	    printf("%d", b);
+##STEP##
+#0  aii () at main.c:5
+5	    printf("%d", b);
+Line 5 of "main.c" starts at address 0x7ff6503c145f <aii+15> and ends at 0x7ff6503c1470 <aii+32>.
+b = 9
+__mingw_printf (fmt=0x7ff6503ca000 "%d") at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_printf.c:52
+warning: 52	D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_printf.c: No such file or directory
+##STEP##
+#0  __mingw_printf (fmt=0x7ff6503ca000 "%d") at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_printf.c:52
+52	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_printf.c
+Line 52 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_printf.c" starts at address 0x7ff6503c25c6 <__mingw_printf+6> and ends at 0x7ff6503c25c9 <__mingw_printf+9>.
+retval = <optimized out>
+argv = 0x750000 ""
+53	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_printf.c
+##STEP##
+#0  __mingw_printf (fmt=0x7ff6503ca000 "%d") at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_printf.c:53
+53	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_printf.c
+Line 53 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_printf.c" starts at address 0x7ff6503c25e7 <__mingw_printf+39> and ends at 0x7ff6503c25f4 <__mingw_printf+52>.
+retval = <optimized out>
+argv = 0x5ffe18 "\t"
+__acrt_iob_func (index=index@entry=1) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/acrt_iob_func.c:11
+warning: 11	D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/acrt_iob_func.c: No such file or directory
+##STEP##
+#0  __acrt_iob_func (index=index@entry=1) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/acrt_iob_func.c:11
+11	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/acrt_iob_func.c
+Line 11 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/acrt_iob_func.c" starts at address 0x7ff6503c8805 <__acrt_iob_func+5> and ends at 0x7ff6503c8807 <__acrt_iob_func+7>.
+No locals.
+_lock_file (pf=0x7ffe5833da30 <msvcrt!_iob+48>) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_lock.c:42
+warning: 42	D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_lock.c: No such file or directory
+##STEP##
+#0  _lock_file (pf=0x7ffe5833da30 <msvcrt!_iob+48>) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_lock.c:42
+42	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_lock.c
+Line 42 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_lock.c" starts at address 0x7ff6503c8035 <_lock_file+5> and ends at 0x7ff6503c8038 <_lock_file+8>.
+No locals.
+__acrt_iob_func (index=index@entry=0) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/acrt_iob_func.c:11
+warning: 11	D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/acrt_iob_func.c: No such file or directory
+##STEP##
+#0  __acrt_iob_func (index=index@entry=0) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/acrt_iob_func.c:11
+11	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/acrt_iob_func.c
+Line 11 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/acrt_iob_func.c" starts at address 0x7ff6503c8805 <__acrt_iob_func+5> and ends at 0x7ff6503c8807 <__acrt_iob_func+7>.
+No locals.
+__acrt_iob_func (index=index@entry=19) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/acrt_iob_func.c:11
+11	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/acrt_iob_func.c
+##STEP##
+#0  __acrt_iob_func (index=index@entry=19) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/acrt_iob_func.c:11
+11	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/acrt_iob_func.c
+Line 11 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/acrt_iob_func.c" starts at address 0x7ff6503c8805 <__acrt_iob_func+5> and ends at 0x7ff6503c8807 <__acrt_iob_func+7>.
+No locals.
+_lock_file (pf=0x7ffe5833da30 <msvcrt!_iob+48>) at D:/M/msys64/mingw64/include/stdio.h:1248
+warning: 1248	D:/M/msys64/mingw64/include/stdio.h: No such file or directory
+##STEP##
+#0  _lock_file (pf=0x7ffe5833da30 <msvcrt!_iob+48>) at D:/M/msys64/mingw64/include/stdio.h:1248
+1248	in D:/M/msys64/mingw64/include/stdio.h
+Line number 1248 is out of range for "D:/M/msys64/mingw64/include/stdio.h".
+No locals.
+_lock_file (pf=0x7ffe5833da30 <msvcrt!_iob+48>) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_lock.c:47
+warning: 47	D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_lock.c: No such file or directory
+##STEP##
+#0  _lock_file (pf=0x7ffe5833da30 <msvcrt!_iob+48>) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_lock.c:47
+47	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_lock.c
+Line 47 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_lock.c" starts at address 0x7ff6503c8068 <_lock_file+56> and ends at 0x7ff6503c808a <_lock_file+90>.
+No locals.
+__acrt_iob_func (index=index@entry=0) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/acrt_iob_func.c:11
+warning: 11	D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/acrt_iob_func.c: No such file or directory
+##STEP##
+#0  __acrt_iob_func (index=index@entry=0) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/acrt_iob_func.c:11
+11	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/acrt_iob_func.c
+Line 11 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/acrt_iob_func.c" starts at address 0x7ff6503c8805 <__acrt_iob_func+5> and ends at 0x7ff6503c8807 <__acrt_iob_func+7>.
+No locals.
+_lock_file (pf=0x7ffe5833da30 <msvcrt!_iob+48>) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_lock.c:49
+warning: 49	D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_lock.c: No such file or directory
+##STEP##
+#0  _lock_file (pf=0x7ffe5833da30 <msvcrt!_iob+48>) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_lock.c:49
+49	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_lock.c
+Line 49 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_lock.c" starts at address 0x7ff6503c808a <_lock_file+90> and ends at 0x7ff6503c8091 <_lock_file+97>.
+No locals.
+__mingw_printf (fmt=0x7ff6503ca000 "%d") at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_printf.c:54
+warning: 54	D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_printf.c: No such file or directory
+##STEP##
+#0  __mingw_printf (fmt=0x7ff6503ca000 "%d") at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_printf.c:54
+54	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_printf.c
+Line 54 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_printf.c" starts at address 0x7ff6503c25f4 <__mingw_printf+52> and ends at 0x7ff6503c261b <__mingw_printf+91>.
+retval = <optimized out>
+argv = 0x5ffe18 "\t"
+__acrt_iob_func (index=index@entry=1) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/acrt_iob_func.c:11
+warning: 11	D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/acrt_iob_func.c: No such file or directory
+##STEP##
+#0  __acrt_iob_func (index=index@entry=1) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/acrt_iob_func.c:11
+11	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/acrt_iob_func.c
+Line 11 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/acrt_iob_func.c" starts at address 0x7ff6503c8805 <__acrt_iob_func+5> and ends at 0x7ff6503c8807 <__acrt_iob_func+7>.
+No locals.
+0x00007ff6503c45d3 in __mingw_pformat (flags=flags@entry=24576, dest=0x7ffe5833da30 <msvcrt!_iob+48>, max=max@entry=0, fmt=fmt@entry=0x7ff6503ca000 "%d", argv=argv@entry=0x5ffe18 "\t") at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c:2347
+warning: 2347	D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c: No such file or directory
+##STEP##
+#0  0x00007ff6503c45d3 in __mingw_pformat (flags=flags@entry=24576, dest=0x7ffe5833da30 <msvcrt!_iob+48>, max=max@entry=0, fmt=fmt@entry=0x7ff6503ca000 "%d", argv=argv@entry=0x5ffe18 "\t") at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c:2347
+2347	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+Line 2347 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c" starts at address 0x7ff6503c45c0 <__mingw_pformat> and ends at 0x7ff6503c45e1 <__mingw_pformat+33>.
+c = <optimized out>
+saved_errno = <optimized out>
+stream = {dest = 0xffffffffffffff00, flags = 1512337651, width = 32766, precision = 7667712, rplen = 0, rpchr = 34828 L'\014\210', thousands_chr_len = 32758, thousands_chr = 0 L'\000', count = 0, quota = 7686400, expmin = 0}
+format_scan = <optimized out>
+2349	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+##STEP##
+#0  __mingw_pformat (flags=flags@entry=24576, dest=0x7ffe5833da30 <msvcrt!_iob+48>, max=max@entry=0, fmt=fmt@entry=0x7ff6503ca000 "%d", argv=argv@entry=0x5ffe18 "\t") at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c:2349
+2349	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+Line 2349 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c" starts at address 0x7ff6503c45e1 <__mingw_pformat+33> and ends at 0x7ff6503c45e6 <__mingw_pformat+38>.
+c = <optimized out>
+saved_errno = <optimized out>
+stream = {dest = 0xffffffffffffff00, flags = 1512337651, width = 32766, precision = 7667712, rplen = 0, rpchr = 34828 L'\014\210', thousands_chr_len = 32758, thousands_chr = 0 L'\000', count = 0, quota = 7686400, expmin = 0}
+format_scan = <optimized out>
+2351	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+##STEP##
+#0  __mingw_pformat (flags=flags@entry=24576, dest=0x7ffe5833da30 <msvcrt!_iob+48>, max=max@entry=0, fmt=fmt@entry=0x7ff6503ca000 "%d", argv=argv@entry=0x5ffe18 "\t") at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c:2351
+2351	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+Line 2351 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c" starts at address 0x7ff6503c45f9 <__mingw_pformat+57> and ends at 0x7ff6503c45ff <__mingw_pformat+63>.
+c = <optimized out>
+saved_errno = 0
+stream = {dest = 0xffffffffffffff00, flags = 1512337651, width = 32766, precision = 7667712, rplen = 0, rpchr = 34828 L'\014\210', thousands_chr_len = 32758, thousands_chr = 0 L'\000', count = 0, quota = 7686400, expmin = 0}
+format_scan = <optimized out>
+2374	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+##STEP##
+#0  __mingw_pformat (flags=flags@entry=24576, dest=0x7ffe5833da30 <msvcrt!_iob+48>, max=max@entry=0, fmt=0x7ff6503ca001 "d", fmt@entry=0x7ff6503ca000 "%d", argv=argv@entry=0x5ffe18 "\t") at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c:2374
+2374	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+Line 2374 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c" starts at address 0x7ff6503c4643 <__mingw_pformat+131> and ends at 0x7ff6503c464c <__mingw_pformat+140>.
+c = 37
+saved_errno = 0
+stream = {dest = 0x7ffe5833da30 <msvcrt!_iob+48>, flags = 24576, width = 32766, precision = 7667712, rplen = -3, rpchr = 0 L'\000', thousands_chr_len = 0, thousands_chr = 0 L'\000', count = 0, quota = 7686400, expmin = -1}
+format_scan = <optimized out>
+2381	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+##STEP##
+#0  __mingw_pformat (flags=flags@entry=24576, dest=<optimized out>, max=max@entry=0, fmt=0x7ff6503ca001 "d", fmt@entry=0x7ff6503ca000 "%d", argv=<optimized out>, argv@entry=0x5ffe18 "\t") at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c:2381
+2381	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+Line 2381 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c" starts at address 0x7ff6503c46ae <__mingw_pformat+238> and ends at 0x7ff6503c46b3 <__mingw_pformat+243>.
+c = 37
+saved_errno = 0
+stream = {dest = 0x7ffe5833da30 <msvcrt!_iob+48>, flags = 24576, width = 32766, precision = 7667712, rplen = -3, rpchr = 0 L'\000', thousands_chr_len = 0, thousands_chr = 0 L'\000', count = 0, quota = 0, expmin = -1}
+format_scan = <optimized out>
+2409	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+##STEP##
+#0  __mingw_pformat (flags=flags@entry=24576, dest=<optimized out>, max=max@entry=0, fmt=0x7ff6503ca001 "d", fmt@entry=0x7ff6503ca000 "%d", argv=<optimized out>, argv@entry=0x5ffe18 "\t") at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c:2409
+2409	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+Line 2409 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c" starts at address 0x7ff6503c46b3 <__mingw_pformat+243> and ends at 0x7ff6503c46b6 <__mingw_pformat+246>.
+state = PFORMAT_INIT
+length = PFORMAT_LENGTH_INT
+width_spec = 0x5ffd3c
+argval = {__pformat_long_t = 256, __pformat_llong_t = 256, __pformat_ulong_t = 256, __pformat_ullong_t = 256, __pformat_ushort_t = 256, __pformat_uchar_t = 0 '\000', __pformat_short_t = 256, __pformat_char_t = 0 '\000', __pformat_ptr_t = 0x100, __pformat_u128_t = {t128 = {digits = {256, 140730410755133}}, t128_2 = {digits32 = {256, 0, 1512334397, 32766}}}}
+backtrack = 0x7ff6503ca001 "d"
+c = 37
+saved_errno = 0
+stream = {dest = 0x7ffe5833da30 <msvcrt!_iob+48>, flags = 24576, width = 32766, precision = 7667712, rplen = -3, rpchr = 0 L'\000', thousands_chr_len = 0, thousands_chr = 0 L'\000', count = 0, quota = 0, expmin = -1}
+format_scan = <optimized out>
+2410	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+##STEP##
+#0  __mingw_pformat (flags=flags@entry=24576, dest=<optimized out>, max=max@entry=0, fmt=0x7ff6503ca001 "d", fmt@entry=0x7ff6503ca000 "%d", argv=<optimized out>, argv@entry=0x5ffe18 "\t") at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c:2410
+2410	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+Line 2410 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c" starts at address 0x7ff6503c46ba <__mingw_pformat+250> and ends at 0x7ff6503c46c3 <__mingw_pformat+259>.
+state = PFORMAT_INIT
+length = PFORMAT_LENGTH_INT
+width_spec = 0x5ffd3c
+argval = {__pformat_long_t = 256, __pformat_llong_t = 256, __pformat_ulong_t = 256, __pformat_ullong_t = 256, __pformat_ushort_t = 256, __pformat_uchar_t = 0 '\000', __pformat_short_t = 256, __pformat_char_t = 0 '\000', __pformat_ptr_t = 0x100, __pformat_u128_t = {t128 = {digits = {256, 140730410755133}}, t128_2 = {digits32 = {256, 0, 1512334397, 32766}}}}
+backtrack = 0x7ff6503ca001 "d"
+c = 37
+saved_errno = 0
+stream = {dest = 0x7ffe5833da30 <msvcrt!_iob+48>, flags = 24576, width = 32766, precision = 7667712, rplen = -3, rpchr = 0 L'\000', thousands_chr_len = 0, thousands_chr = 0 L'\000', count = 0, quota = 0, expmin = -1}
+format_scan = <optimized out>
+2412	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+##STEP##
+#0  __mingw_pformat (flags=flags@entry=24576, dest=<optimized out>, max=max@entry=0, fmt=0x7ff6503ca001 "d", fmt@entry=0x7ff6503ca000 "%d", argv=<optimized out>, argv@entry=0x5ffe18 "\t") at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c:2412
+2412	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+Line 2412 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c" starts at address 0x7ff6503c46c3 <__mingw_pformat+259> and ends at 0x7ff6503c46cb <__mingw_pformat+267>.
+state = PFORMAT_INIT
+length = PFORMAT_LENGTH_INT
+width_spec = 0x5ffd3c
+argval = {__pformat_long_t = 256, __pformat_llong_t = 256, __pformat_ulong_t = 256, __pformat_ullong_t = 256, __pformat_ushort_t = 256, __pformat_uchar_t = 0 '\000', __pformat_short_t = 256, __pformat_char_t = 0 '\000', __pformat_ptr_t = 0x100, __pformat_u128_t = {t128 = {digits = {256, 140730410755133}}, t128_2 = {digits32 = {256, 0, 1512334397, 32766}}}}
+backtrack = 0x7ff6503ca001 "d"
+c = 37
+saved_errno = 0
+stream = {dest = 0x7ffe5833da30 <msvcrt!_iob+48>, flags = 24576, width = -1, precision = -1, rplen = -3, rpchr = 0 L'\000', thousands_chr_len = 0, thousands_chr = 0 L'\000', count = 0, quota = 0, expmin = -1}
+format_scan = <optimized out>
+2414	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+##STEP##
+#0  __mingw_pformat (flags=flags@entry=24576, dest=<optimized out>, max=max@entry=0, fmt=0x7ff6503ca001 "d", fmt@entry=0x7ff6503ca000 "%d", argv=<optimized out>, argv@entry=0x5ffe18 "\t") at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c:2414
+2414	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+Line 2414 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c" starts at address 0x7ff6503c46d9 <__mingw_pformat+281> and ends at 0x7ff6503c46f8 <__mingw_pformat+312>.
+state = PFORMAT_INIT
+length = <optimized out>
+width_spec = 0x5ffd3c
+argval = {__pformat_long_t = 256, __pformat_llong_t = 256, __pformat_ulong_t = 256, __pformat_ullong_t = 256, __pformat_ushort_t = 256, __pformat_uchar_t = 0 '\000', __pformat_short_t = 256, __pformat_char_t = 0 '\000', __pformat_ptr_t = 0x100, __pformat_u128_t = {t128 = {digits = {256, 140730410755133}}, t128_2 = {digits32 = {256, 0, 1512334397, 32766}}}}
+backtrack = 0x7ff6503ca001 "d"
+c = <optimized out>
+saved_errno = 0
+stream = {dest = 0x7ffe5833da30 <msvcrt!_iob+48>, flags = 24576, width = -1, precision = -1, rplen = -3, rpchr = 0 L'\000', thousands_chr_len = 0, thousands_chr = 0 L'\000', count = 0, quota = 0, expmin = -1}
+format_scan = <optimized out>
+2585	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+##STEP##
+#0  __mingw_pformat (flags=flags@entry=24576, dest=<optimized out>, max=max@entry=0, fmt=0x7ff6503ca002 "", fmt@entry=0x7ff6503ca000 "%d", argv=<optimized out>, argv@entry=0x5ffe18 "\t") at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c:2585
+2585	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+Line 2585 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c" starts at address 0x7ff6503c4820 <__mingw_pformat+608> and ends at 0x7ff6503c4828 <__mingw_pformat+616>.
+state = PFORMAT_INIT
+length = <optimized out>
+width_spec = 0x5ffd3c
+argval = {__pformat_long_t = 256, __pformat_llong_t = 256, __pformat_ulong_t = 256, __pformat_ullong_t = 256, __pformat_ushort_t = 256, __pformat_uchar_t = 0 '\000', __pformat_short_t = 256, __pformat_char_t = 0 '\000', __pformat_ptr_t = 0x100, __pformat_u128_t = {t128 = {digits = {256, 140730410755133}}, t128_2 = {digits32 = {256, 0, 1512334397, 32766}}}}
+backtrack = 0x7ff6503ca001 "d"
+c = 100
+saved_errno = 0
+stream = {dest = 0x7ffe5833da30 <msvcrt!_iob+48>, flags = 24576, width = -1, precision = -1, rplen = -3, rpchr = 0 L'\000', thousands_chr_len = 0, thousands_chr = 0 L'\000', count = 0, quota = 0, expmin = -1}
+format_scan = <optimized out>
+2592	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+##STEP##
+#0  __mingw_pformat (flags=flags@entry=24576, dest=<optimized out>, max=max@entry=0, fmt=0x7ff6503ca002 "", fmt@entry=0x7ff6503ca000 "%d", argv=<optimized out>, argv@entry=0x5ffe18 "\t") at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c:2592
+2592	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+Line 2592 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c" starts at address 0x7ff6503c4828 <__mingw_pformat+616> and ends at 0x7ff6503c482c <__mingw_pformat+620>.
+state = PFORMAT_INIT
+length = <optimized out>
+width_spec = 0x5ffd3c
+argval = {__pformat_long_t = 256, __pformat_llong_t = 256, __pformat_ulong_t = 256, __pformat_ullong_t = 256, __pformat_ushort_t = 256, __pformat_uchar_t = 0 '\000', __pformat_short_t = 256, __pformat_char_t = 0 '\000', __pformat_ptr_t = 0x100, __pformat_u128_t = {t128 = {digits = {256, 140730410755133}}, t128_2 = {digits32 = {256, 0, 1512334397, 32766}}}}
+backtrack = 0x7ff6503ca001 "d"
+c = 100
+saved_errno = 0
+stream = {dest = 0x7ffe5833da30 <msvcrt!_iob+48>, flags = 24704, width = -1, precision = -1, rplen = -3, rpchr = 0 L'\000', thousands_chr_len = 0, thousands_chr = 0 L'\000', count = 0, quota = 0, expmin = -1}
+format_scan = <optimized out>
+2597	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+##STEP##
+#0  __mingw_pformat (flags=flags@entry=24576, dest=<optimized out>, max=max@entry=0, fmt=0x7ff6503ca002 "", fmt@entry=0x7ff6503ca000 "%d", argv=<optimized out>, argv@entry=0x5ffe18 "\t") at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c:2597
+2597	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+Line 2597 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c" starts at address 0x7ff6503c4836 <__mingw_pformat+630> and ends at 0x7ff6503c483a <__mingw_pformat+634>.
+state = PFORMAT_INIT
+length = <optimized out>
+width_spec = 0x5ffd3c
+argval = {__pformat_long_t = 256, __pformat_llong_t = 256, __pformat_ulong_t = 256, __pformat_ullong_t = 256, __pformat_ushort_t = 256, __pformat_uchar_t = 0 '\000', __pformat_short_t = 256, __pformat_char_t = 0 '\000', __pformat_ptr_t = 0x100, __pformat_u128_t = {t128 = {digits = {256, 140730410755133}}, t128_2 = {digits32 = {256, 0, 1512334397, 32766}}}}
+backtrack = <optimized out>
+c = 100
+saved_errno = 0
+stream = {dest = 0x7ffe5833da30 <msvcrt!_iob+48>, flags = 24704, width = -1, precision = -1, rplen = -3, rpchr = 0 L'\000', thousands_chr_len = 0, thousands_chr = 0 L'\000', count = 0, quota = 0, expmin = -1}
+format_scan = <optimized out>
+2606	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+##STEP##
+#0  __mingw_pformat (flags=flags@entry=24576, dest=<optimized out>, max=max@entry=0, fmt=0x7ff6503ca002 "", fmt@entry=0x7ff6503ca000 "%d", argv=<optimized out>, argv@entry=0x5ffe18 "\t") at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c:2606
+2606	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+Line 2606 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c" starts at address 0x7ff6503c4840 <__mingw_pformat+640> and ends at 0x7ff6503c484a <__mingw_pformat+650>.
+state = PFORMAT_INIT
+length = <optimized out>
+width_spec = 0x5ffd3c
+argval = {__pformat_long_t = 256, __pformat_llong_t = 256, __pformat_ulong_t = 256, __pformat_ullong_t = 256, __pformat_ushort_t = 256, __pformat_uchar_t = 0 '\000', __pformat_short_t = 256, __pformat_char_t = 0 '\000', __pformat_ptr_t = 0x100, __pformat_u128_t = {t128 = {digits = {256, 140730410755133}}, t128_2 = {digits32 = {256, 0, 1512334397, 32766}}}}
+backtrack = <optimized out>
+c = 100
+saved_errno = 0
+stream = {dest = 0x7ffe5833da30 <msvcrt!_iob+48>, flags = 24704, width = -1, precision = -1, rplen = -3, rpchr = 0 L'\000', thousands_chr_len = 0, thousands_chr = 0 L'\000', count = 0, quota = 0, expmin = -1}
+format_scan = <optimized out>
+2611	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+##STEP##
+#0  __mingw_pformat (flags=flags@entry=24576, dest=<optimized out>, max=max@entry=0, fmt=0x7ff6503ca002 "", fmt@entry=0x7ff6503ca000 "%d", argv=<optimized out>, argv@entry=0x5ffe18 "\t") at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c:2611
+2611	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+Line 2611 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c" starts at address 0x7ff6503c484a <__mingw_pformat+650> and ends at 0x7ff6503c4856 <__mingw_pformat+662>.
+state = PFORMAT_INIT
+length = <optimized out>
+width_spec = 0x5ffd3c
+argval = {__pformat_long_t = 256, __pformat_llong_t = 256, __pformat_ulong_t = 256, __pformat_ullong_t = 256, __pformat_ushort_t = 256, __pformat_uchar_t = 0 '\000', __pformat_short_t = 256, __pformat_char_t = 0 '\000', __pformat_ptr_t = 0x100, __pformat_u128_t = {t128 = {digits = {256, 140730410755133}}, t128_2 = {digits32 = {256, 0, 1512334397, 32766}}}}
+backtrack = <optimized out>
+c = 100
+saved_errno = 0
+stream = {dest = 0x7ffe5833da30 <msvcrt!_iob+48>, flags = 24704, width = -1, precision = -1, rplen = -3, rpchr = 0 L'\000', thousands_chr_len = 0, thousands_chr = 0 L'\000', count = 0, quota = 0, expmin = -1}
+format_scan = <optimized out>
+2624	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+##STEP##
+#0  __mingw_pformat (flags=flags@entry=24576, dest=<optimized out>, max=max@entry=0, fmt=0x7ff6503ca002 "", fmt@entry=0x7ff6503ca000 "%d", argv=0x5ffe20 "p-u", argv@entry=0x5ffe18 "\t") at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c:2624
+2624	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+Line 2624 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c" starts at address 0x7ff6503c4856 <__mingw_pformat+662> and ends at 0x7ff6503c4860 <__mingw_pformat+672>.
+state = PFORMAT_INIT
+length = <optimized out>
+width_spec = 0x5ffd3c
+argval = {__pformat_long_t = 256, __pformat_llong_t = 256, __pformat_ulong_t = 256, __pformat_ullong_t = 256, __pformat_ushort_t = 256, __pformat_uchar_t = 0 '\000', __pformat_short_t = 256, __pformat_char_t = 0 '\000', __pformat_ptr_t = 0x100, __pformat_u128_t = {t128 = {digits = {256, 140730410755133}}, t128_2 = {digits32 = {256, 0, 1512334397, 32766}}}}
+backtrack = <optimized out>
+c = <optimized out>
+saved_errno = 0
+stream = {dest = 0x7ffe5833da30 <msvcrt!_iob+48>, flags = 24704, width = -1, precision = -1, rplen = -3, rpchr = 0 L'\000', thousands_chr_len = 0, thousands_chr = 0 L'\000', count = 0, quota = 0, expmin = -1}
+format_scan = <optimized out>
+__pformat_int (stream=stream@entry=0x5ffd30, value=...) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c:718
+718	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+##STEP##
+#0  __pformat_int (stream=stream@entry=0x5ffd30, value=...) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c:718
+718	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+Line 718 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c" is at address 0x7ff6503c3285 <__pformat_int+21> but contains no code.
+bufflen = <optimized out>
+buf = <optimized out>
+p = <optimized out>
+precision = <optimized out>
+__pformat_int_bufsiz (bias=1, size=23, stream=0x5ffd30) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c:703
+703	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+##STEP##
+#0  __pformat_int_bufsiz (bias=1, size=23, stream=0x5ffd30) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c:703
+703	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+Line 703 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c" starts at address 0x7ff6503c2b87 <__pformat_xint+39> and ends at 0x7ff6503c2b8d <__pformat_xint+45>.
+No locals.
+718	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+##STEP##
+#0  __pformat_int (stream=stream@entry=0x5ffd30, value=...) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c:718
+718	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+Line 718 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c" is at address 0x7ff6503c3285 <__pformat_int+21> but contains no code.
+bufflen = <optimized out>
+buf = <optimized out>
+p = <optimized out>
+precision = <optimized out>
+0x00007ff6503c3299 in __pformat_int_bufsiz (bias=1, size=23, stream=0x5ffd30) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c:703
+703	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+##STEP##
+#0  0x00007ff6503c3299 in __pformat_int_bufsiz (bias=1, size=23, stream=0x5ffd30) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c:703
+703	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+Line 703 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c" starts at address 0x7ff6503c2b87 <__pformat_xint+39> and ends at 0x7ff6503c2b8d <__pformat_xint+45>.
+No locals.
+704	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+##STEP##
+#0  __pformat_int_bufsiz (bias=1, size=23, stream=0x5ffd30) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c:704
+704	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+Line 704 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c" starts at address 0x7ff6503c2b9e <__pformat_xint+62> and ends at 0x7ff6503c2bab <__pformat_xint+75>.
+No locals.
+706	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+##STEP##
+#0  __pformat_int_bufsiz (bias=1, size=23, stream=0x5ffd30) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c:706
+706	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+Line 706 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c" starts at address 0x7ff6503c2bab <__pformat_xint+75> and ends at 0x7ff6503c2bb3 <__pformat_xint+83>.
+No locals.
+726	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+##STEP##
+#0  __pformat_int_bufsiz (bias=<optimized out>, size=<optimized out>, stream=<optimized out>) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c:726
+726	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+Line 726 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c" starts at address 0x7ff6503c32b4 <__pformat_int+68> and ends at 0x7ff6503c32bb <__pformat_int+75>.
+No locals.
+728	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+##STEP##
+#0  __pformat_int (stream=stream@entry=0x5ffd30, value=...) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c:728
+728	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+Line 728 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c" starts at address 0x7ff6503c32d2 <__pformat_int+98> and ends at 0x7ff6503c32d8 <__pformat_int+104>.
+bufflen = <optimized out>
+buf = 0x5ffc50 ""
+p = 0x5ffc50 ""
+precision = <optimized out>
+772	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+##STEP##
+#0  __pformat_int (stream=stream@entry=0x5ffd30, value=...) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c:772
+772	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+Line 772 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c" starts at address 0x7ff6503c32d8 <__pformat_int+104> and ends at 0x7ff6503c32e1 <__pformat_int+113>.
+bufflen = <optimized out>
+buf = 0x5ffc50 ""
+p = 0x5ffc50 ""
+precision = <optimized out>
+783	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+##STEP##
+#0  __pformat_int (stream=stream@entry=0x5ffd30, value=...) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c:783
+783	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+Line 783 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c" starts at address 0x7ff6503c32e1 <__pformat_int+113> and ends at 0x7ff6503c32e9 <__pformat_int+121>.
+bufflen = <optimized out>
+buf = 0x5ffc50 ""
+p = 0x5ffc50 ""
+precision = <optimized out>
+785	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+##STEP##
+#0  __pformat_int (stream=stream@entry=0x5ffd30, value=...) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c:785
+785	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+Line 785 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c" starts at address 0x7ff6503c32e9 <__pformat_int+121> and ends at 0x7ff6503c32fc <__pformat_int+140>.
+bufflen = <optimized out>
+buf = 0x5ffc50 ""
+p = 0x5ffc50 ""
+precision = <optimized out>
+796	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+##STEP##
+#0  __pformat_int (stream=stream@entry=0x5ffd30, value=...) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c:796
+796	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+Line 796 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c" starts at address 0x7ff6503c3350 <__pformat_int+224> and ends at 0x7ff6503c3371 <__pformat_int+257>.
+bufflen = <optimized out>
+buf = 0x5ffc50 ""
+p = 0x5ffc50 ""
+precision = <optimized out>
+785	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+##STEP##
+#0  __pformat_int (stream=stream@entry=0x5ffd30, value=...) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c:785
+785	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+Line 785 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c" starts at address 0x7ff6503c32e9 <__pformat_int+121> and ends at 0x7ff6503c32fc <__pformat_int+140>.
+bufflen = <optimized out>
+buf = 0x5ffc50 "9"
+p = 0x5ffc51 ""
+precision = <optimized out>
+801	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+##STEP##
+#0  __pformat_int (stream=stream@entry=0x5ffd30, value=...) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c:801
+801	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+Line 801 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c" starts at address 0x7ff6503c3380 <__pformat_int+272> and ends at 0x7ff6503c3389 <__pformat_int+281>.
+bufflen = <optimized out>
+buf = 0x5ffc50 "9"
+p = 0x5ffc51 ""
+precision = <optimized out>
+810	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+##STEP##
+#0  __pformat_int (stream=stream@entry=0x5ffd30, value=...) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c:810
+810	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+Line 810 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c" starts at address 0x7ff6503c3438 <__pformat_int+456> and ends at 0x7ff6503c3441 <__pformat_int+465>.
+bufflen = <optimized out>
+buf = 0x5ffc50 "9"
+p = 0x5ffc51 ""
+precision = <optimized out>
+817	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+##STEP##
+#0  __pformat_int (stream=stream@entry=0x5ffd30, value=...) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c:817
+817	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+Line 817 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c" starts at address 0x7ff6503c3441 <__pformat_int+465> and ends at 0x7ff6503c3458 <__pformat_int+488>.
+bufflen = <optimized out>
+buf = 0x5ffc50 "9"
+p = 0x5ffc51 ""
+precision = <optimized out>
+847	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+##STEP##
+#0  __pformat_int (stream=stream@entry=0x5ffd30, value=...) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c:847
+847	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+Line 847 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c" starts at address 0x7ff6503c3490 <__pformat_int+544> and ends at 0x7ff6503c349a <__pformat_int+554>.
+bufflen = <optimized out>
+buf = 0x5ffc50 "9"
+p = 0x5ffc51 ""
+precision = <optimized out>
+853	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+##STEP##
+#0  __pformat_int (stream=stream@entry=0x5ffd30, value=...) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c:853
+853	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+Line 853 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c" starts at address 0x7ff6503c3568 <__pformat_int+760> and ends at 0x7ff6503c3571 <__pformat_int+769>.
+bufflen = <optimized out>
+buf = 0x5ffc50 "9"
+p = 0x5ffc51 ""
+precision = <optimized out>
+859	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+##STEP##
+#0  __pformat_int (stream=stream@entry=0x5ffd30, value=...) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c:859
+859	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+Line 859 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c" starts at address 0x7ff6503c35a0 <__pformat_int+816> and ends at 0x7ff6503c35ad <__pformat_int+829>.
+bufflen = <optimized out>
+buf = 0x5ffc50 "9"
+p = 0x5ffc51 ""
+precision = <optimized out>
+865	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+##STEP##
+#0  __pformat_int (stream=stream@entry=0x5ffd30, value=...) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c:865
+865	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+Line 865 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c" starts at address 0x7ff6503c34a4 <__pformat_int+564> and ends at 0x7ff6503c34b0 <__pformat_int+576>.
+bufflen = <optimized out>
+buf = 0x5ffc50 "9"
+p = 0x5ffc51 ""
+precision = <optimized out>
+870	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+##STEP##
+#0  __pformat_int (stream=stream@entry=0x5ffd30, value=...) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c:870
+870	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+Line 870 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c" starts at address 0x7ff6503c34c9 <__pformat_int+601> and ends at 0x7ff6503c34cd <__pformat_int+605>.
+bufflen = <optimized out>
+buf = 0x5ffc50 "9"
+p = 0x5ffc51 ""
+precision = <optimized out>
+__pformat_putc (c=57, stream=<optimized out>) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c:393
+393	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+##STEP##
+#0  __pformat_putc (c=57, stream=<optimized out>) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c:393
+393	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+Line 393 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c" starts at address 0x7ff6503c2744 <__pformat_putc+4> and ends at 0x7ff6503c2747 <__pformat_putc+7>.
+No locals.
+870	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+##STEP##
+#0  __pformat_int (stream=stream@entry=0x5ffd30, value=...) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c:870
+870	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+Line 870 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c" starts at address 0x7ff6503c34c9 <__pformat_int+601> and ends at 0x7ff6503c34cd <__pformat_int+605>.
+bufflen = <optimized out>
+buf = 0x5ffc50 "9"
+p = 0x5ffc50 "9"
+precision = <optimized out>
+__pformat_putc (c=57, stream=<optimized out>) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c:398
+398	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+##STEP##
+#0  __pformat_putc (c=57, stream=<optimized out>) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c:398
+398	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+Line 398 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c" starts at address 0x7ff6503c2759 <__pformat_putc+25> and ends at 0x7ff6503c275c <__pformat_putc+28>.
+No locals.
+402	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+##STEP##
+#0  __pformat_putc (c=57, stream=<optimized out>) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c:402
+402	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+Line 402 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c" starts at address 0x7ff6503c2788 <__pformat_putc+72> and ends at 0x7ff6503c278d <__pformat_putc+77>.
+No locals.
+409	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+##STEP##
+#0  __pformat_putc (c=<optimized out>, stream=<optimized out>) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c:409
+409	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+Line 409 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c" starts at address 0x7ff6503c276c <__pformat_putc+44> and ends at 0x7ff6503c2773 <__pformat_putc+51>.
+No locals.
+__pformat_int (stream=stream@entry=0x5ffd30, value=...) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c:865
+865	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+##STEP##
+#0  __pformat_int (stream=stream@entry=0x5ffd30, value=...) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c:865
+865	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+Line 865 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c" starts at address 0x7ff6503c34a4 <__pformat_int+564> and ends at 0x7ff6503c34b0 <__pformat_int+576>.
+bufflen = <optimized out>
+buf = 0x5ffc50 "9"
+p = 0x5ffc50 "9"
+precision = <optimized out>
+872	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+##STEP##
+#0  __pformat_int (stream=stream@entry=0x5ffd30, value=...) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c:872
+872	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+Line 872 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c" starts at address 0x7ff6503c3511 <__pformat_int+673> and ends at 0x7ff6503c351e <__pformat_int+686>.
+bufflen = <optimized out>
+buf = 0x5ffc50 "9"
+p = 0x5ffc50 "9"
+precision = <optimized out>
+__mingw_pformat (flags=flags@entry=24576, dest=<optimized out>, max=max@entry=0, fmt=0x7ff6503ca002 "", fmt@entry=0x7ff6503ca000 "%d", argv=0x5ffe20 "p-u", argv@entry=0x5ffe18 "\t") at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c:2625
+2625	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+##STEP##
+#0  __mingw_pformat (flags=flags@entry=24576, dest=<optimized out>, max=max@entry=0, fmt=0x7ff6503ca002 "", fmt@entry=0x7ff6503ca000 "%d", argv=0x5ffe20 "p-u", argv@entry=0x5ffe18 "\t") at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c:2625
+2625	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+Line 2625 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c" starts at address 0x7ff6503c4860 <__mingw_pformat+672> and ends at 0x7ff6503c4870 <__mingw_pformat+688>.
+state = <optimized out>
+length = <optimized out>
+width_spec = 0x5ffd3c
+argval = {__pformat_long_t = 256, __pformat_llong_t = 256, __pformat_ulong_t = 256, __pformat_ullong_t = 256, __pformat_ushort_t = 256, __pformat_uchar_t = 0 '\000', __pformat_short_t = 256, __pformat_char_t = 0 '\000', __pformat_ptr_t = 0x100, __pformat_u128_t = {t128 = {digits = {256, 140730410755133}}, t128_2 = {digits32 = {256, 0, 1512334397, 32766}}}}
+backtrack = <optimized out>
+c = <optimized out>
+saved_errno = 0
+stream = {dest = 0x7ffe5833da30 <msvcrt!_iob+48>, flags = 24576, width = -2, precision = -1, rplen = -3, rpchr = 0 L'\000', thousands_chr_len = 0, thousands_chr = 0 L'\000', count = 1, quota = 0, expmin = -1}
+format_scan = <optimized out>
+3242	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+##STEP##
+#0  __mingw_pformat (flags=flags@entry=24576, dest=<optimized out>, max=max@entry=0, fmt=<optimized out>, fmt@entry=0x7ff6503ca000 "%d", argv=<optimized out>, argv@entry=0x5ffe18 "\t") at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c:3242
+3242	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c
+Line 3242 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_pformat.c" starts at address 0x7ff6503c4797 <__mingw_pformat+471> and ends at 0x7ff6503c47b0 <__mingw_pformat+496>.
+c = <optimized out>
+saved_errno = 0
+stream = {dest = 0x7ffe5833da30 <msvcrt!_iob+48>, flags = 24576, width = -2, precision = -1, rplen = -3, rpchr = 0 L'\000', thousands_chr_len = 0, thousands_chr = 0 L'\000', count = 1, quota = 0, expmin = -1}
+format_scan = <optimized out>
+__mingw_printf (fmt=<optimized out>) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_printf.c:55
+warning: 55	D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_printf.c: No such file or directory
+##STEP##
+#0  __mingw_printf (fmt=<optimized out>) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_printf.c:55
+55	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_printf.c
+Line 55 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_printf.c" starts at address 0x7ff6503c2622 <__mingw_printf+98> and ends at 0x7ff6503c262f <__mingw_printf+111>.
+retval = 1
+argv = 0x5ffe18 "\t"
+__acrt_iob_func (index=index@entry=1) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/acrt_iob_func.c:11
+warning: 11	D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/acrt_iob_func.c: No such file or directory
+##STEP##
+#0  __acrt_iob_func (index=index@entry=1) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/acrt_iob_func.c:11
+11	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/acrt_iob_func.c
+Line 11 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/acrt_iob_func.c" starts at address 0x7ff6503c8805 <__acrt_iob_func+5> and ends at 0x7ff6503c8807 <__acrt_iob_func+7>.
+No locals.
+_unlock_file (pf=0x7ffe5833da30 <msvcrt!_iob+48>) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_lock.c:84
+warning: 84	D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_lock.c: No such file or directory
+##STEP##
+#0  _unlock_file (pf=0x7ffe5833da30 <msvcrt!_iob+48>) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_lock.c:84
+84	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_lock.c
+Line 84 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_lock.c" starts at address 0x7ff6503c80a5 <_unlock_file+5> and ends at 0x7ff6503c80a8 <_unlock_file+8>.
+No locals.
+__acrt_iob_func (index=index@entry=0) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/acrt_iob_func.c:11
+warning: 11	D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/acrt_iob_func.c: No such file or directory
+##STEP##
+#0  __acrt_iob_func (index=index@entry=0) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/acrt_iob_func.c:11
+11	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/acrt_iob_func.c
+Line 11 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/acrt_iob_func.c" starts at address 0x7ff6503c8805 <__acrt_iob_func+5> and ends at 0x7ff6503c8807 <__acrt_iob_func+7>.
+No locals.
+__acrt_iob_func (index=index@entry=19) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/acrt_iob_func.c:11
+11	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/acrt_iob_func.c
+##STEP##
+#0  __acrt_iob_func (index=index@entry=19) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/acrt_iob_func.c:11
+11	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/acrt_iob_func.c
+Line 11 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/acrt_iob_func.c" starts at address 0x7ff6503c8805 <__acrt_iob_func+5> and ends at 0x7ff6503c8807 <__acrt_iob_func+7>.
+No locals.
+_unlock_file (pf=0x7ffe5833da30 <msvcrt!_iob+48>) at D:/M/msys64/mingw64/include/stdio.h:1249
+warning: 1249	D:/M/msys64/mingw64/include/stdio.h: No such file or directory
+##STEP##
+#0  _unlock_file (pf=0x7ffe5833da30 <msvcrt!_iob+48>) at D:/M/msys64/mingw64/include/stdio.h:1249
+1249	in D:/M/msys64/mingw64/include/stdio.h
+Line number 1249 is out of range for "D:/M/msys64/mingw64/include/stdio.h".
+No locals.
+_unlock_file (pf=0x7ffe5833da30 <msvcrt!_iob+48>) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_lock.c:90
+warning: 90	D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_lock.c: No such file or directory
+##STEP##
+#0  _unlock_file (pf=0x7ffe5833da30 <msvcrt!_iob+48>) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_lock.c:90
+90	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_lock.c
+Line 90 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_lock.c" starts at address 0x7ff6503c80d8 <_unlock_file+56> and ends at 0x7ff6503c80df <_unlock_file+63>.
+No locals.
+91	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_lock.c
+##STEP##
+#0  _unlock_file (pf=0x7ffe5833da30 <msvcrt!_iob+48>) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_lock.c:91
+91	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_lock.c
+Line 91 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_lock.c" starts at address 0x7ff6503c80df <_unlock_file+63> and ends at 0x7ff6503c80f6 <_unlock_file+86>.
+No locals.
+__acrt_iob_func (index=index@entry=0) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/acrt_iob_func.c:11
+warning: 11	D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/acrt_iob_func.c: No such file or directory
+##STEP##
+#0  __acrt_iob_func (index=index@entry=0) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/acrt_iob_func.c:11
+11	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/acrt_iob_func.c
+Line 11 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/acrt_iob_func.c" starts at address 0x7ff6503c8805 <__acrt_iob_func+5> and ends at 0x7ff6503c8807 <__acrt_iob_func+7>.
+No locals.
+_unlock_file (pf=<optimized out>) at D:/M/msys64/mingw64/include/stdio.h:1249
+warning: 1249	D:/M/msys64/mingw64/include/stdio.h: No such file or directory
+##STEP##
+#0  _unlock_file (pf=<optimized out>) at D:/M/msys64/mingw64/include/stdio.h:1249
+1249	in D:/M/msys64/mingw64/include/stdio.h
+Line number 1249 is out of range for "D:/M/msys64/mingw64/include/stdio.h".
+No locals.
+0x00007ff6503c80fb in _unlock_file (pf=<optimized out>) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_lock.c:91
+warning: 91	D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_lock.c: No such file or directory
+##STEP##
+#0  0x00007ff6503c80fb in _unlock_file (pf=<optimized out>) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_lock.c:91
+91	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_lock.c
+Line 91 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_lock.c" starts at address 0x7ff6503c80df <_unlock_file+63> and ends at 0x7ff6503c80f6 <_unlock_file+86>.
+No locals.
+0x00007ff6503c8880 in _unlock ()
+##STEP##
+#0  0x00007ff6503c8880 in _unlock ()
+Line 92 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_lock.c" is at address 0x7ff6503c80c3 <_unlock_file+35> but contains no code.
+No symbol table info available.
+Single stepping until exit from function _unlock,
+which has no line number information.
+0x00007ffe582df3e0 in msvcrt!_unlock () from C:\WINDOWS\System32\msvcrt.dll
+##STEP##
+#0  0x00007ffe582df3e0 in msvcrt!_unlock () from C:\WINDOWS\System32\msvcrt.dll
+Line 93 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_lock.c" is at address 0x7ff6503c80c3 <_unlock_file+35> but contains no code.
+No symbol table info available.
+Single stepping until exit from function msvcrt!_unlock,
+which has no line number information.
+0x00007ffe5a29a190 in ntdll!RtlLeaveCriticalSection () from C:\WINDOWS\SYSTEM32\ntdll.dll
+##STEP##
+#0  0x00007ffe5a29a190 in ntdll!RtlLeaveCriticalSection () from C:\WINDOWS\SYSTEM32\ntdll.dll
+Line 94 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_lock.c" is at address 0x7ff6503c80c3 <_unlock_file+35> but contains no code.
+No symbol table info available.
+Single stepping until exit from function ntdll!RtlLeaveCriticalSection,
+which has no line number information.
+__mingw_printf (fmt=<optimized out>) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_printf.c:57
+warning: 57	D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_printf.c: No such file or directory
+##STEP##
+#0  __mingw_printf (fmt=<optimized out>) at D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_printf.c:57
+57	in D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_printf.c
+Line 57 of "D:/W/B/src/mingw-w64/mingw-w64-crt/stdio/mingw_printf.c" starts at address 0x7ff6503c262f <__mingw_printf+111> and ends at 0x7ff6503c2638 <__mingw_printf+120>.
+retval = 1
+argv = 0x5ffe18 "\t"
+aii () at main.c:6
+6	}
+##STEP##
+#0  aii () at main.c:6
+6	}
+Line 6 of "main.c" starts at address 0x7ff6503c1470 <aii+32> and ends at 0x7ff6503c1477 <main>.
+b = 9
+main () at main.c:11
+11	    return 0;
+##STEP##
+#0  main () at main.c:11
+11	    return 0;
+Line 11 of "main.c" starts at address 0x7ff6503c1498 <main+33> and ends at 0x7ff6503c149d <main+38>.
+a = 8
+p = 0x5ffe74
+12	}
+##STEP##
+#0  main () at main.c:12
+12	}
+Line 12 of "main.c" starts at address 0x7ff6503c149d <main+38> and ends at 0x7ff6503c14a3 <main+44>.
+a = 8
+p = 0x5ffe74
+__tmainCRTStartup () at D:/W/B/src/mingw-w64/mingw-w64-crt/crt/crtexe.c:237
+warning: 237	D:/W/B/src/mingw-w64/mingw-w64-crt/crt/crtexe.c: No such file or directory
+##STEP##
+#0  __tmainCRTStartup () at D:/W/B/src/mingw-w64/mingw-w64-crt/crt/crtexe.c:237
+237	in D:/W/B/src/mingw-w64/mingw-w64-crt/crt/crtexe.c
+Line 237 of "D:/W/B/src/mingw-w64/mingw-w64-crt/crt/crtexe.c" starts at address 0x7ff6503c10c9 <__tmainCRTStartup+185> and ends at 0x7ff6503c10d7 <__tmainCRTStartup+199>.
+lock_free = 0x0
+fiberid = <optimized out>
+nested = 0
+startinfo = {newmode = 0}
+ret = 0
+238	in D:/W/B/src/mingw-w64/mingw-w64-crt/crt/crtexe.c
+##STEP##
+#0  __tmainCRTStartup () at D:/W/B/src/mingw-w64/mingw-w64-crt/crt/crtexe.c:238
+238	in D:/W/B/src/mingw-w64/mingw-w64-crt/crt/crtexe.c
+Line 238 of "D:/W/B/src/mingw-w64/mingw-w64-crt/crt/crtexe.c" starts at address 0x7ff6503c13d2 <__tmainCRTStartup+962> and ends at 0x7ff6503c13e0 <WinMainCRTStartup>.
+lock_free = 0x0
+fiberid = <optimized out>
+nested = 0
+startinfo = {newmode = 0}
+ret = 0
+9[Thread 3196.0x941c exited with code 0]
+[Inferior 1 (process 3196) exited normally]
+D:\CeeVizor\Backend\apitest\workspace\debug.gdb:10: Error in sourced command file:
+No registers.

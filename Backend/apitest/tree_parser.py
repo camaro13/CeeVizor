@@ -22,7 +22,11 @@ def extract_variables(node, source_code, scope="global"):
                     func_name = source_code[id_node.start_byte:id_node.end_byte].decode()
                     break
         if func_name:
-            scope = func_name
+            body_node = node.child_by_field_name("body")
+            if body_node:
+            # 함수 내부는 func_name을 scope로 넘기며 재귀 호출
+                results.extend(extract_variables(body_node, source_code, func_name))
+            return results
 
     if node.type == "declaration":
         var_type, var_name, var_value = None, None, None

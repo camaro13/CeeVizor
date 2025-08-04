@@ -21,7 +21,7 @@ function App() {
     console.log("실행 버튼 클릭됨");
     setLoading(true);
     setOutput('');
-
+    
     const formData = new FormData();
     formData.append('code', code);
     formData.append('input', input);  // 사용자 입력 추가
@@ -40,33 +40,6 @@ function App() {
       setLoading(false);
     }
   };
-  
-  // const handleRun = () => {
-  //   const trimmedCode = code.trim();
-  //   if (!trimmedCode) {
-  //     alert('코드를 입력해주세요.');
-  //     return;
-  //   }
-
-  //   const generatedSteps = parseCodeToSteps(trimmedCode);
-  //   if (!generatedSteps || generatedSteps.length === 0) {
-  //     alert('분석된 실행 단계가 없습니다.');
-  //     return;
-  //   }
-
-  //   setSteps(generatedSteps);
-  //   setStepIndex(0);
-
-  //   let current = 0;
-  //   const interval = setInterval(() => {
-  //     current += 1;
-  //     if (current >= generatedSteps.length) {
-  //       clearInterval(interval);
-  //     } else {
-  //       setStepIndex(current);
-  //     }
-  //   }, 1000);
-  // };
 
   const handleScroll = () => {
     if (inputRef.current && lineRef.current) {
