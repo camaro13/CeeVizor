@@ -141,6 +141,7 @@
 
 }
 
+/*메모리 영역*/
 .memory-container {
   border: 0.2vw solid #333;
   padding: 3vh;
@@ -180,6 +181,10 @@
   font-weight: bold;
   font-size: 1.2vw;
   user-select: none;
+  pointer-events: none; /* 기본적으로 막음 */
+  position: relative;
+  max-width: 100%;
+  overflow: visible;
 
 }
 
@@ -190,32 +195,26 @@
   padding: 1vh;
   overflow-y: auto;
   height: 50vh; /*높이 조정 가능한데 이건 d3로 확인해봐야할 듯*/
+  pointer-events: auto; /* 스크롤 가능하게 허용 */
 }
 
 
-.right-column {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  gap: 1vh;
-  width: 20vw;
-}
+
 
 /*data영역 */
 .code-box {
   min-height: 10vh;
   height: 29vh;
-  width: 18vw;
+  width: 16.5vw;
 }
 
-/* 출력 영역 */
-.output-area {
-  flex-grow: 1;
+/* 출력결과 */
+.output-section {
+  width: 93%;
   margin-top: 2vh;
-  display: flex;
-  flex-direction: column;
-  width: 18vw;
+  pointer-events: auto; /* 클릭 가능하게 */
 }
+
 
 .output-box {
   text-align: left;
@@ -223,10 +222,22 @@
   background-color: #444;
   color: #fff;
   padding: 1vh;
-  height: 16.5vh;
+  height: 20.8vh;
   overflow-y: auto;
   white-space: pre-line;
   font-size: 0.95vw;
+  cursor: text;
+}
+
+
+/* 팝업창을 아이콘 옆에 표시 */
+.info-popup.local {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 0.5vh;
+  width: 20vw;
+  z-index: 100;
 }
 
 /* 하단 구분선, 로고 */
@@ -247,61 +258,71 @@
   width: 100%;
   height: 0.1px;
   background-color: #ddd;
-  margin-bottom: 4vh;
+  margin-bottom: 3vh;
 }
 
 .hci-logo {
   width: 4vw;
   height: auto;
+  margin-right: 1vw;
+  margin-bottom: 2vh;
   opacity: 0.7;
 }
-
 
 
 /* 도움말 아이콘 */
 .help-icon {
   width: 1.1vw;
   height: auto;
-  margin-left: 0.5vw;
+  margin-left: 0.3vw;
   vertical-align: middle;
   cursor: pointer;
+  pointer-events: auto; /* 아이콘은 클릭되게 허용 */
 }
 
-/* 설명창 띄우기 + 닫기 버튼 */
+/* 각 영역별  간단 설명 팝업창 */
 .info-popup {
   position: fixed;
   top: 100px;
-  right: 30px;
-  width: 300px;
+  width: 300vh;
   background-color: #f9f9f9;
   border: 1px solid #bbb;
   border-radius: 8px;
-  padding: 15px 20px;
+  padding: 2vw 3vh;
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   z-index: 1000;
   font-size: 0.95rem;
 }
 
 .info-popup p {
-  margin: 0;
+  margin: 1px;
   color: #333;
 }
 
+/* Data 영역일 경우, 팝업 왼쪽으로 조금 옮김 */
+.mem-section.data-section .info-popup.local {
+  left: auto;
+  transform: translateX(-33%); /* 아이콘 기준으로 적당히 왼쪽 */
+}
+
+/* 팝업창 닫기 버튼*/
 .close-btn {
   position: absolute;
   top: 8px;
-  right: 12px;
+  right: 10px;
   border: none;
   background: none;
-  font-size: 18px;
+  font-size: 25px;
   cursor: pointer;
   color: #888;
+  pointer-events: auto;
 }
 
 .close-btn:hover {
   color: #333;
 }
 
+/* 메인화면 버튼*/
 .back-button {
   margin-bottom: 10px;
   padding: 6px 12px;
@@ -316,7 +337,7 @@
 
 .back-button {
   position: absolute;
-  top: 1.5vh;
+  top: 3vh;
   left: 1.5vw;
   height: 4vh;
   font-family: 'Nanum Gothic', sans-serif;

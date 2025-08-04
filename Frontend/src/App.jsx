@@ -85,16 +85,18 @@ function App() {
           <h2>메모리 시각화</h2>
           <div className="memory-container">
             <div className="memory-row">
+
               {/* Stack */}
-              <div className="mem-section">
-                <div className="mem-title">
+              <div className="mem-section no-pointer">
+                <div className="mem-title" style={{ position: 'relative' }}>
                   Stack
-                  <img
-                    src="/question_mark.png"
-                    alt="스택 정보"
-                    className="help-icon"
-                    onClick={() => toggleInfo('stack')}
-                  />
+                  <img src="/question_mark.png" alt="스택 정보" className="help-icon" onClick={() => toggleInfo('stack')} />
+                  {infoVisible === 'stack' && (
+                    <div className="info-popup local">
+                      <button className="close-btn" onClick={() => setInfoVisible(null)}>×</button>
+                      <p><strong>Stack:</strong> 함수 호출 시 자동으로 생성되는 스택프레임들이 저장되는 공간입니다.</p>
+                    </div>
+                  )}
                 </div>
                 <div className="mem-box">
                   <div className="mem-content"></div>
@@ -102,62 +104,50 @@ function App() {
               </div>
 
               {/* Heap */}
-              <div className="mem-section">
-                <div className="mem-title">
+              <div className="mem-section no-pointer">
+                <div className="mem-title" style={{ position: 'relative' }}>
                   Heap
-                  <img
-                    src="/question_mark.png"
-                    alt="힙 정보"
-                    className="help-icon"
-                    onClick={() => toggleInfo('heap')}
-                  />
+                  <img src="/question_mark.png" alt="힙 정보" className="help-icon" onClick={() => toggleInfo('heap')} />
+                  {infoVisible === 'heap' && (
+                    <div className="info-popup local">
+                      <button className="close-btn" onClick={() => setInfoVisible(null)}>×</button>
+                      <p><strong>Heap:</strong> 동적으로 할당된 배열, 구조체 등의 객체들이 저장되는 메모리 영역입니다.</p>
+                    </div>
+                  )}
                 </div>
                 <div className="mem-box">
                   <div className="mem-content"></div>
                 </div>
               </div>
 
-              {/* Data + Output */}
-              <div className="right-column">
-                <div className="mem-section">
-                  <div className="mem-title">
-                    Data
-                    <img
-                      src="/question_mark.png"
-                      alt="데이터 정보"
-                      className="help-icon"
-                      onClick={() => toggleInfo('data')}
-                    />
-                  </div>
-                  <div className="mem-box code-box">
-                    <div className="mem-content"></div>
-                  </div>
+              {/* Data + 출력 결과 */}
+              <div className="mem-section no-pointer data-section">
+                <div className="mem-title" style={{ position: 'relative' }}>
+                  Data
+                  <img src="/question_mark.png" alt="데이터 정보" className="help-icon" onClick={() => toggleInfo('data')} />
+                  {infoVisible === 'data' && (
+                    <div className="info-popup local">
+                      <button className="close-btn" onClick={() => setInfoVisible(null)}>×</button>
+                      <p><strong>Data:</strong> 전역 변수 및 정적 변수를 할당하는 영역입니다.</p>
+                    </div>
+                  )}
                 </div>
 
-                <div className="output-area">
+                {/* Data 영역 */}
+                <div className="mem-box code-box">
+                  <div className="mem-content"></div>
+                </div>
+
+                {/* 출력 결과 */}
+                <div className="output-section pointer-allowed">
                   <div className="mem-title">출력 결과</div>
                   <div className="output-box">출력 결과가 여기에 표시됩니다</div>
                 </div>
               </div>
             </div>
+            
           </div>
         </div>
-
-        {/* 설명창 */}
-        {infoVisible && (
-          <div className="info-popup">
-            <button className="close-btn" onClick={() => setInfoVisible(null)}>×</button>
-            {infoVisible === 'stack' && (
-              <p><strong>Stack:</strong> 함수 호출 시 자동으로 생성되는 스택프레임들이 저장되는 공간입니다.</p>
-            )}
-            {infoVisible === 'heap' && (
-              <p><strong>Heap:</strong> 동적으로 할당된 배열, 구조체 등의 객체들이 저장되는 메모리 영역입니다.</p>
-            )}
-            {infoVisible === 'data' && (
-              <p><strong>Data:</strong> 전역 변수 및 정적 변수를 할당하는 영역입니다.</p>
-            )}
-          </div>
-        )}
       </div>
 
       {/* 푸터 */}
