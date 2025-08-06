@@ -1,0 +1,200 @@
+Breakpoint 1 at 0x140001777: file main.c, line 20.
+[New Thread 13984.0x5758]
+
+Thread 1 hit Breakpoint 1, main () at main.c:20
+20	    foo(50);
+foo (param=50) at main.c:9
+9	    int stack_var = 30;
+#0  foo (param=50) at main.c:9
+9	    int stack_var = 30;
+Line 9 of "main.c" starts at address 0x7ff7e6a0171b <foo+11> and ends at 0x7ff7e6a01722 <foo+18>.
+param = 50
+stack_var = 1
+heap_var = 0x0
+11	    int* heap_var = (int*)malloc(sizeof(int));
+#0  foo (param=50) at main.c:11
+11	    int* heap_var = (int*)malloc(sizeof(int));
+Line 11 of "main.c" starts at address 0x7ff7e6a01722 <foo+18> and ends at 0x7ff7e6a01730 <foo+32>.
+param = 50
+stack_var = 30
+heap_var = 0x0
+12	    if (heap_var == NULL) return;
+#0  foo (param=50) at main.c:12
+12	    if (heap_var == NULL) return;
+Line 12 of "main.c" starts at address 0x7ff7e6a01730 <foo+32> and ends at 0x7ff7e6a01737 <foo+39>.
+param = 50
+stack_var = 30
+heap_var = 0x71b7c0
+13	    *heap_var = 40;
+#0  foo (param=50) at main.c:13
+13	    *heap_var = 40;
+Line 13 of "main.c" starts at address 0x7ff7e6a01737 <foo+39> and ends at 0x7ff7e6a01741 <foo+49>.
+param = 50
+stack_var = 30
+heap_var = 0x71b7c0
+14	    printf("*heap_var = %d\n", *heap_var);
+#0  foo (param=50) at main.c:14
+14	    printf("*heap_var = %d\n", *heap_var);
+Line 14 of "main.c" starts at address 0x7ff7e6a01741 <foo+49> and ends at 0x7ff7e6a01755 <foo+69>.
+param = 50
+stack_var = 30
+heap_var = 0x71b7c0
+16	    free(heap_var);
+#0  foo (param=50) at main.c:16
+16	    free(heap_var);
+Line 16 of "main.c" starts at address 0x7ff7e6a01755 <foo+69> and ends at 0x7ff7e6a01763 <foo+83>.
+param = 50
+stack_var = 30
+heap_var = 0x71b7c0
+17	}
+#0  foo (param=50) at main.c:17
+17	}
+Line 17 of "main.c" starts at address 0x7ff7e6a01764 <foo+84> and ends at 0x7ff7e6a0176a <main>.
+param = 50
+stack_var = 30
+heap_var = 0x71b7c0
+main () at main.c:21
+21	    return 0;
+#0  main () at main.c:21
+21	    return 0;
+Line 21 of "main.c" starts at address 0x7ff7e6a01781 <main+23> and ends at 0x7ff7e6a01786 <main+28>.
+No arguments.
+No locals.
+22	}
+#0  main () at main.c:22
+22	}
+Line 22 of "main.c" starts at address 0x7ff7e6a01786 <main+28> and ends at 0x7ff7e6a0178c <main+34>.
+No arguments.
+No locals.
+0x00007ff7e6a01366 in __tmainCRTStartup ()
+#0  0x00007ff7e6a01366 in __tmainCRTStartup ()
+Line number 23 is out of range for "main.c".
+No symbol table info available.
+No symbol table info available.
+Single stepping until exit from function __tmainCRTStartup,
+which has no line number information.
+[Thread 13984.0x5758 exited with code 0]
+[Inferior 1 (process 13984) exited normally]
+gdb_script.txt:71: Error in sourced command file:
+No stack.
+Breakpoint 1 at 0x140001777: file main.c, line 20.
+[New Thread 13864.0x2c3c]
+
+Thread 1 hit Breakpoint 1, main () at main.c:20
+20	    foo(50);
+foo (param=50) at main.c:9
+9	    int stack_var = 30;
+#0  foo (param=50) at main.c:9
+9	    int stack_var = 30;
+Line 9 of "main.c" starts at address 0x7ff66333171b <foo+11> and ends at 0x7ff663331722 <foo+18>.
+param = 50
+stack_var = 1
+heap_var = 0x0
+11	    int* heap_var = (int*)malloc(sizeof(int));
+#0  foo (param=50) at main.c:11
+11	    int* heap_var = (int*)malloc(sizeof(int));
+Line 11 of "main.c" starts at address 0x7ff663331722 <foo+18> and ends at 0x7ff663331730 <foo+32>.
+param = 50
+stack_var = 30
+heap_var = 0x0
+12	    if (heap_var == NULL) return;
+#0  foo (param=50) at main.c:12
+12	    if (heap_var == NULL) return;
+Line 12 of "main.c" starts at address 0x7ff663331730 <foo+32> and ends at 0x7ff663331737 <foo+39>.
+param = 50
+stack_var = 30
+heap_var = 0x7bb7c0
+13	    *heap_var = 40;
+#0  foo (param=50) at main.c:13
+13	    *heap_var = 40;
+Line 13 of "main.c" starts at address 0x7ff663331737 <foo+39> and ends at 0x7ff663331741 <foo+49>.
+param = 50
+stack_var = 30
+heap_var = 0x7bb7c0
+14	    printf("*heap_var = %d\n", *heap_var);
+#0  foo (param=50) at main.c:14
+14	    printf("*heap_var = %d\n", *heap_var);
+Line 14 of "main.c" starts at address 0x7ff663331741 <foo+49> and ends at 0x7ff663331755 <foo+69>.
+param = 50
+stack_var = 30
+heap_var = 0x7bb7c0
+16	    free(heap_var);
+#0  foo (param=50) at main.c:16
+16	    free(heap_var);
+Line 16 of "main.c" starts at address 0x7ff663331755 <foo+69> and ends at 0x7ff663331763 <foo+83>.
+param = 50
+stack_var = 30
+heap_var = 0x7bb7c0
+17	}
+#0  foo (param=50) at main.c:17
+17	}
+Line 17 of "main.c" starts at address 0x7ff663331764 <foo+84> and ends at 0x7ff66333176a <main>.
+param = 50
+stack_var = 30
+heap_var = 0x7bb7c0
+main () at main.c:21
+21	    return 0;
+#0  main () at main.c:21
+21	    return 0;
+Line 21 of "main.c" starts at address 0x7ff663331781 <main+23> and ends at 0x7ff663331786 <main+28>.
+No arguments.
+No locals.
+22	}
+#0  main () at main.c:22
+22	}
+Line 22 of "main.c" starts at address 0x7ff663331786 <main+28> and ends at 0x7ff66333178c <main+34>.
+No arguments.
+No locals.
+0x00007ff663331366 in __tmainCRTStartup ()
+#0  0x00007ff663331366 in __tmainCRTStartup ()
+Line number 23 is out of range for "main.c".
+No symbol table info available.
+No symbol table info available.
+Single stepping until exit from function __tmainCRTStartup,
+which has no line number information.
+[Thread 13864.0x2c3c exited with code 0]
+[Inferior 1 (process 13864) exited normally]
+gdb_script.txt:71: Error in sourced command file:
+No stack.
+Breakpoint 1 at 0x140001777: file main.c, line 20.
+[New Thread 22980.0x784]
+
+Thread 1 hit Breakpoint 1, main () at main.c:20
+20	    foo(50);
+foo (param=50) at main.c:9
+9	    int stack_var = 30;
+#0  foo (param=50) at main.c:9
+9	    int stack_var = 30;
+11	    int* heap_var = (int*)malloc(sizeof(int));
+#0  foo (param=50) at main.c:11
+11	    int* heap_var = (int*)malloc(sizeof(int));
+12	    if (heap_var == NULL) return;
+#0  foo (param=50) at main.c:12
+12	    if (heap_var == NULL) return;
+13	    *heap_var = 40;
+#0  foo (param=50) at main.c:13
+13	    *heap_var = 40;
+14	    printf("*heap_var = %d\n", *heap_var);
+#0  foo (param=50) at main.c:14
+14	    printf("*heap_var = %d\n", *heap_var);
+16	    free(heap_var);
+#0  foo (param=50) at main.c:16
+16	    free(heap_var);
+17	}
+#0  foo (param=50) at main.c:17
+17	}
+main () at main.c:21
+21	    return 0;
+#0  main () at main.c:21
+21	    return 0;
+22	}
+#0  main () at main.c:22
+22	}
+0x00007ff688101366 in __tmainCRTStartup ()
+#0  0x00007ff688101366 in __tmainCRTStartup ()
+Single stepping until exit from function __tmainCRTStartup,
+which has no line number information.
+[Thread 22980.0x784 exited with code 0]
+[Inferior 1 (process 22980) exited normally]
+gdb_script.txt:30: Error in sourced command file:
+No stack.

@@ -1,0 +1,29 @@
+Breakpoint 1 at 0x140001777: file main.c, line 15.
+[New Thread 9988.0x45ec]
+
+Thread 1 hit Breakpoint 1, main () at main.c:15
+15	    foo(50);
+foo (param=50) at main.c:6
+6	    int stack_var = 30;
+7	    int* heap_var = (int*)malloc(sizeof(int));
+8	    if (heap_var == NULL) return;
+9	    *heap_var = 40;
+10	    printf("*heap_var = %d\n", *heap_var);
+11	    free(heap_var);
+12	}
+main () at main.c:16
+16	    return 0;
+17	}
+0x00007ff6d9861366 in __tmainCRTStartup ()
+Single stepping until exit from function __tmainCRTStartup,
+which has no line number information.
+[Thread 9988.0x45ec exited with code 0]
+[Inferior 1 (process 9988) exited normally]
+C:\Users\kangw\AppData\Local\Temp\tmp6nv4xj05.gdb:16: Error in sourced command file:
+The program is not being run.
+quit
+Exception ignored in: <gdb._GdbFile object at 0x000001e1b2ed9580>
+Traceback (most recent call last):
+  File "C:\MinGW/mingw64/share/gdb/python\gdb\__init__.py", line 63, in flush
+    _gdb.flush(stream=self.stream)
+KeyboardInterrupt: 
