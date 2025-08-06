@@ -1,0 +1,31 @@
+[
+  {
+    "name": "s",
+    "type": "int",
+    "scope": "main",
+    "location": "stack",
+    "value": "42",
+    "pointer": false,
+    "points_to": null,
+    "line": 4
+  },
+  {
+    "name": "q",
+    "type": "int*",
+    "scope": "main",
+    "location": "stack",
+    "value": "&s",
+    "pointer": true,
+    "points_to": null,
+    "line": 5
+  },
+  {
+    "name": "main",
+    "type": "function",
+    "return_type": "int",
+    "parameters": [],
+    "location": "code",
+    "scope": "global",
+    "line": 3
+  }
+]

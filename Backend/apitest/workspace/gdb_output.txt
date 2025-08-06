@@ -1,0 +1,64 @@
+Temporary breakpoint 1 at 0x14000145d: file main.c, line 4.
+[New Thread 11680.0x9150]
+
+Thread 1 hit Temporary breakpoint 1, main () at main.c:4
+4	    int s = 42;
+##STEP##
+#0  main () at main.c:4
+4	    int s = 42;
+Line 4 of "main.c" starts at address 0x7ff728c2145d <main+13> and ends at 0x7ff728c21464 <main+20>.
+s = 0
+q = 0x7ff728c27040 <__native_startup_lock>
+5	    int *q = &s;
+##STEP##
+#0  main () at main.c:5
+5	    int *q = &s;
+Line 5 of "main.c" starts at address 0x7ff728c21464 <main+20> and ends at 0x7ff728c2146c <main+28>.
+s = 42
+q = 0x7ff728c27040 <__native_startup_lock>
+6	    *q = 539;
+##STEP##
+#0  main () at main.c:6
+6	    *q = 539;
+Line 6 of "main.c" starts at address 0x7ff728c2146c <main+28> and ends at 0x7ff728c21476 <main+38>.
+s = 42
+q = 0x5ffe74
+7	    return 0;
+##STEP##
+#0  main () at main.c:7
+7	    return 0;
+Line 7 of "main.c" starts at address 0x7ff728c21476 <main+38> and ends at 0x7ff728c2147b <main+43>.
+s = 539
+q = 0x5ffe74
+8	}
+##STEP##
+#0  main () at main.c:8
+8	}
+Line 8 of "main.c" starts at address 0x7ff728c2147b <main+43> and ends at 0x7ff728c21481 <main+49>.
+s = 539
+q = 0x5ffe74
+__tmainCRTStartup () at D:/W/B/src/mingw-w64/mingw-w64-crt/crt/crtexe.c:237
+warning: 237	D:/W/B/src/mingw-w64/mingw-w64-crt/crt/crtexe.c: No such file or directory
+##STEP##
+#0  __tmainCRTStartup () at D:/W/B/src/mingw-w64/mingw-w64-crt/crt/crtexe.c:237
+237	in D:/W/B/src/mingw-w64/mingw-w64-crt/crt/crtexe.c
+Line 237 of "D:/W/B/src/mingw-w64/mingw-w64-crt/crt/crtexe.c" starts at address 0x7ff728c210c9 <__tmainCRTStartup+185> and ends at 0x7ff728c210d7 <__tmainCRTStartup+199>.
+lock_free = 0x0
+fiberid = <optimized out>
+nested = 0
+startinfo = {newmode = 0}
+ret = 0
+238	in D:/W/B/src/mingw-w64/mingw-w64-crt/crt/crtexe.c
+##STEP##
+#0  __tmainCRTStartup () at D:/W/B/src/mingw-w64/mingw-w64-crt/crt/crtexe.c:238
+238	in D:/W/B/src/mingw-w64/mingw-w64-crt/crt/crtexe.c
+Line 238 of "D:/W/B/src/mingw-w64/mingw-w64-crt/crt/crtexe.c" starts at address 0x7ff728c213d2 <__tmainCRTStartup+962> and ends at 0x7ff728c213e0 <WinMainCRTStartup>.
+lock_free = 0x0
+fiberid = <optimized out>
+nested = 0
+startinfo = {newmode = 0}
+ret = 0
+[Thread 11680.0x9150 exited with code 0]
+[Inferior 1 (process 11680) exited normally]
+D:\CeeVizor\Backend\apitest\workspace\debug.gdb:10: Error in sourced command file:
+No registers.

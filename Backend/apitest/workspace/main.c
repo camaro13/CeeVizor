@@ -1,7 +1,8 @@
-#include <stdio.h>
-int main() {
-    int x, y;
-    scanf("%d %d", &x, &y);
-    printf("%d + %d = %d\n", x, y, x + y);
-    return 0;
-}
+#include <stdio.h>
+
+int main() {
+    int s = 42;
+    int *q = &s;
+    *q = 539;
+    return 0;
+}

@@ -1,0 +1,5 @@
+
+---
+a.exe: No such file or directory.
+debug.gdb:3: Error in sourced command file:
+No symbol table loaded.  Use the "file" command.

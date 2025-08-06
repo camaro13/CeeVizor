@@ -1,0 +1,129 @@
+[
+  {
+    "time": 0,
+    "line_num": 4,
+    "line": "    int s = 42;",
+    "stack": {
+      "main": {
+        "s": {
+          "name": "s",
+          "type": "int",
+          "value": "42",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": {},
+    "data": {}
+  },
+  {
+    "time": 1,
+    "line_num": 5,
+    "line": "    int *q = &s;",
+    "stack": {
+      "main": {
+        "s": {
+          "name": "s",
+          "type": "int",
+          "value": "42",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "q": {
+          "name": "q",
+          "type": "int",
+          "value": "&s",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": {},
+    "data": {}
+  },
+  {
+    "time": 2,
+    "line_num": 6,
+    "line": "    *q = 539;",
+    "stack": {
+      "main": {
+        "s": {
+          "name": "s",
+          "type": "int",
+          "value": "42",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "q": {
+          "name": "q",
+          "type": "int",
+          "value": "&s",
+          "pointer": true,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": {},
+    "data": {}
+  },
+  {
+    "time": 3,
+    "line_num": 7,
+    "line": "    return 0;",
+    "stack": {
+      "main": {
+        "s": {
+          "name": "s",
+          "type": "int",
+          "value": "42",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "q": {
+          "name": "q",
+          "type": "int",
+          "value": "&s",
+          "pointer": true,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": {},
+    "data": {}
+  },
+  {
+    "time": 4,
+    "line_num": 8,
+    "line": "}",
+    "stack": {
+      "main": {
+        "s": {
+          "name": "s",
+          "type": "int",
+          "value": "42",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "q": {
+          "name": "q",
+          "type": "int",
+          "value": "&s",
+          "pointer": true,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": {},
+    "data": {}
+  }
+]
