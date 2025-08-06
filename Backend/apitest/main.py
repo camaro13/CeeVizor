@@ -43,7 +43,6 @@ def simulate_execution(code: str):
                     "type": symbol["type"],
                     "value": symbol.get("value"),
                     "pointer": symbol.get("pointer"),
-                    "points_to": symbol.get("points_to"),
                     "scope": symbol.get("scope", "global")
                 }
 
@@ -69,16 +68,18 @@ def simulate_execution(code: str):
 
 
 def simulate_with_gdb(code: str, exec_path: str, source_path: str):
+    import re, os, subprocess, shutil as sh
     try:
         if not sh.which("gdb"):
             raise RuntimeError("gdb not found in PATH")
 
         code_lines = code.splitlines()
 
-        # GDB 스크립트: step 사용 (함수 내부 진입)
         gdb_script = """
 set pagination off
 start
+printf "##ADDR##\\n"
+info address
 while $pc
   printf "##STEP##\\n"
   frame
@@ -106,6 +107,7 @@ quit
         with open(gdb_output_path, "r", encoding="utf-8") as f:
             output = f.read()
 
+        from tree_parser import analyze_c_code
         analysis = analyze_c_code(code)
 
         scope_map = {
@@ -126,36 +128,41 @@ quit
             if sym.get("location") in ("stack", "heap", "data") and sym.get("value") is not None
         }
 
-        # ✅ 전역 변수 초기화 (data 영역용)
         global_data = [
             {
                 "name": sym["name"],
                 "type": sym["type"],
                 "value": sym.get("value"),
                 "pointer": sym.get("pointer", False),
-                "points_to": sym.get("points_to"),
                 "scope": sym.get("scope", "global")
             }
             for sym in analysis
             if sym.get("location") == "data"
         ]
 
+        address_map = {}
+        if "##ADDR##\n" in output:
+            addr_section = output.split("##ADDR##\n")[1].split("##STEP##\n")[0]
+            for line in addr_section.strip().splitlines():
+                m = re.search(r'Symbol \"(?P<name>\\w+)\" is (?:at|static storage at address) (?P<addr>0x[0-9a-fA-F]+)', line)
+                if m:
+                    address_map[m.group("addr")] = m.group("name")
+
         def group_stack_by_scope(flat_stack_vars):
             grouped = {}
             for var in flat_stack_vars:
                 scope = var.get("scope", "global")
                 if scope not in grouped:
-                    grouped[scope] = []
-                grouped[scope].append(var)
-            return [{"function": k, "variables": v} for k, v in grouped.items()]
+                    grouped[scope] = {}
+                grouped[scope][var["name"]] = var
+            return grouped
 
         steps = output.split("##STEP##\n")
 
         timeline = []
         prev_stack, prev_heap = [], []
-        prev_data = global_data.copy()  # ✅ data 영역 초기값
+        prev_data = global_data.copy()
         step_counter = 0
-
         data_declarations = []
         already_included_lines = set()
 
@@ -171,20 +178,18 @@ quit
                         "line": line_text,
                         "stack": [],
                         "heap": [],
-                        "data": [  # 해당 라인의 전역 변수만 포함
+                        "data": [
                             {
                                 "name": sym["name"],
                                 "type": sym["type"],
                                 "value": sym.get("value"),
                                 "pointer": sym.get("pointer", False),
-                                "points_to": sym.get("points_to"),
                                 "scope": sym.get("scope", "global")
                             }
                         ]
                     })
                     step_counter += 1
 
-        # timeline 앞에 추가
         timeline.extend(data_declarations)
 
         for step in steps:
@@ -194,27 +199,35 @@ quit
 
             for line in step_lines:
                 if line.startswith("Line "):
-                    m = re.match(r"Line (\d+) of", line)
+                    m = re.match(r"Line (\\d+) of", line)
                     if m:
                         current_line_number = int(m.group(1))
 
-                elif re.match(r"^\w+ = ", line):
+                elif re.match(r"^\\w+ = ", line):
                     try:
                         name, value = line.strip().split(" = ", 1)
-                        value = re.sub(r"^\(.*?\)\s*", "", value.strip())  # remove type cast
+                        name = name.strip()
+                        value = re.sub(r"^\(.*?\)\\s*", "", value.strip())
+
+                        pointer = False
+
+                        if re.match(r"^0x[0-9a-fA-F]+$", value):
+                            pointer = True
+
+                        elif value.startswith("&"):
+                            pointer = True
+
                         stack_vars.append({
-                            "name": name.strip(),
-                            "type": "int",
+                            "name": name,
+                            "type": "unknown",
                             "value": value,
-                            "pointer": "*" in value,
-                            "points_to": None,
-                            "scope": scope_map.get(name.strip(), "global")
+                            "pointer": pointer,
+                            "scope": scope_map.get(name, "global")
                         })
                     except:
                         continue
 
             if current_line_number is not None and 1 <= current_line_number <= len(code_lines):
-
                 if timeline and timeline[-1]["line_num"] == current_line_number:
                     continue
 
@@ -235,7 +248,7 @@ quit
                 stack = update(prev_stack, stack_vars)
                 heap = prev_heap
                 data = prev_data
-                
+
                 timeline.append({
                     "time": step_counter,
                     "line_num": current_line_number,

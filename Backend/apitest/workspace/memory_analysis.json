@@ -1,52 +1,23 @@
 [
   {
-    "name": "c",
+    "name": "s",
     "type": "int",
-    "scope": "global",
-    "location": "data",
-    "value": "0",
-    "pointer": false,
-    "points_to": null,
-    "line": 2
-  },
-  {
-    "name": "b",
-    "type": "int",
-    "scope": "aii",
+    "scope": "main",
     "location": "stack",
-    "value": "9",
+    "value": "42",
     "pointer": false,
     "points_to": null,
     "line": 4
   },
   {
-    "name": "a",
-    "type": "int",
-    "scope": "main",
-    "location": "stack",
-    "value": "8",
-    "pointer": false,
-    "points_to": null,
-    "line": 8
-  },
-  {
-    "name": "p",
+    "name": "q",
     "type": "int*",
     "scope": "main",
     "location": "stack",
-    "value": "&a",
+    "value": "&s",
     "pointer": true,
     "points_to": null,
-    "line": 9
-  },
-  {
-    "name": "aii",
-    "type": "function",
-    "return_type": "void",
-    "parameters": [],
-    "location": "code",
-    "scope": "global",
-    "line": 3
+    "line": 5
   },
   {
     "name": "main",
@@ -55,6 +26,6 @@
     "parameters": [],
     "location": "code",
     "scope": "global",
-    "line": 7
+    "line": 3
   }
 ]

@@ -30,7 +30,7 @@ def extract_variables(node, source_code, scope="global"):
 
     if node.type == "declaration":
         var_type, var_name, var_value = None, None, None
-        is_pointer, points_to = False, None
+        is_pointer= False
         storage = "auto"
         line = node.start_point[0] + 1
 
@@ -52,7 +52,6 @@ def extract_variables(node, source_code, scope="global"):
                     var_value = source_code[value_node.start_byte:value_node.end_byte].decode()
                     if value_node.type == "call_expression" and "malloc" in var_value:
                         is_pointer = True
-                        points_to = "heap"
 
         if var_name:
             if storage == "static":
@@ -71,7 +70,6 @@ def extract_variables(node, source_code, scope="global"):
                 "location": location,
                 "value": var_value,
                 "pointer": is_pointer,
-                "points_to": points_to,
                 "line": line
             })
 
