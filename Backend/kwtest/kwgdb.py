@@ -1,134 +1,203 @@
-# gdb.py
+# kwgdb.py
 import subprocess
 import re
-import os
+from pathlib import Path
+from typing import List, Dict, Any
 
-def save_code_to_file(code: str, filename="main.c"):
-    with open(filename, "w", encoding="utf-8") as f:
-        f.write(code)
+AOUT = "a.exe"
+SRC = "main.c"
+GDB_SCRIPT = "gdb_script.txt"
 
-def compile_code(source_file="main.c", output_file="a.out"):
-    result = subprocess.run(["gcc", "-g", source_file, "-o", output_file],
-                            capture_output=True, text=True)
+STEP_START = "##STEP##"
+STEP_END   = "##ENDSTEP##"
+TAG_PRINTF = "##PRINTF##"
+TAG_MALLOC_RET = "##MALLOC_RET##"
+TAG_FREE_PTR   = "##FREE_PTR##"
+TAG_CALLER     = "##CALLER##"
+
+def save_code_to_file(code: str, filename: str = SRC):
+    Path(filename).write_text(code, encoding="utf-8")
+
+def compile_code(source_file: str = SRC, output_file: str = AOUT):
+    args = ["gcc", "-g3", "-O0", "-fno-omit-frame-pointer",
+            "-fvar-tracking-assignments", source_file, "-o", output_file]
+    result = subprocess.run(args, capture_output=True, text=True)
     if result.returncode != 0:
-        raise RuntimeError(f"컴파일 실패: {result.stderr}")
+        raise RuntimeError(f"컴파일 실패:\n{result.stderr}")
 
-def generate_gdb_script(max_steps=200):
-    script_lines = [
+def generate_gdb_script(max_steps: int = 200):
+    lines = [
         "set pagination off",
-        "start"
+        "set confirm off",
+        f"file {AOUT}",
+        "break main",
+        "run",
+        "break printf",
+        "commands",
+        "  silent",
+        f'  printf "{TAG_PRINTF}\\n"',
+        "  continue",
+        "end",
+        "break malloc",
+        "commands",
+        "  silent",
+        "  finish",
+        f'  printf "{TAG_MALLOC_RET} %p\\n", $rax',
+        "  up 1",
+        f'  printf "{TAG_CALLER} "',
+        "  info line",
+        "  down",
+        "  continue",
+        "end",
+        "break free",
+        "commands",
+        "  silent",
+        f'  printf "{TAG_FREE_PTR} %p\\n", $rcx',  # WSL/리눅스는 $rdi
+        "  up 1",
+        f'  printf "{TAG_CALLER} "',
+        "  info line",
+        "  down",
+        "  continue",
+        "end",
     ]
     for _ in range(max_steps):
-        script_lines.extend([
-            'printf "##STEP##\\n"',
+        lines.extend([
+            f'printf "{STEP_START}\\n"',
             "frame",
+            "bt 8",
             "info args",
             "info locals",
             "info line",
-            'printf "##ENDSTEP##\\n"',
+            f'printf "{STEP_END}\\n"',
             "step"
         ])
-    script_lines.append("quit")
-    with open("gdb_script.txt", "w", encoding="utf-8") as f:
-        f.write("\n".join(script_lines))
+    lines.append("quit")
+    Path(GDB_SCRIPT).write_text("\n".join(lines), encoding="utf-8")
 
-def run_gdb(binary="a.out", max_steps=200):
+def run_gdb(binary: str = AOUT, max_steps: int = 200) -> str:
     generate_gdb_script(max_steps)
     result = subprocess.run(
-        ["gdb", "--batch", "-x", "gdb_script.txt", binary],
-        capture_output=True,
-        encoding="utf-8",
-        errors="ignore"
+        ["gdb", "--batch", "-x", GDB_SCRIPT, binary],
+        capture_output=True, text=True, encoding="utf-8", errors="ignore"
     )
     return result.stdout or ""
 
-def parse_gdb_output(output, source_file="main.c"):
-    steps = []
+def gdb_oneoff(commands: List[str]) -> str:
+    ex = []
+    for c in commands:
+        ex.extend(["-ex", c])
+    proc = subprocess.run(
+        ["gdb", "--batch", AOUT, *ex],
+        capture_output=True, text=True, encoding="utf-8", errors="ignore"
+    )
+    return proc.stdout
+
+def gdb_print(var: str) -> str:
+    return gdb_oneoff([f"p {var}"])
+
+def gdb_x(addr: str, fmt: str = "wd") -> str:
+    return gdb_oneoff([f"x/{fmt} {addr}"])
+
+# parsing
+BT_FUNC_RE  = re.compile(r'^\s*#\d+\s+([^\s(]+)\s*\(')
+LINE_OF_RE  = re.compile(r'Line\s+(\d+)\s+of\s+"([^"]+)"')
+VAR_RE      = re.compile(r'^\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*(.+)$')
+TAG_ANY = re.compile(
+    rf"({re.escape(TAG_PRINTF)}|{re.escape(TAG_MALLOC_RET)}|{re.escape(TAG_FREE_PTR)}|{re.escape(TAG_CALLER)})[^\n]*"
+)
+MARK_CALLER = re.compile(rf"{re.escape(TAG_CALLER)}\s+Line\s+(\d+)\s+of\s+\"([^\"]+)\"")
+
+def _dedup_keep_order(items: List[str]) -> List[str]:
+    seen, out = set(), []
+    for x in items:
+        if x in seen: continue
+        seen.add(x); out.append(x)
+    return out
+
+def _collect_step_events(text: str) -> List[Dict[str,str]]:
+    events: List[Dict[str,str]] = []
+    for m in TAG_ANY.finditer(text):
+        line = m.group(0)
+        if line.startswith(TAG_PRINTF):
+            events.append({"type": "PRINTF"})
+        elif line.startswith(TAG_MALLOC_RET):
+            mm = re.search(r"(0x[0-9a-fA-F]+)", line)
+            if mm: events.append({"type": "MALLOC", "addr": mm.group(1)})
+        elif line.startswith(TAG_FREE_PTR):
+            mm = re.search(r"(0x[0-9a-fA-F]+)", line)
+            if mm: events.append({"type": "FREE", "addr": mm.group(1)})
+        elif line.startswith(TAG_CALLER):
+            c = MARK_CALLER.search(line)
+            if c and events:
+                events[-1]["caller_line"] = c.group(1)
+                events[-1]["caller_file"] = c.group(2)
+    return events
+
+def parse_gdb_output(output: str, source_file: str = SRC) -> Dict[str, Any]:
     try:
-        with open(source_file, "r", encoding="utf-8") as f:
-            source_lines = f.readlines()
+        src_lines = Path(source_file).read_text(encoding="utf-8").splitlines()
     except Exception:
-        with open(source_file, "r", encoding="utf-8", errors="ignore") as f:
-            source_lines = f.readlines()
+        src_lines = Path(source_file).read_text(encoding="utf-8", errors="ignore").splitlines()
 
-    # split into step blocks
-    blocks = re.split(r"##STEP##\s*\n", output)
+    steps: List[Dict[str, Any]] = []
+    blocks = re.split(rf"{re.escape(STEP_START)}\s*\n", output)
+
     for blk in blocks[1:]:
-        # get frame info (#0 func ... at file:line)
-        frame_pattern = re.compile(r'#\d+\s+([^\s]+).* at (\S+):(\d+)')
-        m = frame_pattern.search(blk)
-        func = None
-        line_no = None
-        if m:
-            func = m.group(1)
-            try:
-                line_no = int(m.group(3))
-            except:
-                line_no = None
+        body = re.split(rf"{re.escape(STEP_END)}\s*\n", blk)[0]
+        step_events = _collect_step_events(body)
 
-        # determine code_line via info line or fallback
-        code_line = None
-        # match common "Line N of" patterns
-        m2 = re.search(r'Line\s+(\d+)\s+of', blk)
+        bt_funcs = []
+        for line in body.splitlines():
+            m = BT_FUNC_RE.match(line)
+            if m:
+                name = m.group(1)
+                if not name.startswith("0x"):
+                    bt_funcs.append(name)
+        bt_funcs = _dedup_keep_order(bt_funcs)
+
+        code_line, line_no = "", None
+        m2 = LINE_OF_RE.search(body)
         if m2:
             try:
-                lno = int(m2.group(1))
-                if 1 <= lno <= len(source_lines):
-                    code_line = source_lines[lno-1].rstrip()
-                    line_no = lno
+                line_no = int(m2.group(1))
+                if 1 <= line_no <= len(src_lines):
+                    code_line = src_lines[line_no - 1].rstrip()
             except:
                 pass
-        if code_line is None and line_no and 1 <= line_no <= len(source_lines):
-            code_line = source_lines[line_no-1].rstrip()
 
-        # Extract var lines strictly from lines that look like "name = value"
-        var_pattern = re.compile(r'^\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*(.+)$')
-        vars_found = {}
-        output_lines = []
-        for line in blk.splitlines():
-            # skip lines that are code lines starting with a leading number like "7\t  int ..."
+        vars_found, program_chunk_lines = {}, []
+        for line in body.splitlines():
             if re.match(r'^\s*\d+\s*\t', line):
                 continue
-            # skip blank or frame headers
-            if frame_pattern.search(line):
-                continue
-            # attempt var match
-            mv = var_pattern.match(line)
+            mv = VAR_RE.match(line)
             if mv:
-                name = mv.group(1)
-                val = mv.group(2).strip()
-                # strip trailing text like ", <optimized out>" or types in parentheses (best-effort)
-                # but keep hex addresses and strings intact
+                name, val = mv.group(1), mv.group(2).strip()
+                val = re.sub(r"\s*,\s*<optimized out>.*$", "", val)
                 vars_found[name] = val
             else:
-                stripped = line.strip()
-                # collect other non-empty, non-debug lines as raw output
-                if stripped and "No symbol table info" not in stripped:
-                    output_lines.append(line)
+                s = line.strip()
+                if not s: continue
+                if s.startswith("Line ") or s.startswith("No symbol table info") or s.startswith("#"):
+                    continue
+                if s in ("No locals.", "No arguments."):
+                    continue
+                program_chunk_lines.append(line)
 
-        step = {
-            "func": func,
-            "line_no": line_no or 0,
-            "code_line": code_line or "",
+        steps.append({
+            "events": step_events,
+            "bt_funcs": bt_funcs,
+            "func": bt_funcs[0] if bt_funcs else None,
+            "line_no": int(line_no) if line_no else 0,
+            "code_line": code_line,
             "vars": vars_found,
-            "raw_output": "\n".join(output_lines).strip()
-        }
-        steps.append(step)
+            "program_chunk": "\n".join(program_chunk_lines).strip()
+        })
 
-    return steps
+    return {"steps": steps}
 
-def trace_c_execution(code: str, return_result=False, max_steps=200):
+def trace_c_execution(code: str, return_result=False, max_steps: int = 200):
     save_code_to_file(code)
     compile_code()
     out = run_gdb(max_steps=max_steps)
-    steps = parse_gdb_output(out)
-    if return_result:
-        return steps
-    print("[+] steps:", len(steps))
-    for i, s in enumerate(steps, start=1):
-        print(f"-- step {i}: func={s['func']} line={s['line_no']}")
-        print("   code:", s['code_line'])
-        if s['vars']:
-            print("   vars:", s['vars'])
-        if s['raw_output']:
-            print("   output:", s['raw_output'])
+    parsed = parse_gdb_output(out)
+    return parsed

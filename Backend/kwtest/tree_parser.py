@@ -2,13 +2,17 @@
 from tree_sitter import Language, Parser
 import json
 import os
+from typing import List, Dict, Any
 
 LIB_PATH = os.path.join("build", "my-languages.so")
 C_LANGUAGE = Language(LIB_PATH, "c")
 parser = Parser()
 parser.set_language(C_LANGUAGE)
 
-def extract_variables(node, source_code, scope="global"):
+def _text(src: bytes, node) -> str:
+    return src[node.start_byte:node.end_byte].decode(errors="ignore")
+
+def extract_variables(node, source_code: bytes, scope: str = "global") -> List[Dict[str, Any]]:
     results = []
 
     if node.type == "function_definition":
@@ -17,7 +21,7 @@ def extract_variables(node, source_code, scope="global"):
             if child.type == "function_declarator":
                 id_node = child.child_by_field_name("declarator")
                 if id_node:
-                    func_name = source_code[id_node.start_byte:id_node.end_byte].decode()
+                    func_name = _text(source_code, id_node)
                     break
         if func_name:
             body_node = node.child_by_field_name("body")
@@ -31,11 +35,10 @@ def extract_variables(node, source_code, scope="global"):
         storage = "auto"
         for child in node.children:
             if child.type == "primitive_type":
-                var_type = source_code[child.start_byte:child.end_byte].decode()
+                var_type = _text(source_code, child)
             elif child.type == "storage_class_specifier":
-                storage = source_code[child.start_byte:child.end_byte].decode()
+                storage = _text(source_code, child)
 
-        # 여러 init_declarator 각각 처리
         for child in node.children:
             if child.type != "init_declarator":
                 continue
@@ -45,22 +48,25 @@ def extract_variables(node, source_code, scope="global"):
             is_pointer = False
             points_to = None
 
-            decl_child = child.children[0]
+            decl_child = child.children[0] if child.children else None
+            if decl_child is None:
+                continue
+
             if decl_child.type == "pointer_declarator":
                 is_pointer = True
                 id_node = decl_child.child_by_field_name("declarator")
                 if id_node:
-                    v_name = source_code[id_node.start_byte:id_node.end_byte].decode()
+                    v_name = _text(source_code, id_node)
             else:
-                v_name = source_code[decl_child.start_byte:decl_child.end_byte].decode()
+                v_name = _text(source_code, decl_child)
 
             if len(child.children) >= 2:
                 value_node = child.children[-1]
                 try:
-                    v_value = source_code[value_node.start_byte:value_node.end_byte].decode()
+                    v_value = _text(source_code, value_node)
                 except Exception:
                     v_value = None
-                if value_node.type == "call_expression" and "malloc" in (v_value or ""):
+                if value_node.type == "call_expression" and v_value and "malloc" in v_value:
                     is_pointer = True
                     points_to = "heap"
 
@@ -80,7 +86,7 @@ def extract_variables(node, source_code, scope="global"):
                     "scope": scope,
                     "location": location,
                     "value": v_value,
-                    "pointer": is_pointer,
+                    "pointer": bool(is_pointer),
                     "points_to": points_to,
                     "line": line
                 })
@@ -90,7 +96,7 @@ def extract_variables(node, source_code, scope="global"):
 
     return results
 
-def extract_functions(node, source_code):
+def extract_functions(node, source_code: bytes) -> List[Dict[str, Any]]:
     functions = []
 
     if node.type == "function_definition":
@@ -100,11 +106,11 @@ def extract_functions(node, source_code):
 
         for child in node.children:
             if child.type == "primitive_type":
-                return_type = source_code[child.start_byte:child.end_byte].decode()
+                return_type = _text(source_code, child)
             elif child.type == "function_declarator":
                 id_node = child.child_by_field_name("declarator")
                 if id_node:
-                    func_name = source_code[id_node.start_byte:id_node.end_byte].decode()
+                    func_name = _text(source_code, id_node)
 
                 param_list_node = child.child_by_field_name("parameters")
                 if param_list_node:
@@ -113,9 +119,9 @@ def extract_functions(node, source_code):
                             param_type, param_name = None, None
                             for p in param.children:
                                 if p.type == "primitive_type":
-                                    param_type = source_code[p.start_byte:p.end_byte].decode()
+                                    param_type = _text(source_code, p)
                                 elif p.type == "identifier":
-                                    param_name = source_code[p.start_byte:p.end_byte].decode()
+                                    param_name = _text(source_code, p)
                             if param_name:
                                 params.append({"name": param_name, "type": param_type})
 
@@ -135,7 +141,7 @@ def extract_functions(node, source_code):
 
     return functions
 
-def analyze_c_code(code: str, save_path: str = None):
+def analyze_c_code(code: str, save_path: str = None) -> List[Dict[str, Any]]:
     source_code = code.encode()
     tree = parser.parse(source_code)
     root_node = tree.root_node

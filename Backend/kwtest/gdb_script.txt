@@ -1,7 +1,38 @@
 set pagination off
-start
+set confirm off
+file a.exe
+break main
+run
+break printf
+commands
+  silent
+  printf "##PRINTF##\n"
+  continue
+end
+break malloc
+commands
+  silent
+  finish
+  printf "##MALLOC_RET## %p\n", $rax
+  up 1
+  printf "##CALLER## "
+  info line
+  down
+  continue
+end
+break free
+commands
+  silent
+  printf "##FREE_PTR## %p\n", $rcx
+  up 1
+  printf "##CALLER## "
+  info line
+  down
+  continue
+end
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -9,6 +40,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -16,6 +48,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -23,6 +56,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -30,6 +64,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -37,6 +72,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -44,6 +80,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -51,6 +88,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -58,6 +96,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -65,6 +104,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -72,6 +112,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -79,6 +120,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -86,6 +128,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -93,6 +136,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -100,6 +144,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -107,6 +152,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -114,6 +160,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -121,6 +168,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -128,6 +176,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -135,6 +184,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -142,6 +192,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -149,6 +200,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -156,6 +208,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -163,6 +216,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -170,6 +224,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -177,6 +232,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -184,6 +240,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -191,6 +248,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -198,6 +256,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -205,6 +264,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -212,6 +272,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -219,6 +280,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -226,6 +288,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -233,6 +296,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -240,6 +304,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -247,6 +312,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -254,6 +320,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -261,6 +328,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -268,6 +336,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -275,6 +344,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -282,6 +352,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -289,6 +360,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -296,6 +368,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -303,6 +376,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -310,6 +384,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -317,6 +392,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -324,6 +400,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -331,6 +408,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -338,6 +416,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -345,6 +424,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -352,6 +432,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -359,6 +440,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -366,6 +448,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -373,6 +456,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -380,6 +464,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -387,6 +472,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -394,6 +480,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -401,6 +488,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -408,6 +496,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -415,6 +504,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -422,6 +512,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -429,6 +520,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -436,6 +528,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -443,6 +536,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -450,6 +544,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -457,6 +552,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -464,6 +560,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -471,6 +568,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -478,6 +576,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -485,6 +584,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -492,6 +592,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -499,6 +600,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -506,6 +608,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -513,6 +616,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -520,6 +624,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -527,6 +632,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -534,6 +640,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -541,6 +648,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -548,6 +656,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -555,6 +664,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -562,6 +672,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -569,6 +680,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -576,6 +688,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -583,6 +696,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -590,6 +704,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -597,6 +712,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -604,6 +720,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -611,6 +728,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -618,6 +736,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -625,6 +744,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -632,6 +752,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -639,6 +760,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -646,6 +768,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -653,6 +776,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -660,6 +784,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -667,6 +792,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -674,6 +800,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -681,6 +808,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -688,6 +816,7 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
 info args
 info locals
 info line
@@ -695,6 +824,807 @@ printf "##ENDSTEP##\n"
 step
 printf "##STEP##\n"
 frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
+info args
+info locals
+info line
+printf "##ENDSTEP##\n"
+step
+printf "##STEP##\n"
+frame
+bt 8
 info args
 info locals
 info line
