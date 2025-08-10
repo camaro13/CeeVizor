@@ -1,10 +1,42 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useMemo, useEffect } from 'react'; // [확인] useMemo 대소문자 OK
 import { useNavigate } from 'react-router-dom';
 import './App.css';
 
 function App() {
+  const [steps, setSteps] = useState([]); // 실행 단계(여기로 json 파일 받아올 예정)
   const [code, setCode] = useState('');
   const [infoVisible, setInfoVisible] = useState(null); // 'stack' | 'heap' | 'data' | null
+  const [error, setError] = useState(''); // 에러 메시지 상태
+  const [loading, setLoading] = useState(true); // 로딩 상태
+  const [allclickBtn, setAllClickBtn] = useState(false); // 전체실행 버튼 클릭 (네 이름 유지)
+
+  useEffect(() => {
+    // 초기 로딩 상태 설정, json 파일 불러오기
+    fetch('/data/sample.json') // [CHANGE] public 밑은 절대경로로 접근 (기존: 'Frontend/public/data/sample.json')
+      .then(res => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then(json => setSteps(Array.isArray(json) ? json : []))
+      .catch(err => setError('json 파일 로드 실패: ' + err.message))
+      .finally(() => setLoading(false));
+  }, []);
+
+  // [ADD] 출력 병합 로직: time/line_index 기준 정렬 → output만 줄바꿈으로 합치기
+  const fullOutput = useMemo(() => {
+    if (!steps?.length) return '';
+    return steps
+      .slice()
+      .sort(
+        (a, b) =>
+          (a?.time ?? 0) - (b?.time ?? 0) ||
+          (a?.line_index ?? 0) - (b?.line_index ?? 0)
+      )
+      .map(s => (s?.output ?? '').trim())
+      .filter(Boolean)
+      .join('\n');
+  }, [steps]);
+
   const inputRef = useRef(null);
   const lineRef = useRef(null);
 
@@ -25,8 +57,16 @@ function App() {
 
   const toggleInfo = (type) => {
     setInfoVisible((prev) => (prev === type ? null : type));
+  };
 
-  
+  // [ADD] 실행 버튼 핸들러 (나중에 백엔드 붙이면 여기서 API 호출 후 setSteps로 교체)
+  const handleRunAll = () => {
+    setAllClickBtn(true);
+  };
+
+  const handleRunStep = () => {
+    // 한 줄 실행은 담당 파트 연동 시 구현
+    alert('한 줄 실행은 나중에 연결 예정입니다.');
   };
 
   return (
@@ -73,10 +113,15 @@ function App() {
           {/* 버튼 컨테이너 */}
           <div className="button-container">
             <div className="top-buttons">
-              <button>한 줄 실행</button>
-              <button>전체 실행</button>
+              <button onClick={handleRunStep}>한 줄 실행</button> {/* [ADD] onClick 연결 */}
+              <button onClick={handleRunAll} disabled={loading}>전체 실행</button> {/* [ADD] onClick/disabled */}
             </div>
-            <button className="full-width-btn">시각화 초기화</button>
+            <button
+              className="full-width-btn"
+              onClick={() => setAllClickBtn(false)} // [ADD] 출력 표시만 초기화 (시각화는 담당 파트)
+            >
+              시각화 초기화
+            </button>
           </div>
         </div>
 
@@ -141,7 +186,13 @@ function App() {
                 {/* 출력 결과 */}
                 <div className="output-section pointer-allowed">
                   <div className="mem-title">출력 결과</div>
-                  <div className="output-box">출력 결과가 여기에 표시됩니다</div>
+                  <div className="output-box" style={{ whiteSpace: 'pre-wrap' }}>
+                    {/* [CHANGE] 조건부 렌더링: 로딩/에러/안내/출력 */}
+                    {loading && '로딩 중...'}
+                    {!loading && error && <span style={{ color: '#d33' }}>{error}</span>}
+                    {!loading && !error && !allclickBtn && '전체 실행을 눌러주세요'}
+                    {!loading && !error && allclickBtn && (fullOutput ? fullOutput : '(출력 없음)')}
+                  </div>
                 </div>
               </div>
             </div>
