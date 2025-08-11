@@ -1,3 +1,4 @@
+/* App 전체 레이아웃 및 패널 기본 스타일 */
 .container {
   display: flex;
   flex-direction: row;
@@ -18,7 +19,6 @@
   margin-bottom: 1vh;
   font-size: 1.7vw;
   user-select: none;
-
 }
 
 .scrollable-container {
@@ -38,14 +38,14 @@
   color: #687086;
   border-right: 2px solid #ccc;
   font-size: 1.14vw;
-  line-height: 2.4vh; /* <- 삭제하거나 정확히 맞추거나 */
+  line-height: 2.4vh;
   user-select: none;
   overflow: hidden;
 }
 
 .line-number {
   height: 2.8vh;
-  line-height: 2.8vh;  /* 줄 높이 통일 */
+  line-height: 2.8vh;
   font-size: 1.14vw;
   font-family: 'Nanum Gothic', sans-serif;
 }
@@ -66,8 +66,7 @@
   box-sizing: border-box;
 }
 
-
-/* 왼쪽 버튼들 */
+/* 왼쪽 버튼 그룹 */
 .button-group {
   display: flex;
   flex-direction: column;
@@ -75,14 +74,12 @@
   gap: 20vh;
 }
 
-/* 한 줄 실행, 전체실행 위치 지정 */
 .top-buttons {
   display: flex;
   margin-top: 2vh;
   gap: 1vw;
 }
 
-/*한줄,전체 코드스타일*/
 .top-buttons button {
   flex: 1;
   padding: 1.65vh;
@@ -92,9 +89,7 @@
   border: 1px solid #aaa;
   border-radius: 0.5vw;
   cursor: pointer;
-  
 }
-/*마우스 가져다댐, 클릭시 효과*/
 .top-buttons button:hover {
   background-color: #ccc;
   transition: background-color 0.2s ease;
@@ -104,7 +99,7 @@
   transition: background-color 0.1s ease;
 }
 
-/*시각화 초기화*/
+/* 시각화 초기화 */
 .full-width-btn {
   margin-top: 1.7vh;
   width: 100%;
@@ -116,7 +111,6 @@
   border: 1px solid #aaa;
   cursor: pointer;
 }
-/*마우스 가져다댐, 클릭시 효과*/
 .full-width-btn:hover {
   background-color: #ccc;
   transition: background-color 0.2s ease;
@@ -126,12 +120,10 @@
   transition: background-color 0.1s ease;
 }
 
-
 .right-panel {
   text-align: center;
   flex-grow: 1;
   position: relative;
- 
 }
 
 .right-panel h2 {
@@ -139,17 +131,14 @@
   font-size: 1.7vw;
   margin-bottom: 1vh;
   user-select: none;
-
 }
 
-/*메모리 영역*/
 .memory-container {
   border: 0.2vw solid #333;
   padding: 3vh;
   min-height: 1vh;
   width: 58vw;
   user-select: none;
-
 }
 
 .memory-row {
@@ -163,18 +152,17 @@
   flex-direction: column;
   align-items: center;
   width: 18vw;
-  min-height: 38vh;
-
+  min-height: 38vh; /* UI쪽 높이 적용 */
 }
 
 .mem-box {
   border: 0.12vw solid #a0a0a0;
   border-radius: 1vw;
   flex-grow: 3;
-  min-height: 60vh;
+  min-height: 60vh; /* UI쪽 높이 */
   display: flex;
   flex-direction: column;
-  width: 16vw;
+  width: 18vw;
 }
 
 .mem-title {
@@ -182,40 +170,35 @@
   font-weight: bold;
   font-size: 1.2vw;
   user-select: none;
-  pointer-events: none; /* 기본적으로 막음 */
+  pointer-events: none;
   position: relative;
   max-width: 100%;
   overflow: visible;
-
 }
 
 .mem-content {
-  flex-grow: 1; /* 그 stack, heap, data영역 스크롤 기능 추가, 오버플로우 되면 자동으로 보임*/
+  flex-grow: 1;
   display: flex;
   flex-direction: column;
   padding: 1vh;
   overflow-y: auto;
-  height: 50vh; /*높이 조정 가능한데 이건 d3로 확인해봐야할 듯*/
-  pointer-events: auto; /* 스크롤 가능하게 허용 */
+  height: 50vh;
+  pointer-events: auto;
 }
 
-
-
-
-/*data영역 */
+/* Data 영역 */
 .code-box {
   min-height: 10vh;
   height: 29vh;
   width: 16.5vw;
 }
 
-/* 출력결과 */
+/* 출력 결과 */
 .output-section {
   width: 93%;
   margin-top: 2vh;
-  pointer-events: auto; /* 클릭 가능하게 */
+  pointer-events: auto;
 }
-
 
 .output-box {
   text-align: left;
@@ -230,8 +213,7 @@
   cursor: text;
 }
 
-
-/* 팝업창을 아이콘 옆에 표시 */
+/* 팝업창 (로컬) */
 .info-popup.local {
   position: absolute;
   top: 100%;
@@ -241,7 +223,44 @@
   z-index: 100;
 }
 
-/* 하단 구분선, 로고 */
+/* 전역 팝업창 스타일 */
+.info-popup {
+  position: fixed;
+  top: 100px;
+  width: 300vh;
+  background-color: #f9f9f9;
+  border: 1px solid #bbb;
+  border-radius: 8px;
+  padding: 2vw 3vh;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  z-index: 1000;
+  font-size: 0.95rem;
+}
+.info-popup p {
+  margin: 1px;
+  color: #333;
+}
+/* Data 일 경우 위치 조정 */
+.mem-section.data-section .info-popup.local {
+  left: auto;
+  transform: translateX(-33%);
+}
+.close-btn {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  border: none;
+  background: none;
+  font-size: 25px;
+  cursor: pointer;
+  color: #888;
+  pointer-events: auto;
+}
+.close-btn:hover {
+  color: #333;
+}
+
+/* Footer */
 .app-wrapper {
   display: flex;
   flex-direction: column;
@@ -270,7 +289,6 @@
   opacity: 0.7;
 }
 
-
 /* 도움말 아이콘 */
 .help-icon {
   width: 1.1vw;
@@ -278,64 +296,130 @@
   margin-left: 0.3vw;
   vertical-align: middle;
   cursor: pointer;
-  pointer-events: auto; /* 아이콘은 클릭되게 허용 */
-}
-
-/* 각 영역별  간단 설명 팝업창 */
-.info-popup {
-  position: fixed;
-  top: 100px;
-  width: 300vh;
-  background-color: #f9f9f9;
-  border: 1px solid #bbb;
-  border-radius: 8px;
-  padding: 2vw 3vh;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  z-index: 1000;
-  font-size: 0.95rem;
-}
-
-.info-popup p {
-  margin: 1px;
-  color: #333;
-}
-
-/* Data 영역일 경우, 팝업 왼쪽으로 조금 옮김 */
-.mem-section.data-section .info-popup.local {
-  left: auto;
-  transform: translateX(-33%); /* 아이콘 기준으로 적당히 왼쪽 */
-}
-
-/* 팝업창 닫기 버튼*/
-.close-btn {
-  position: absolute;
-  top: 8px;
-  right: 10px;
-  border: none;
-  background: none;
-  font-size: 25px;
-  cursor: pointer;
-  color: #888;
   pointer-events: auto;
 }
 
-.close-btn:hover {
-  color: #333;
+/* ===== Stack / Heap / Data Graph Styles ===== */
+.stack-graph {
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-end;
+  min-height: 0;
 }
 
-/* 메인화면 버튼*/
-.back-button {
-  margin-bottom: 10px;
-  padding: 6px 12px;
-  background-color: #f0f0f0;
-  border: 1px solid #999;
-  border-radius: 4px;
-  cursor: pointer;
-}
-.back-button:hover {
-  background-color: #e0e0e0;
+.stack-frame {
+  background-color: #d0f0e0;
+  margin: 4px 0;
+  padding: 6px;
+  border: 1px solid #888;
+  border-radius: 6px;
+  min-height: 24px;
 }
 
+/* 빈 변수 프레임 표시 */
+.stack-frame.empty-frame {
+  padding: 2px 6px;
+  min-height: 12px;
+  border: 1px dashed #888;
+  background-color: #e0e8f0;
+}
+
+/* 글씨체/크기 UI팀 기준 통일 */
+.stack-variable,
+.heap-block,
+.data-variable {
+  font-family: 'Nanum Gothic', sans-serif;
+  font-size: 1.14vw;
+}
+
+.stack-variable-container {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 6px;
+}
+
+.heap-graph {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 0;
+}
+
+.heap-block {
+  background-color: #fdf7d6;
+  border: 1px solid #aaa;
+  border-radius: 6px;
+  padding: 6px 10px;
+}
+
+/* Data 영역 상자 스타일 */
+.data-graph {
+  background-color: #f0f7ff;       /* 연한 파랑 배경 */
+  border: 1.3px solid #a0aff1;     /* 부드러운 파랑 테두리 */
+  border-radius: 9px;              /* 둥근 모서리 */
+  padding: 10px 11px;
+  margin-bottom: 6px;
+  font-family: 'Nanum Gothic', sans-serif;
+  font-size: 1.14vw;
+  display: flex;
+  flex-direction: column;
+}
+
+.data-variable {
+  margin: 2px 0;
+}
+
+.stack-area {
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-start;
+}
+
+/* 깜빡임 애니메이션 */
+.stack-frame.blink,
+.heap-block.blink,
+.data-graph.blink {
+  animation: blinkBox 1s steps(2, start) infinite;
+  transition: background-color 0.1s;
+  border: 2px solid #3578ec !important;
+  box-shadow: 0 0 10px 2px #3b82f633;
+  font-weight: bold;
+  color: #433;
+}
+
+
+
+@keyframes blinkBox {
+  0% { background-color: #dbeafe; }
+  100% { background-color: #d6e1fa; }
+}
+
+/* 삭제 애니메이션 */
+.stack-frame.delete-blink,
+.heap-block.delete-blink,
+.data-graph.delete-blink {
+  animation: deleteBlinkBox 1s steps(2, start) infinite;
+  border: 2px dashed #df4343 !important;
+  box-shadow: 0 0 10px 2px rgba(220, 38, 38, 0.4);
+  background-color: #fff1f1;
+  font-weight: bold;
+  color: #222;
+}
+
+/* 깜빡임 프레임 */
+@keyframes deleteBlinkBox {
+  0% { background-color: #fff1f1; }
+  100% { background-color: #ee9292; }
+}
+
+.stack-frame.blink,
+.heap-block.blink,
+.data-graph.blink {
+  font-weight: bold;
+  color: #433;
+}
+
+/* 메인화면 버튼 */
 .back-button {
   position: absolute;
   top: 3vh;
@@ -354,8 +438,6 @@
   text-align: center;
   z-index: 10;
 }
-
-
 .back-button:hover {
   background-color: #e0e0e0;
 }
