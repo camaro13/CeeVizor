@@ -22,7 +22,8 @@ printf "##ARGS##\n"
 info args
 printf "##LOCALS##\n"
 info locals
-break main.c:3
+printf "##ENDCOLLECT##\n"
+break main.c:1
 commands
 silent
 printf "##STEP##\n"
@@ -32,6 +33,7 @@ printf "##ARGS##\n"
 info args
 printf "##LOCALS##\n"
 info locals
+printf "##ENDCOLLECT##\n"
 continue
 end
 break main.c:7
@@ -44,18 +46,7 @@ printf "##ARGS##\n"
 info args
 printf "##LOCALS##\n"
 info locals
-continue
-end
-break main.c:9
-commands
-silent
-printf "##STEP##\n"
-frame 0
-info line
-printf "##ARGS##\n"
-info args
-printf "##LOCALS##\n"
-info locals
+printf "##ENDCOLLECT##\n"
 continue
 end
 break main.c:11
@@ -68,6 +59,7 @@ printf "##ARGS##\n"
 info args
 printf "##LOCALS##\n"
 info locals
+printf "##ENDCOLLECT##\n"
 continue
 end
 break main.c:13
@@ -80,6 +72,7 @@ printf "##ARGS##\n"
 info args
 printf "##LOCALS##\n"
 info locals
+printf "##ENDCOLLECT##\n"
 continue
 end
 break main.c:15
@@ -92,9 +85,10 @@ printf "##ARGS##\n"
 info args
 printf "##LOCALS##\n"
 info locals
+printf "##ENDCOLLECT##\n"
 continue
 end
-break main.c:17
+break main.c:21
 commands
 silent
 printf "##STEP##\n"
@@ -104,9 +98,10 @@ printf "##ARGS##\n"
 info args
 printf "##LOCALS##\n"
 info locals
+printf "##ENDCOLLECT##\n"
 continue
 end
-break main.c:19
+break main.c:25
 commands
 silent
 printf "##STEP##\n"
@@ -116,6 +111,46 @@ printf "##ARGS##\n"
 info args
 printf "##LOCALS##\n"
 info locals
+printf "##ENDCOLLECT##\n"
+continue
+end
+break main.c:29
+commands
+silent
+printf "##STEP##\n"
+frame 0
+info line
+printf "##ARGS##\n"
+info args
+printf "##LOCALS##\n"
+info locals
+printf "##ENDCOLLECT##\n"
+continue
+end
+break main.c:37
+commands
+silent
+printf "##STEP##\n"
+frame 0
+info line
+printf "##ARGS##\n"
+info args
+printf "##LOCALS##\n"
+info locals
+printf "##ENDCOLLECT##\n"
+continue
+end
+break main.c:39
+commands
+silent
+printf "##STEP##\n"
+frame 0
+info line
+printf "##ARGS##\n"
+info args
+printf "##LOCALS##\n"
+info locals
+printf "##ENDCOLLECT##\n"
 continue
 end
 continue

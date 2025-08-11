@@ -1,6 +1,26 @@
 [
   {
     "kind": "function",
+    "name": "add",
+    "return_type": "int",
+    "parameters": [
+      {
+        "name": "a",
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "type": "int"
+      }
+    ],
+    "location": "code",
+    "scope": {
+      "kind": "global"
+    },
+    "line": 19
+  },
+  {
+    "kind": "function",
     "name": "main",
     "return_type": "int",
     "parameters": [],
@@ -8,6 +28,36 @@
     "scope": {
       "kind": "global"
     },
-    "line": 4
+    "line": 6
+  },
+  {
+    "kind": "var",
+    "name": "num1",
+    "type": "int",
+    "scope": {
+      "kind": "function",
+      "func": "main"
+    },
+    "storage": "auto",
+    "location": "stack",
+    "value": "11",
+    "pointer": false,
+    "points_to": null,
+    "line": 7
+  },
+  {
+    "kind": "var",
+    "name": "num2",
+    "type": "int",
+    "scope": {
+      "kind": "function",
+      "func": "main"
+    },
+    "storage": "auto",
+    "location": "stack",
+    "value": "5",
+    "pointer": false,
+    "points_to": null,
+    "line": 7
   }
 ]

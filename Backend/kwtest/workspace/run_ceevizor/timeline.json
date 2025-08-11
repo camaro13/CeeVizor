@@ -12,31 +12,39 @@
   },
   {
     "time": 1,
-    "line_index": 9,
-    "line": "  printf(\"A\");         // 개행 없음",
+    "line_index": 13,
+    "line": "  int num1 = 11, num2 = 5;",
     "memory": {
       "data_segment": {},
       "heap": [],
       "stack": [
         {
           "function": "main",
-          "variables": {}
+          "variables": {
+            "sum": "0",
+            "num1": "11",
+            "num2": "5"
+          }
         }
       ]
     },
-    "output": "AB\n"
+    "output": ""
   },
   {
     "time": 2,
-    "line_index": 11,
-    "line": "  printf(\"B\\n\");       // 여기서 A와 B가 함께 한 토큰으로 붙어야 함",
+    "line_index": 21,
+    "line": "  sum = add(num1, num2);",
     "memory": {
       "data_segment": {},
       "heap": [],
       "stack": [
         {
           "function": "main",
-          "variables": {}
+          "variables": {
+            "num1": "11",
+            "num2": "5",
+            "sum": "0"
+          }
         }
       ]
     },
@@ -44,55 +52,46 @@
   },
   {
     "time": 3,
-    "line_index": 13,
-    "line": "  puts(\"C line\");      // 무조건 개행",
+    "line_index": 39,
+    "line": "  return a + b;",
     "memory": {
       "data_segment": {},
       "heap": [],
       "stack": [
         {
-          "function": "main",
-          "variables": {}
-        }
-      ]
-    },
-    "output": "C line\n"
-  },
-  {
-    "time": 4,
-    "line_index": 15,
-    "line": "  putchar('D');        // 개행 없음",
-    "memory": {
-      "data_segment": {},
-      "heap": [],
-      "stack": [
-        {
-          "function": "main",
-          "variables": {}
-        }
-      ]
-    },
-    "output": "D\n"
-  },
-  {
-    "time": 5,
-    "line_index": 17,
-    "line": "  putchar('\\n');       // 여기서 D가 붙음",
-    "memory": {
-      "data_segment": {},
-      "heap": [],
-      "stack": [
-        {
-          "function": "main",
-          "variables": {}
+          "function": "add",
+          "variables": {
+            "a": "11",
+            "b": "5"
+          }
         }
       ]
     },
     "output": ""
   },
   {
-    "time": 6,
-    "line_index": 19,
+    "time": 4,
+    "line_index": 25,
+    "line": "  printf(\"두 수의 합: %d\\n\", sum);",
+    "memory": {
+      "data_segment": {},
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {
+            "num1": "11",
+            "num2": "5",
+            "sum": "16"
+          }
+        }
+      ]
+    },
+    "output": "두 수의 합: 16\n"
+  },
+  {
+    "time": 5,
+    "line_index": 29,
     "line": "  return 0;",
     "memory": {
       "data_segment": {},
@@ -100,7 +99,11 @@
       "stack": [
         {
           "function": "main",
-          "variables": {}
+          "variables": {
+            "num1": "11",
+            "num2": "5",
+            "sum": "16"
+          }
         }
       ]
     },

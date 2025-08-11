@@ -9,65 +9,72 @@ Function __mingw_fprintf will be skipped when stepping.
 Function __mingw_vprintf will be skipped when stepping.
 Function __msvcrt_printf will be skipped when stepping.
 Function __msvcrt_fprintf will be skipped when stepping.
-Temporary breakpoint 1 at 0x14000171d: file main.c, line 9.
-[New Thread 17496.0x22ec]
+Temporary breakpoint 1 at 0x14000171d: file main.c, line 13.
+[New Thread 21336.0x4cb0]
 
-Thread 1 hit Temporary breakpoint 1, main () at main.c:9
-9	  putchar('\n');       // 여기서 D가 붙음
-##STEP##
-#0  main () at main.c:9
-9	  putchar('\n');       // 여기서 D가 붙음
-Line 9 of "main.c" starts at address 0x7ff7dff9171d <main+13> and ends at 0x7ff7dff91727 <main+23>.
-##ARGS##
-No arguments.
-##LOCALS##
-No locals.
-Breakpoint 2 (main.c:3) pending.
-Breakpoint 3 at 0x7ff7dff9171d: file main.c, line 9.
-Breakpoint 4 at 0x7ff7dff9171d: file main.c, line 9.
-Breakpoint 5 at 0x7ff7dff91727: file main.c, line 11.
-Breakpoint 6 at 0x7ff7dff91736: file main.c, line 13.
-Breakpoint 7 at 0x7ff7dff91745: file main.c, line 15.
-Breakpoint 8 at 0x7ff7dff9174f: file main.c, line 17.
-Breakpoint 9 at 0x7ff7dff91759: file main.c, line 19.
-##STEP##
-#0  main () at main.c:11
-11	}
-Line 11 of "main.c" starts at address 0x7ff7dff91727 <main+23> and ends at 0x7ff7dff91736 <main+38>.
-##ARGS##
-No arguments.
-##LOCALS##
-No locals.
+Thread 1 hit Temporary breakpoint 1, main () at main.c:13
+13	  printf("두 수의 합: %d\n", sum);
 ##STEP##
 #0  main () at main.c:13
-Line 13 of "main.c" starts at address 0x7ff7dff91736 <main+38> and ends at 0x7ff7dff91745 <main+53>.
+13	  printf("두 수의 합: %d\n", sum);
+Line 13 of "main.c" starts at address 0x7ff72fc9171d <main+13> and ends at 0x7ff72fc91724 <main+20>.
 ##ARGS##
 No arguments.
 ##LOCALS##
-No locals.
+num1 = 32759
+num2 = 801726496
+sum = 0
+##ENDCOLLECT##
+Breakpoint 2 (main.c:1) pending.
+Breakpoint 3 (main.c:7) pending.
+Breakpoint 4 at 0x7ff72fc9171d: file main.c, line 13.
+Breakpoint 5 at 0x7ff72fc9171d: file main.c, line 13.
+Breakpoint 6 at 0x7ff72fc9172b: file main.c, line 21.
+Breakpoint 7 at 0x7ff72fc9172b: file main.c, line 21.
+Breakpoint 8 at 0x7ff72fc9173b: file main.c, line 25.
+Breakpoint 9 at 0x7ff72fc9174c: file main.c, line 29.
+Breakpoint 10 at 0x7ff72fc91761: file main.c, line 39.
+Breakpoint 11 at 0x7ff72fc91761: file main.c, line 39.
 ##STEP##
-#0  main () at main.c:15
-Line 15 of "main.c" starts at address 0x7ff7dff91745 <main+53> and ends at 0x7ff7dff9174f <main+63>.
+#0  main () at main.c:21
+21	}
+Line 21 of "main.c" starts at address 0x7ff72fc9172b <main+27> and ends at 0x7ff72fc9173b <main+43>.
 ##ARGS##
 No arguments.
 ##LOCALS##
-No locals.
+num1 = 11
+num2 = 5
+sum = 0
+##ENDCOLLECT##
 ##STEP##
-#0  main () at main.c:17
-Line 17 of "main.c" starts at address 0x7ff7dff9174f <main+63> and ends at 0x7ff7dff91759 <main+73>.
+#0  add (a=11, b=5) at main.c:39
+Line 39 of "main.c" starts at address 0x7ff72fc91761 <add+10> and ends at 0x7ff72fc91769 <add+18>.
 ##ARGS##
-No arguments.
+a = 11
+b = 5
 ##LOCALS##
 No locals.
+##ENDCOLLECT##
 ##STEP##
-#0  main () at main.c:19
-Line 19 of "main.c" starts at address 0x7ff7dff91759 <main+73> and ends at 0x7ff7dff9175e <main+78>.
+#0  main () at main.c:25
+Line 25 of "main.c" starts at address 0x7ff72fc9173b <main+43> and ends at 0x7ff72fc9174c <main+60>.
 ##ARGS##
 No arguments.
 ##LOCALS##
-No locals.
-AB
-C line
-D
-[Thread 17496.0x22ec exited with code 0]
-[Inferior 1 (process 17496) exited normally]
+num1 = 11
+num2 = 5
+sum = 16
+##ENDCOLLECT##
+##STEP##
+#0  main () at main.c:29
+Line 29 of "main.c" starts at address 0x7ff72fc9174c <main+60> and ends at 0x7ff72fc91751 <main+65>.
+##ARGS##
+No arguments.
+##LOCALS##
+num1 = 11
+num2 = 5
+sum = 16
+##ENDCOLLECT##
+두 수의 합: 16
+[Thread 21336.0x4cb0 exited with code 0]
+[Inferior 1 (process 21336) exited normally]
