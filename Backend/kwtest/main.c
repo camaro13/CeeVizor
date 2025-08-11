@@ -1,15 +1,21 @@
-
 #include <stdio.h>
 
+// 함수 선언 (함수 원형)
 int add(int a, int b);
 
 int main() {
-    int x = 3, y = 4;
-    int result = add(x, y);
-    printf("Result: %d\n", result);
-    return 0;
+  int num1 = 10, num2 = 5;
+  int sum;
+
+  // 함수 호출
+  sum = add(num1, num2);
+
+  printf("두 수의 합: %d\n", sum);
+
+  return 0;
 }
 
+// 함수 정의
 int add(int a, int b) {
-    return a + b;
+  return a + b;
 }

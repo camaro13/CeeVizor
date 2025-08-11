@@ -1,0 +1,151 @@
+[
+  {
+    "time": 0,
+    "line_index": 0,
+    "line": "프로그램 시작 및 전역변수 초기화",
+    "memory": {
+      "data_segment": {},
+      "heap": [],
+      "stack": []
+    },
+    "output": ""
+  },
+  {
+    "time": 1,
+    "line_index": 7,
+    "line": "  int num1 = 10, num2 = 5;",
+    "memory": {
+      "data_segment": {},
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {
+            "num1": 32759,
+            "num2": -966107104,
+            "sum": 0
+          }
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 2,
+    "line_index": 11,
+    "line": "  sum = add(num1, num2);",
+    "memory": {
+      "data_segment": {},
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {
+            "num1": 10,
+            "num2": 5,
+            "sum": 0
+          }
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 3,
+    "line_index": 20,
+    "line": "  return a + b;",
+    "memory": {
+      "data_segment": {},
+      "heap": [],
+      "stack": [
+        {
+          "function": "add",
+          "variables": {
+            "a": 10,
+            "b": 5
+          }
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 4,
+    "line_index": 21,
+    "line": "}",
+    "memory": {
+      "data_segment": {},
+      "heap": [],
+      "stack": [
+        {
+          "function": "add",
+          "variables": {
+            "a": 10,
+            "b": 5
+          }
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 5,
+    "line_index": 13,
+    "line": "  printf(\"두 수의 합: %d\\n\", sum);",
+    "memory": {
+      "data_segment": {},
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {
+            "num1": 10,
+            "num2": 5,
+            "sum": 15
+          }
+        }
+      ]
+    },
+    "output": "두 수의 합: 15\n"
+  },
+  {
+    "time": 6,
+    "line_index": 15,
+    "line": "  return 0;",
+    "memory": {
+      "data_segment": {},
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {
+            "num1": 10,
+            "num2": 5,
+            "sum": 15
+          }
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 7,
+    "line_index": 16,
+    "line": "}",
+    "memory": {
+      "data_segment": {},
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {
+            "num1": 10,
+            "num2": 5,
+            "sum": 15
+          }
+        }
+      ]
+    },
+    "output": ""
+  }
+]
