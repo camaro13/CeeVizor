@@ -1,391 +1,293 @@
-# simulator.py
-import json
-import copy
-import re
-from typing import Dict, List, Optional
+from __future__ import annotations
+import os, re, json
+from datetime import datetime
+from contextlib import contextmanager
+from typing import List, Dict, Any, Optional
 
 from tree_parser import analyze_c_code
-from kwgdb import trace_c_execution
+from kwgdb import (
+    save_code_to_file,
+    compile_code,
+    calc_executable_lines,
+    run_gdb,
+    parse_gdb_output_linebps,
+    run_program_and_capture_stdout,
+    split_print_calls,
+)
 
+@contextmanager
+# 작업 디렉터리를 임시로 변경
+def pushd(path: str):
+    old = os.getcwd()
+    os.makedirs(path, exist_ok=True)
+    os.chdir(path)
+    try:
+        yield
+    finally:
+        os.chdir(old)
 
-class Simulator:
-    def __init__(self, code: str):
-        self.code = code
-        self.source_lines = self.code.splitlines()
+# 실행 폴더 생성(기본: workspace/run_타임스탬프)
+def make_run_dir(base: str = "workspace", name: Optional[str] = None) -> str:
+    if name is None:
+        name = "run_" + datetime.now().strftime("%Y%m%d_%H%M%S")
+    out = os.path.join(base, name)
+    os.makedirs(out, exist_ok=True)
+    return out
 
-        self.memory = {
-            "data_segment": {},
-            "heap": [],
-            "stack": []
-        }
-        self.timeline: List[Dict] = []
+_NUM_LIT = re.compile(r"^\s*(-?(?:0[xX][0-9a-fA-F]+|\d+))\s*$")
 
-        symbols = analyze_c_code(code)
-        if isinstance(symbols, dict):
-            vars_list = symbols.get("variables", [])
-            funcs_list = symbols.get("functions", [])
+# 선언 라인의 변수와 초기값을 파싱
+DECL_LINE_RE = re.compile(
+    r'^\s*'
+    r'(?:static\s+|const\s+|volatile\s+|register\s+)*'
+    r'(?:(?:unsigned|signed)\s+)?'
+    r'(?:(?:long\s+long|long|short)\s+)?'
+    r'(?:int|char|float|double|bool)\s+'
+    r'(.+?)\s*;'
+)
+
+def _parse_inline_decl(line: str) -> dict[str, Optional[str]]:
+    m = DECL_LINE_RE.match(line)
+    if not m:
+        return {}
+    tail = m.group(1)
+    out: dict[str, Optional[str]] = {}
+    for part in [p.strip() for p in tail.split(",") if p.strip()]:
+        # 괄호(캐스팅/함수포인터) 제거, 포인터/배열 기호 제거
+        clean = re.sub(r'\([^)]*\)', ' ', part)
+        clean = re.sub(r'\[[^\]]*\]', ' ', clean).replace('*', ' ')
+        if '=' in clean:
+            left, right = clean.split('=', 1)
+            tokens = [t for t in re.split(r'\s+', left.strip()) if t]
+            name = tokens[-1] if tokens else None
+            val = right.strip()
         else:
-            vars_list = [s for s in symbols if s.get("kind") != "function"]
-            funcs_list = [s for s in symbols if s.get("kind") == "function"]
+            tokens = [t for t in re.split(r'\s+', clean.strip()) if t]
+            name = tokens[-1] if tokens else None
+            val = None
+        if name and re.match(r'^[A-Za-z_]\w*$', name):
+            out[name] = val
+    return out
 
-        self.variables = vars_list
-        self.functions = funcs_list
 
-        self.vars_by_line = self._index_vars_by_line(self.variables)
-        self.funcs_by_name = {f["name"]: f for f in self.functions if "name" in f}
+# 숫자 문자열을 int로 변환
+def _to_int_if_possible(v: Optional[str]):
+    if v is None: return None
+    m = _NUM_LIT.match(v)
+    if not m: return v
+    s = m.group(1)
+    try: return int(s, 16) if s.lower().startswith("0x") else int(s, 10)
+    except: return v
 
-        self._next_heap_id = 1
-        self._next_heap_addr = 0x10000000
-        self._heap_addr_step = 0x100
-
-        self._last_seen_vars: Dict[str, str] = {}
-
-        self._decl_line_by_name = {
-            v["name"]: v["line"]
-            for v in self.variables
-            if v.get("name") and v.get("line") and v.get("scope", {}).get("kind") != "global"
-        }
-
-        # 전역/정적 초기화
-        for sym in self.variables:
-            if sym.get("location") in ("data", "bss") and sym.get("scope", {}).get("kind") == "global":
-                name = sym.get("name")
-                value = self._parse_literal(sym.get("value"))
-                if value is None:
-                    value = 0
-                self.memory["data_segment"][name] = value
-
-        self._vars_allocated_this_line: set = set()
-        self._vars_freed_this_line: set = set()
-        self._current_line_no: Optional[int] = None
-
-        # GDB 잡음 출력 제거용 패턴(추가적으로 시뮬레이터 단계에서도 한 번 더)
-        self._out_noise_res = [
-            re.compile(r'0x[0-9a-fA-F]+\s+in\s+\S+!?\S+'),
-            re.compile(r'\bat\s+.+:\d+\s*$'),
-            re.compile(r'^\s*#\d+\s'),
-            re.compile(r'^\s*\(gdb\)\s*$'),
-            re.compile(r'^\$\d+\s*=\s*.*$'),
-        ]
-
-    # ---------- helpers ----------
-    def _index_vars_by_line(self, variables: List[Dict]) -> Dict[int, List[Dict]]:
-        d: Dict[int, List[Dict]] = {}
-        for v in variables:
-            lno = v.get("line")
-            if isinstance(lno, int):
-                d.setdefault(lno, []).append(v)
-        return d
-
-    def _snapshot(self) -> Dict:
-        return copy.deepcopy(self.memory)
-
-    def _parse_literal(self, s: Optional[str]):
-        if s is None:
-            return None
-        s2 = str(s).strip()
-        if re.fullmatch(r"-?\d+", s2):
-            try: return int(s2)
-            except: return s
-        m = re.fullmatch(r'"(.*)"', s2)
-        if m:
-            return m.group(1)
-        if re.fullmatch(r"0x[0-9a-fA-F]+", s2):
-            return s2
-        return s
-
-    def _parse_gdb_value(self, vstr):
-        if vstr is None:
-            return None
-        s = str(vstr).strip()
-        m = re.fullmatch(r'"(.*)"', s)
-        if m:
-            return m.group(1)
-        if re.fullmatch(r"-?\d+", s):
-            try: return int(s)
-            except: pass
-        if re.fullmatch(r"0x[0-9a-fA-F]+", s):
-            return s
-        m2 = re.match(r".*?(-?\d+)\s*$", s)
-        if m2 and re.fullmatch(r"[\(\)$\w\W\s]*-?\d+\s*", s):
-            try: return int(m2.group(1))
-            except: pass
-        return s
-
-    def _clean_output(self, out: str) -> str:
-        if not out:
-            return ""
-        lines = [ln for ln in out.splitlines() if ln.strip()]
-        kept = []
-        for ln in lines:
-            if any(rx.search(ln) for rx in self._out_noise_res):
-                continue
-            kept.append(ln)
-        return "\n".join(kept)
-
-    def _mem_equal(self, a: Dict, b: Dict) -> bool:
-        return a == b
-
-    # ---------- stack ----------
-    def _ensure_frame_for_func(self, func_name: Optional[str], vars_at_step: Dict[str, str]):
-        if not func_name:
-            return
-        if not self.memory["stack"] or self.memory["stack"][-1]["function"] != func_name:
-            frame = {"function": func_name, "variables": {}}
-            fdef = self.funcs_by_name.get(func_name)
-            if fdef:
-                for p in fdef.get("parameters", []):
-                    pname = p.get("name")
-                    if pname:
-                        frame["variables"][pname] = self._parse_gdb_value(vars_at_step.get(pname))
-            self.memory["stack"].append(frame)
-
-    def _sync_stack_with_brace(self, code_line: str):
-        if code_line.strip() == "}" and self.memory["stack"]:
-            self.memory["stack"].pop()
-
-    def _write_var_best_effort(self, name: Optional[str], value):
-        if not name:
-            return
-        if self.memory["stack"]:
-            self.memory["stack"][-1]["variables"][name] = value
-        elif name in self.memory["data_segment"]:
-            self.memory["data_segment"][name] = value
-
-    # ---------- heap ----------
-    def _alloc_heap(self, var_name: Optional[str], size: Optional[int]):
-        if var_name:
-            for blk in reversed(self.memory["heap"]):
-                if blk.get("var") == var_name:
-                    self._write_var_best_effort(var_name, blk["addr"])
-                    self._last_seen_vars[var_name] = blk["addr"]
-                    return blk
-        block = {
-            "id": self._next_heap_id,
-            "var": var_name,
-            "size": size,
-            "addr": f"0x{self._next_heap_addr:08x}",
-        }
-        self._next_heap_id += 1
-        self._next_heap_addr += self._heap_addr_step
-        self.memory["heap"].append(block)
-        self._write_var_best_effort(var_name, block["addr"])
-        if var_name:
-            self._last_seen_vars[var_name] = block["addr"]
-        if hasattr(self, "_freed_recent") and var_name in self._freed_recent:
-            self._freed_recent.discard(var_name)
-        return block
-
-    def _free_heap_by_var(self, var_name: Optional[str]):
-        if not var_name:
-            return
-        removed = False
-        for i in range(len(self.memory["heap"]) - 1, -1, -1):
-            if self.memory["heap"][i].get("var") == var_name:
-                self.memory["heap"].pop(i)
-                removed = True
-                break
-        self._write_var_best_effort(var_name, "0x0")
-        self._last_seen_vars[var_name] = "0x0"
-        if removed:
-            if not hasattr(self, "_freed_recent"):
-                self._freed_recent = set()
-            self._freed_recent.add(var_name)
-
-    def _sizeof_int_guess(self) -> int:
-        # 간단 휴리스틱(대부분 환경 4)
-        return 4
-
-    def _try_heap_from_code_line(self, code_line: str, vars_at: Dict[str, str]):
-        self._vars_allocated_this_line.clear()
-        self._vars_freed_this_line.clear()
-
-        line = code_line.strip()
-        did_code_malloc = False
-
-        # 1) malloc/calloc/realloc 패턴 + sizeof(int) 휴리스틱
-        m = re.search(
-            r'(?P<lhs>[A-Za-z_][A-Za-z0-9_]*)\s*=\s*(?:\([^)]+\)\s*)?(?P<func>malloc|calloc|realloc)\s*\((?P<args>[^)]*)\)',
-            line)
-        if m:
-            lhs = m.group("lhs")
-            func = m.group("func")
-            args = (m.group("args") or "").strip()
-            size = None
-
-            # sizeof(int) → 4로 가정
-            if re.search(r'\bsizeof\s*\(\s*int\s*\)', args):
-                size = self._sizeof_int_guess()
+# Tree-sitter 결과로 초기 메모리 구성(time=0)
+def get_initial_memory(code: str) -> Dict[str, Any]:
+    symbols = analyze_c_code(code)
+    data_segment: Dict[str, Any] = {}
+    for s in symbols:
+        if s.get("kind") != "var": continue
+        scope = s.get("scope", {}) or {}
+        storage = s.get("storage", "auto")
+        location = s.get("location", "")
+        name = s.get("name"); val = s.get("value")
+        is_global = scope.get("kind") == "global"
+        is_func_static = (scope.get("kind") == "function") and (storage == "static")
+        if is_global or is_func_static:
+            if location == "data":
+                data_segment[name] = _to_int_if_possible(val)
+            elif location == "bss":
+                data_segment[name] = 0
             else:
-                ints = re.findall(r"-?\d+", args)
-                if func == "calloc" and len(ints) >= 2:
-                    try: size = int(ints[0]) * int(ints[1])
-                    except: pass
-                elif ints:
-                    try: size = int(ints[-1])
-                    except: pass
-            self._alloc_heap(lhs, size)
-            self._vars_allocated_this_line.add(lhs)
-            did_code_malloc = True
+                data_segment[name] = _to_int_if_possible(val) if val is not None else 0
+    return {"data_segment": data_segment, "heap": [], "stack": []}
 
-        # 2) free(p)
-        mf = re.search(r'free\s*\(\s*([A-Za-z_][A-Za-z0-9_]*)\s*\)\s*;?', line)
-        if mf:
-            var = mf.group(1)
-            self._free_heap_by_var(var)
-            self._vars_freed_this_line.add(var)
+# Tree-sitter로 함수별 선언 라인 맵 구성
+def build_decl_map_from_treesitter(code: str) -> Dict[str, Dict[str, int]]:
+    symbols = analyze_c_code(code)
+    m: Dict[str, Dict[str, int]] = {}
+    for s in symbols:
+        if s.get("kind") != "var": continue
+        scope = s.get("scope", {}) or {}
+        if scope.get("kind") != "function": continue
+        func = scope.get("func"); name = s.get("name"); ln = int(s.get("line", 0))
+        if func and name: m.setdefault(func, {})[name] = ln
+    return m
 
-        # 3) 포인터 값 변화 휴리스틱(보수적으로)
-        for k, v in (vars_at or {}).items():
-            v_clean = str(v).strip()
-            if not re.fullmatch(r"0x[0-9a-fA-F]+", v_clean):
-                continue
-            prev = self._last_seen_vars.get(k)
-            if v_clean == prev:
-                continue
-            if did_code_malloc:
-                continue
-            if hasattr(self, "_freed_recent") and k in self._freed_recent:
-                continue
-            decl_ln = self._decl_line_by_name.get(k)
-            if decl_ln and self._current_line_no and self._current_line_no < decl_ln:
-                continue
-            if any(blk.get("var") == k for blk in self.memory["heap"]):
-                continue
-            self._alloc_heap(k, None)
-            self._vars_allocated_this_line.add(k)
+# 선언 라인의 초기화 값 맵 생성(선언 라인에 깔끔한 값 노출)
+def _initializers_map(code: str) -> Dict[tuple, Dict[str, Any]]:
+    m: Dict[tuple, Dict[str, Any]] = {}
+    for s in analyze_c_code(code):
+        if s.get("kind") != "var":
+            continue
+        sc = s.get("scope", {}) or {}
+        if sc.get("kind") == "function" and s.get("value") is not None:
+            fn = sc.get("func")
+            ln = int(s.get("line", 0))
+            m.setdefault((fn, ln), {})[s["name"]] = s["value"]
+    return m
 
-    # ---------- API ----------
-    def run(self, max_steps: int = 200) -> List[Dict]:
-        steps = trace_c_execution(
-            self.code,
-            return_result=True,
-            max_steps=max_steps,
-            step_into_user=True,
-            use_skip_filters=True,
-            merge_tail=True
-        )
+# stdout 토큰을 타임라인 스냅샷에 매핑
+def _attach_stdout_to_timeline(timeline: List[Dict[str, Any]], stdout_lines: List[str]) -> None:
+    pending_owner_idx = None
+    for i, snap in enumerate(timeline):
+        for (_func, has_nl) in split_print_calls(snap["line"]):
+            if has_nl:
+                token = stdout_lines.pop(0) if stdout_lines else ""
+                owner = pending_owner_idx if pending_owner_idx is not None else i
+                timeline[owner]["output"] += token
+                pending_owner_idx = None
+            else:
+                pending_owner_idx = i
 
-        # t=0
-        self.timeline.append({
+HEX_ADDR = re.compile(r"0x[0-9a-fA-F]+")
+ASSIGN_DEREF_INT = re.compile(r'\s*\*\s*([A-Za-z_]\w*)\s*=\s*([0-9]+)\s*;')
+FREE_CALL = re.compile(r'\s*free\s*\(\s*([A-Za-z_]\w*)\s*\)\s*;')
+
+# 로컬 값 문자열에서 포인터 주소 추출
+def _addr_from_val(v: str) -> Optional[str]:
+    if not isinstance(v, str): return None
+    m = HEX_ADDR.search(v)
+    if not m: return None
+    addr = m.group(0)
+    return None if addr == "0x0" else addr
+
+# 로컬 변수들에서 포인터 주소를 힙에 등록
+def _sync_heap_from_locals(heap_map: Dict[str, Any], locals_vars: Dict[str, str]) -> None:
+    for _, v in locals_vars.items():
+        addr = _addr_from_val(v)
+        if addr and addr not in heap_map:
+            heap_map[addr] = "?"
+
+# 코드 라인 힌트로 힙 값 갱신/해제
+def _apply_heap_hints(code_line: str, locals_vars: Dict[str, str], heap_map: Dict[str, Any]) -> None:
+    m = ASSIGN_DEREF_INT.match(code_line)
+    if m:
+        ptr, sval = m.group(1), m.group(2)
+        addr = _addr_from_val(locals_vars.get(ptr, ""))
+        if addr: heap_map[addr] = int(sval)
+        return
+    m = FREE_CALL.match(code_line)
+    if m:
+        ptr = m.group(1)
+        addr = _addr_from_val(locals_vars.get(ptr, ""))
+        if addr and addr in heap_map: del heap_map[addr]
+
+# C 코드를 시뮬레이션해 실행 타임라인 생성
+def simulate_c_code_to_timeline(
+    code: str,
+    out_dir: Optional[str] = None,
+    out_json_name: str = "timeline.json",
+    source_file_name: str = "main.c",
+    binary_name: Optional[str] = None,
+) -> List[Dict[str, Any]]:
+    run_dir = out_dir or make_run_dir("workspace")
+    bin_name = binary_name or ("a.exe" if os.name == "nt" else "a.out")
+
+    with pushd(run_dir):
+        save_code_to_file(code, filename=source_file_name)
+        ret = compile_code(source_file=source_file_name, output_file=bin_name)
+        ok = ret[0] if isinstance(ret, (list, tuple)) else bool(ret)
+        if not ok:
+            raise RuntimeError("컴파일 실패")
+
+        exec_lines, _ = calc_executable_lines(source_file_name)
+        decl_map = build_decl_map_from_treesitter(code)
+        initial_mem = get_initial_memory(code)
+        init_map = _initializers_map(code)
+
+        try:
+            gdb_output = run_gdb(binary=bin_name, exec_lines=exec_lines, source_file=source_file_name)
+        except TypeError:
+            gdb_output = run_gdb(exec_lines=exec_lines, source_file=source_file_name)
+
+        with open("gdb_raw.txt", "w", encoding="utf-8") as f:
+            f.write(gdb_output)
+
+        executed_lines, executed_code, frames = parse_gdb_output_linebps(gdb_output, source_file_name)
+
+        try:
+            stdout_lines = run_program_and_capture_stdout(bin_name)
+        except TypeError:
+            stdout_lines = run_program_and_capture_stdout(binary=bin_name)
+
+        timeline: List[Dict[str, Any]] = [{
             "time": 0,
             "line_index": 0,
             "line": "프로그램 시작 및 전역변수 초기화",
-            "memory": self._snapshot(),
+            "memory": initial_mem,
             "output": ""
-        })
+        }]
 
-        for step in steps:
-            func = step.get("func")
-            line_no = step.get("line_no") or 0
-            self._current_line_no = line_no
-            line_index = (line_no - 1) if line_no else 0
-            code_line = (step.get("code_line") or "").rstrip()
-            vars_at = step.get("vars", {}) or {}
-            raw_output = step.get("output", step.get("raw_output", "")) or ""
-            output = self._clean_output(raw_output)
+        heap_map: Dict[str, Any] = {}
+        for i, (ln, code_line, frame) in enumerate(zip(executed_lines, executed_code, frames), start=1):
+            f = frame.get("func", "main")
+            args = frame.get("args") or {}
+            locals_raw = frame.get("locals") or {}
 
-            # 1) 프레임 동기화
-            self._ensure_frame_for_func(func, vars_at)
+            filtered_locals: Dict[str, str] = {}
+            fn_decl_map = decl_map.get(f, {})
+            for name, val in locals_raw.items():
+                dln = fn_decl_map.get(name)
+                if dln is None or ln > dln:
+                    filtered_locals[name] = val
+                                # 선언 라인에서 쓰레기값 제거 + 초기값 덮어쓰기
+            decl_inline = _parse_inline_decl(code_line)
+            if decl_inline:
+                # 2-1) 쓰레기값 제거(이 줄에서 선언된 변수는 GDB값 무시)
+                for nm in decl_inline.keys():
+                    if nm in filtered_locals:
+                        del filtered_locals[nm]
+                # 2-2) 초기값 있으면 해당 값으로 세팅
+                for nm, val in decl_inline.items():
+                    if val is not None:
+                        filtered_locals[nm] = val
 
-            # 2) 선언 반영
-            for decl in self.vars_by_line.get(line_no, []):
-                name = decl.get("name")
-                loc = decl.get("location")
-                init_val = self._parse_literal(decl.get("value"))
-                if loc in ("data", "bss"):
-                    self.memory["data_segment"][name] = 0 if init_val is None else init_val
-                elif loc == "stack":
-                    if not self.memory["stack"]:
-                        self.memory["stack"].append({"function": func or "main", "variables": {}})
-                    self.memory["stack"][-1]["variables"][name] = init_val
 
-            # 3) 힙 이벤트
-            self._try_heap_from_code_line(code_line, vars_at)
+            init_vals = init_map.get((f, ln), {})
+            for k, v in init_vals.items():
+                filtered_locals[k] = v
 
-            # 4) GDB 값-동기화 (보수적으로)
-            if vars_at:
-                if self.memory["stack"]:
-                    top = self.memory["stack"][-1]
-                    for k, v in vars_at.items():
-                        decl_ln = self._decl_line_by_name.get(k)
-                        if decl_ln and line_no and line_no <= decl_ln:
-                            continue
-                        if k in self._vars_allocated_this_line or k in self._vars_freed_this_line:
-                            continue
-                        if str(top["variables"].get(k)) == "0x0":
-                            continue
-                        if any(blk.get("var") == k for blk in self.memory["heap"]):
-                            continue
-                        top["variables"][k] = self._parse_gdb_value(v)
-                else:
-                    for k, v in vars_at.items():
-                        if k in self.memory["data_segment"]:
-                            if str(self.memory["data_segment"][k]) == "0x0":
-                                continue
-                            self.memory["data_segment"][k] = self._parse_gdb_value(v)
+            merged = {**args, **filtered_locals}
+            _sync_heap_from_locals(heap_map, merged)
+            _apply_heap_hints(code_line, merged, heap_map)
 
-            # 5) 스택 블록 닫힘
-            self._sync_stack_with_brace(code_line)
+            mem_state = {
+                "data_segment": dict(initial_mem["data_segment"]),
+                "heap": [{addr: val} for addr, val in heap_map.items()],
+                "stack": [{
+                    "function": f,
+                    "variables": merged
+                }]
+            }
 
-            # 6) 의미 없는 스텝 필터링
-            snap = self._snapshot()
-            prev_snap = self.timeline[-1]["memory"] if self.timeline else snap
-            has_code = bool(code_line.strip())
-            has_out = bool(output.strip())
-            mem_changed = not self._mem_equal(prev_snap, snap)
-            if not (has_code or has_out or mem_changed):
-                continue
-
-            self.timeline.append({
-                "time": len(self.timeline),
-                "line_index": line_index,
+            timeline.append({
+                "time": i,
+                "line_index": ln,
                 "line": code_line,
-                "memory": snap,
-                "output": output
+                "memory": mem_state,
+                "output": ""
             })
 
-            # 7) 최근값 캐시
-            for k, v in vars_at.items():
-                self._last_seen_vars[k] = str(v).strip()
+        _attach_stdout_to_timeline(timeline, stdout_lines)
 
-        return self.timeline
+        with open(out_json_name, "w", encoding="utf-8") as f:
+            json.dump(timeline, f, ensure_ascii=False, indent=2)
 
+    return timeline
 
 if __name__ == "__main__":
-    import sys
-    if len(sys.argv) >= 2:
-        with open(sys.argv[1], "r", encoding="utf-8") as f:
-            c_code = f.read()
-    else:
-        c_code = r"""
-#include <stdio.h>
-#include <stdlib.h>
+    import argparse
+    parser = argparse.ArgumentParser(description="Run simulator and save all outputs to one folder")
+    parser.add_argument("--code-file", "-i", type=str, required=True, help="C source file path")
+    parser.add_argument("--out-dir", "-o", type=str, default=None, help="Output folder (single run folder)")
+    parser.add_argument("--binary-name", type=str, default=None, help="Output binary name (a.exe/a.out default)")
+    args = parser.parse_args()
 
-int global_var = 10;        // 데이터 영역 (초기화된 전역변수)
-static int static_var = 20; // 데이터 영역 (static 변수)
+    with open(args.code_file, "r", encoding="utf-8") as f:
+        code = f.read()
 
-void foo(int param) {
-    int stack_var = 30;    
-
-    int* heap_var = (int*)malloc(sizeof(int));
-    if (heap_var == NULL) return;
-    *heap_var = 40;
-
-    printf("global_var: %d\n", global_var);
-    printf("static_var: %d\n", static_var);
-    printf("param: %d\n", param);
-    printf("stack_var: %d\n", stack_var);
-    printf("*heap_var: %d\n", *heap_var);
-
-    free(heap_var); 
-}
-
-int main() {
-    foo(50);
-    return 0;
-}
-"""
-    sim = Simulator(c_code)
-    timeline = sim.run(max_steps=200)
-    print(json.dumps(timeline, indent=2, ensure_ascii=False))
+    timeline = simulate_c_code_to_timeline(
+        code,
+        out_dir=args.out_dir,
+        binary_name=args.binary_name,
+    )
+    print("[+] timeline length:", len(timeline))

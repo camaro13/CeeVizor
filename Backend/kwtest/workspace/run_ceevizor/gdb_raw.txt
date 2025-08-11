@@ -1,0 +1,73 @@
+Function printf will be skipped when stepping.
+Function fprintf will be skipped when stepping.
+Function vprintf will be skipped when stepping.
+Function puts will be skipped when stepping.
+Function fputs will be skipped when stepping.
+Function putchar will be skipped when stepping.
+Function __mingw_printf will be skipped when stepping.
+Function __mingw_fprintf will be skipped when stepping.
+Function __mingw_vprintf will be skipped when stepping.
+Function __msvcrt_printf will be skipped when stepping.
+Function __msvcrt_fprintf will be skipped when stepping.
+Temporary breakpoint 1 at 0x14000171d: file main.c, line 9.
+[New Thread 17496.0x22ec]
+
+Thread 1 hit Temporary breakpoint 1, main () at main.c:9
+9	  putchar('\n');       // 여기서 D가 붙음
+##STEP##
+#0  main () at main.c:9
+9	  putchar('\n');       // 여기서 D가 붙음
+Line 9 of "main.c" starts at address 0x7ff7dff9171d <main+13> and ends at 0x7ff7dff91727 <main+23>.
+##ARGS##
+No arguments.
+##LOCALS##
+No locals.
+Breakpoint 2 (main.c:3) pending.
+Breakpoint 3 at 0x7ff7dff9171d: file main.c, line 9.
+Breakpoint 4 at 0x7ff7dff9171d: file main.c, line 9.
+Breakpoint 5 at 0x7ff7dff91727: file main.c, line 11.
+Breakpoint 6 at 0x7ff7dff91736: file main.c, line 13.
+Breakpoint 7 at 0x7ff7dff91745: file main.c, line 15.
+Breakpoint 8 at 0x7ff7dff9174f: file main.c, line 17.
+Breakpoint 9 at 0x7ff7dff91759: file main.c, line 19.
+##STEP##
+#0  main () at main.c:11
+11	}
+Line 11 of "main.c" starts at address 0x7ff7dff91727 <main+23> and ends at 0x7ff7dff91736 <main+38>.
+##ARGS##
+No arguments.
+##LOCALS##
+No locals.
+##STEP##
+#0  main () at main.c:13
+Line 13 of "main.c" starts at address 0x7ff7dff91736 <main+38> and ends at 0x7ff7dff91745 <main+53>.
+##ARGS##
+No arguments.
+##LOCALS##
+No locals.
+##STEP##
+#0  main () at main.c:15
+Line 15 of "main.c" starts at address 0x7ff7dff91745 <main+53> and ends at 0x7ff7dff9174f <main+63>.
+##ARGS##
+No arguments.
+##LOCALS##
+No locals.
+##STEP##
+#0  main () at main.c:17
+Line 17 of "main.c" starts at address 0x7ff7dff9174f <main+63> and ends at 0x7ff7dff91759 <main+73>.
+##ARGS##
+No arguments.
+##LOCALS##
+No locals.
+##STEP##
+#0  main () at main.c:19
+Line 19 of "main.c" starts at address 0x7ff7dff91759 <main+73> and ends at 0x7ff7dff9175e <main+78>.
+##ARGS##
+No arguments.
+##LOCALS##
+No locals.
+AB
+C line
+D
+[Thread 17496.0x22ec exited with code 0]
+[Inferior 1 (process 17496) exited normally]

@@ -1,0 +1,109 @@
+[
+  {
+    "time": 0,
+    "line_index": 0,
+    "line": "프로그램 시작 및 전역변수 초기화",
+    "memory": {
+      "data_segment": {},
+      "heap": [],
+      "stack": []
+    },
+    "output": ""
+  },
+  {
+    "time": 1,
+    "line_index": 9,
+    "line": "  printf(\"A\");         // 개행 없음",
+    "memory": {
+      "data_segment": {},
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {}
+        }
+      ]
+    },
+    "output": "AB\n"
+  },
+  {
+    "time": 2,
+    "line_index": 11,
+    "line": "  printf(\"B\\n\");       // 여기서 A와 B가 함께 한 토큰으로 붙어야 함",
+    "memory": {
+      "data_segment": {},
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {}
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 3,
+    "line_index": 13,
+    "line": "  puts(\"C line\");      // 무조건 개행",
+    "memory": {
+      "data_segment": {},
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {}
+        }
+      ]
+    },
+    "output": "C line\n"
+  },
+  {
+    "time": 4,
+    "line_index": 15,
+    "line": "  putchar('D');        // 개행 없음",
+    "memory": {
+      "data_segment": {},
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {}
+        }
+      ]
+    },
+    "output": "D\n"
+  },
+  {
+    "time": 5,
+    "line_index": 17,
+    "line": "  putchar('\\n');       // 여기서 D가 붙음",
+    "memory": {
+      "data_segment": {},
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {}
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 6,
+    "line_index": 19,
+    "line": "  return 0;",
+    "memory": {
+      "data_segment": {},
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {}
+        }
+      ]
+    },
+    "output": ""
+  }
+]

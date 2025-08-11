@@ -1,21 +1,26 @@
 #include <stdio.h>
+#include <stdlib.h>
 
-// 함수 선언 (함수 원형)
-int add(int a, int b);
+int global_var = 10;        // 데이터 영역 (초기화된 전역변수)
+static int static_var = 20; // 데이터 영역 (static 변수)
 
-int main() {
-  int num1 = 10, num2 = 5;
-  int sum;
+void foo(int param) {
+    int stack_var = 30;    
 
-  // 함수 호출
-  sum = add(num1, num2);
+    int* heap_var = (int*)malloc(sizeof(int));
+    if (heap_var == NULL) return;
+    *heap_var = 40;
 
-  printf("두 수의 합: %d\n", sum);
+    printf("global_var: %d\n", global_var);
+    printf("static_var: %d\n", static_var);
+    printf("param: %d\n", param);
+    printf("stack_var: %d\n", stack_var);
+    printf("*heap_var: %d\n", *heap_var);
 
-  return 0;
+    free(heap_var); 
 }
 
-// 함수 정의
-int add(int a, int b) {
-  return a + b;
+int main() {
+    foo(50);
+    return 0;
 }

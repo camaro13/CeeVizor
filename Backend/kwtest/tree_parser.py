@@ -1,4 +1,3 @@
-# tree_parser.py
 from tree_sitter import Language, Parser
 import json
 import os
@@ -9,15 +8,17 @@ C_LANGUAGE = Language(LIB_PATH, "c")
 parser = Parser()
 parser.set_language(C_LANGUAGE)
 
+# 노드 범위의 원문 텍스트를 추출
 def _text(src: bytes, node) -> str:
     return src[node.start_byte:node.end_byte].decode()
 
+# 스코프 문자열을 표준 딕셔너리로 변환
 def _scope_obj(scope: str):
-    # scope가 'global'이면 {"kind": "global"}, 함수명이라면 {"kind": "function", "func": scope}
     if scope == "global":
         return {"kind": "global"}
     return {"kind": "function", "func": scope}
 
+# 변수 선언을 추출하여 메타데이터 목록으로 반환(초기값 없는 선언 포함)
 def extract_variables(node, source_code: bytes, scope="global"):
     results = []
 
@@ -33,24 +34,24 @@ def extract_variables(node, source_code: bytes, scope="global"):
             body_node = node.child_by_field_name("body")
             if body_node:
                 results.extend(extract_variables(body_node, source_code, func_name))
-            return results  # 함수 정의 자체에서는 지역 변수만 수집
+            return results
 
     if node.type == "declaration":
         line = node.start_point[0] + 1
         var_type = None
         storage = "auto"
 
-        # 타입/저장 클래스
         for child in node.children:
             if child.type == "primitive_type":
                 var_type = _text(source_code, child)
             elif child.type == "storage_class_specifier":
                 storage = _text(source_code, child)
 
-        # 다중 init_declarator 처리
+        found_any = False
         for child in node.children:
             if child.type != "init_declarator":
                 continue
+            found_any = True
 
             v_name = None
             v_value = None
@@ -77,12 +78,11 @@ def extract_variables(node, source_code: bytes, scope="global"):
                     points_to = "heap"
 
             if v_name:
-                # 메모리 영역 추정
                 if storage == "static":
                     location = "data" if v_value else "bss"
                 elif scope == "global":
                     location = "data" if v_value else "bss"
-                elif v_value and v_value and "malloc" in v_value:
+                elif v_value and "malloc" in (v_value or ""):
                     location = "heap"
                 else:
                     location = "stack"
@@ -100,11 +100,42 @@ def extract_variables(node, source_code: bytes, scope="global"):
                     "line": line
                 })
 
+        if not found_any:
+            has_func_decl = any(c.type == "function_declarator" for c in node.children)
+            if not has_func_decl:
+                for child in node.children:
+                    if child.type in ("declarator", "pointer_declarator"):
+                        is_pointer = (child.type == "pointer_declarator") or ("*" in _text(source_code, child))
+                        id_node = child.child_by_field_name("declarator") or child.child_by_field_name("identifier")
+                        v_name = _text(source_code, id_node) if id_node else None
+                        if v_name:
+                            if storage == "static":
+                                location = "bss"
+                            elif scope == "global":
+                                location = "bss"
+                            else:
+                                location = "stack"
+                            results.append({
+                                "kind": "var",
+                                "name": v_name,
+                                "type": (var_type or "") + ("*" if is_pointer else ""),
+                                "scope": _scope_obj(scope),
+                                "storage": storage,
+                                "location": location,
+                                "value": None,
+                                "pointer": is_pointer,
+                                "points_to": None,
+                                "line": line
+                            })
+
     for child in node.children:
-        results.extend(extract_variables(child, source_code, scope))
+        child_res = extract_variables(child, source_code, scope)
+        if child_res:
+            results.extend(child_res)
 
     return results
 
+# 함수 정의 정보를 추출하여 목록으로 반환
 def extract_functions(node, source_code: bytes):
     functions = []
 
@@ -150,8 +181,8 @@ def extract_functions(node, source_code: bytes):
 
     return functions
 
+# 심볼 목록을 안정적으로 정렬
 def _stable_sort(symbols):
-    # 스냅샷 테스트를 위해 정렬(종류→스코프 문자열→이름→라인)
     def scope_key(s):
         sc = s.get("scope", {})
         if isinstance(sc, dict):
@@ -162,13 +193,14 @@ def _stable_sort(symbols):
         return str(sc)
     return sorted(symbols, key=lambda s: (s.get("kind",""), scope_key(s), s.get("name",""), s.get("line",0)))
 
+# C 코드에서 변수/함수 심볼을 분석하여 반환
 def analyze_c_code(code: str, save_path: str = None):
-    source_code = code.encode()
+    source_code = (code or "").encode()
     tree = parser.parse(source_code)
     root_node = tree.root_node
 
-    variables = extract_variables(root_node, source_code)
-    functions = extract_functions(root_node, source_code)
+    variables = extract_variables(root_node, source_code) or []
+    functions = extract_functions(root_node, source_code) or []
     all_symbols = _stable_sort(variables + functions)
 
     if save_path:
@@ -177,7 +209,7 @@ def analyze_c_code(code: str, save_path: str = None):
 
     return all_symbols
 
-# ----- 간단한 CLI -----
+# 간단한 CLI 진입점
 def _main():
     ap = argparse.ArgumentParser(description="Analyze C code symbols with Tree-sitter")
     ap.add_argument("input", help="C source file path")
@@ -194,14 +226,12 @@ def _main():
         print(f"[+] Wrote {len(symbols)} symbols → {args.out}")
 
 if __name__ == "__main__":
-    # 테스트용 C 코드 샘플
     sample_code = r"""
     #include <stdlib.h>
     int g1 = 10;
     int g2;
     static int sg1 = 3;
     static int sg2;
-
     void foo(void) {
         int x = 42;
         static int s_local;
@@ -209,9 +239,6 @@ if __name__ == "__main__":
         char buf[32];
     }
     """
-
-    # 분석 실행
     result = analyze_c_code(sample_code)
-
     import json
     print(json.dumps(result, indent=2, ensure_ascii=False))

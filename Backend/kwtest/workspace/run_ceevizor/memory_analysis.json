@@ -1,0 +1,13 @@
+[
+  {
+    "kind": "function",
+    "name": "main",
+    "return_type": "int",
+    "parameters": [],
+    "location": "code",
+    "scope": {
+      "kind": "global"
+    },
+    "line": 4
+  }
+]
