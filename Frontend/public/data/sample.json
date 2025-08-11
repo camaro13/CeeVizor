@@ -1,0 +1,368 @@
+[
+  {
+    "time": 0,
+    "line_index": 1,
+    "line": "프로그램 시작 및 전역변수 초기화",
+    "memory": {
+      "data_segment": {
+        "global_var": 10,
+        "static_var": 20
+      },
+      "heap": [],
+      "stack": []
+    },
+    "output": ""
+  },
+  {
+    "time": 1,
+    "line_index": 6,
+    "line": "int main() {",
+    "memory": {
+      "data_segment": {
+        "global_var": 10,
+        "static_var": 20
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {}
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 2,
+    "line_index": 17,
+    "line": "foo(50);",
+    "memory": {
+      "data_segment": {
+        "global_var": 10,
+        "static_var": 20
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {}
+        },
+        {
+          "function": "foo",
+          "variables": {
+            "param": 50
+          }
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 3,
+    "line_index": 10,
+    "line": "int stack_var = 30;",
+    "memory": {
+      "data_segment": {
+        "global_var": 10,
+        "static_var": 20
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {}
+        },
+        {
+          "function": "foo",
+          "variables": {
+            "param": 50,
+            "stack_var": 30
+          }
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 4,
+    "line_index": 12,
+    "line": "int* heap_var = (int*)malloc(sizeof(int));",
+    "memory": {
+      "data_segment": {
+        "global_var": 10,
+        "static_var": 20
+      },
+      "heap": [
+        { "0x1000": null }
+      ],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {}
+        },
+        {
+          "function": "foo",
+          "variables": {
+            "param": 50,
+            "stack_var": 30,
+            "heap_var": "0x1000"
+          }
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 5,
+    "line_index": 14,
+    "line": "*heap_var = 40;",
+    "memory": {
+      "data_segment": {
+        "global_var": 10,
+        "static_var": 20
+      },
+      "heap": [
+        { "0x1000": 40 }
+      ],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {}
+        },
+        {
+          "function": "foo",
+          "variables": {
+            "param": 50,
+            "stack_var": 30,
+            "heap_var": "0x1000"
+          }
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 6,
+    "line_index": 16,
+    "line": "printf(\"global_var: %d\\n\", global_var);",
+    "memory": {
+      "data_segment": {
+        "global_var": 10,
+        "static_var": 20
+      },
+      "heap": [
+        { "0x1000": 40 }
+      ],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {}
+        },
+        {
+          "function": "foo",
+          "variables": {
+            "param": 50,
+            "stack_var": 30,
+            "heap_var": "0x1000"
+          }
+        }
+      ]
+    },
+    "output": "global_var: 10"
+  },
+  {
+    "time": 7,
+    "line_index": 17,
+    "line": "printf(\"static_var: %d\\n\", static_var);",
+    "memory": {
+      "data_segment": {
+        "global_var": 10,
+        "static_var": 20
+      },
+      "heap": [
+        { "0x1000": 40 }
+      ],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {}
+        },
+        {
+          "function": "foo",
+          "variables": {
+            "param": 50,
+            "stack_var": 30,
+            "heap_var": "0x1000"
+          }
+        }
+      ]
+    },
+    "output": "static_var: 20"
+  },
+  {
+    "time": 8,
+    "line_index": 18,
+    "line": "printf(\"param: %d\\n\", param);",
+    "memory": {
+      "data_segment": {
+        "global_var": 10,
+        "static_var": 20
+      },
+      "heap": [
+        { "0x1000": 40 }
+      ],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {}
+        },
+        {
+          "function": "foo",
+          "variables": {
+            "param": 50,
+            "stack_var": 30,
+            "heap_var": "0x1000"
+          }
+        }
+      ]
+    },
+    "output": "param: 50"
+  },
+  {
+    "time": 9,
+    "line_index": 19,
+    "line": "printf(\"stack_var: %d\\n\", stack_var);",
+    "memory": {
+      "data_segment": {
+        "global_var": 10,
+        "static_var": 20
+      },
+      "heap": [
+        { "0x1000": 40 }
+      ],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {}
+        },
+        {
+          "function": "foo",
+          "variables": {
+            "param": 50,
+            "stack_var": 30,
+            "heap_var": "0x1000"
+          }
+        }
+      ]
+    },
+    "output": "stack_var: 30"
+  },
+  {
+    "time": 10,
+    "line_index": 20,
+    "line": "printf(\"*heap_var: %d\\n\", *heap_var);",
+    "memory": {
+      "data_segment": {
+        "global_var": 10,
+        "static_var": 20
+      },
+      "heap": [
+        { "0x1000": 40 }
+      ],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {}
+        },
+        {
+          "function": "foo",
+          "variables": {
+            "param": 50,
+            "stack_var": 30,
+            "heap_var": "0x1000"
+          }
+        }
+      ]
+    },
+    "output": "*heap_var: 40"
+  },
+  {
+    "time": 11,
+    "line_index": 22,
+    "line": "free(heap_var);",
+    "memory": {
+      "data_segment": {
+        "global_var": 10,
+        "static_var": 20
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {}
+        },
+        {
+          "function": "foo",
+          "variables": {
+            "param": 50,
+            "stack_var": 30,
+            "heap_var": null
+          }
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 12,
+    "line_index": 23,
+    "line": "}",
+    "memory": {
+      "data_segment": {
+        "global_var": 10,
+        "static_var": 20
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {}
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 13,
+    "line_index": 25,
+    "line": "return 0;",
+    "memory": {
+      "data_segment": {
+        "global_var": 10,
+        "static_var": 20
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {}
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 14,
+    "line_index": 26,
+    "line": "}",
+    "memory": {
+      "data_segment": {
+        "global_var": 10,
+        "static_var": 20
+      },
+      "heap": [],
+      "stack": []
+    },
+    "output": ""
+  }
+]
