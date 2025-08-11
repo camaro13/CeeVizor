@@ -1,59 +1,209 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import './App.css';
+import stepsData from './steps.json';
+
+// 기존 컴포넌트 import 유지
 import StackGraph from './components/StackGraph';
 import HeapGraph from './components/HeapGraph';
 import DataGraph from './components/DataGraph';
 
 function App() {
   const [code, setCode] = useState('');
-  const [steps, setSteps] = useState([]);
+  const [steps, setSteps] = useState([]); // 초기값 빈 배열
   const [stepIndex, setStepIndex] = useState(0);
+
+  const [blinkOn, setBlinkOn] = useState(true);
+  const [blinkStackFrameIdxs, setBlinkStackFrameIdxs] = useState(new Set());
+  const [blinkHeapLabels, setBlinkHeapLabels] = useState(new Set());
+  const [blinkDataGraph, setBlinkDataGraph] = useState(false);
+
+  const [deletingStackIdxs, setDeletingStackIdxs] = useState(new Set());
+  const [deletingHeapLabels, setDeletingHeapLabels] = useState(new Set());
+  const [deletingData, setDeletingData] = useState(false);
+
+  const [accumulatedOutput, setAccumulatedOutput] = useState("");  // 출력 누적 상태 추가
 
   const inputRef = useRef(null);
   const lineRef = useRef(null);
+  const intervalRef = useRef();
+  const blinkRef = useRef();
 
-  // 🚩 백엔드와 연동하는 부분만 수정!
-  const handleRun = async () => {
-    const trimmedCode = code.trim();
-    if (!trimmedCode) {
-      alert('코드를 입력해주세요.');
-      return;
-    }
+  // 기존 blink/delete 계산 함수는 그대로 유지 (생략)
 
-    try {
-      // 실제 API 엔드포인트 주소와 포트는 상황에 맞게 수정!
-      const res = await fetch('http://localhost:3000/analyze', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code: trimmedCode })
+  function blinkStackFrames(prev, curr) {
+    const prevMap = {};
+    (prev || []).forEach((frame, idx) => {
+      prevMap[idx] = {};
+      Object.entries(frame.variables || {}).forEach(([key, value]) => {
+        prevMap[idx][key] = value;
+      });
+    });
+
+    const blinkIdxs = [];
+    (curr || []).forEach((frame, idx) => {
+      const prevVars = prevMap[idx] || {};
+
+      const changed = Object.entries(frame.variables || {}).some(([key, value]) => {
+        if (typeof value === "string" && /^0x[0-9a-f]+$/i.test(value)) {
+          return false;
+        }
+        return !(key in prevVars) || prevVars[key] !== value;
       });
 
-      if (!res.ok) throw new Error('서버 오류!');
-      const data = await res.json();
+      if (changed) blinkIdxs.push(idx);
+    });
 
-      // 샘플 백엔드 응답: { "received_code": "...코드..." }
-      // 실제 응답이 추후 { steps:[{stack, heap, ...}] } 형태라면 아래 예시처럼 매핑 필요
+    return new Set(blinkIdxs);
+  }
 
-      // 임시 사용: 백엔드가 샘플 응답만 줄 경우
-      setSteps([
-        {
-          stack: [],
-          heap: [],
-          data: [{ key: 'received_code', value: data.received_code }],
-          output: '',
-          code: null,
-        }
-      ]);
-      setStepIndex(0);
+  function blinkHeapBlocks(prev, curr) {
+    const prevMap = {};
+    (prev || []).forEach(block => {
+      const [label, value] = Object.entries(block)[0];
+      prevMap[label] = value;
+    });
 
-      // 실제 steps가 넘오면 아래와 같이 처리!
-      // setSteps(data.steps); setStepIndex(0);
-      // (애니메이션 반복문 등은 필요시 아래 참고 예시처럼 추가)
+    const blinkLabels = [];
+    (curr || []).forEach(block => {
+      const [label, value] = Object.entries(block)[0];
+      if (!(label in prevMap) || prevMap[label] !== value) {
+        blinkLabels.push(label);
+      }
+    });
 
-    } catch (e) {
-      alert('서버 오류! 다시 시도해주세요.');
+    return new Set(blinkLabels);
+  }
+
+  function blinkData(prev, curr) {
+    const prevMap = {};
+    Object.entries(prev || {}).forEach(([key, value]) => { prevMap[key] = value; });
+    return Object.entries(curr || {}).some(([key, value]) =>
+      !(key in prevMap) || prevMap[key] !== value
+    );
+  }
+
+  function deletedStackFrames(curr, next) {
+    const currLen = (curr || []).length;
+    const nextLen = (next || []).length;
+    const indices = [];
+    for (let i = nextLen; i < currLen; i++) indices.push(i);
+    return new Set(indices);
+  }
+
+  function deletedHeapBlocks(curr, next) {
+    const nextLabels = new Set((next || []).map(block => Object.keys(block)[0]));
+    const deleted = (curr || []).map((block, idx) => {
+      const label = Object.keys(block)[0];
+      return !nextLabels.has(label) ? idx : null;
+    }).filter(i => i !== null);
+    return new Set(deleted);
+  }
+
+  function deletedData(curr, next) {
+    const nextKeys = new Set(Object.keys(next || {}));
+    return Object.keys(curr || {}).some(key => !nextKeys.has(key));
+  }
+
+  useEffect(() => {
+    if (!steps.length) return;
+
+    const currentStack = steps[stepIndex]?.memory?.stack || [];
+
+    const emptyFrameIdxs = new Set();
+    currentStack.forEach((frame, idx) => {
+      const filteredVariables = {};
+      Object.entries(frame.variables || {}).forEach(([key, value]) => {
+        if (
+          (typeof value === "string" && /^0x[0-9a-f]+$/i.test(value)) ||
+          value === null
+        ) return;
+        filteredVariables[key] = value;
+      });
+      if (Object.keys(filteredVariables).length === 0) emptyFrameIdxs.add(idx);
+    });
+
+    let blinkStackIdxs = stepIndex === 0
+      ? blinkStackFrames([], currentStack)
+      : blinkStackFrames(steps[stepIndex - 1]?.memory?.stack, currentStack);
+
+    emptyFrameIdxs.forEach(idx => blinkStackIdxs.delete(idx));
+    setBlinkStackFrameIdxs(blinkStackIdxs);
+
+    setBlinkHeapLabels(blinkHeapBlocks(
+      stepIndex === 0 ? [] : steps[stepIndex - 1]?.memory?.heap,
+      steps[stepIndex]?.memory?.heap
+    ));
+
+    setBlinkDataGraph(blinkData(
+      stepIndex === 0 ? {} : steps[stepIndex - 1]?.memory?.data_segment,
+      steps[stepIndex]?.memory?.data_segment
+    ));
+
+    if (stepIndex < steps.length - 1) {
+      setDeletingStackIdxs(deletedStackFrames(
+        steps[stepIndex]?.memory?.stack,
+        steps[stepIndex + 1]?.memory?.stack
+      ));
+      setDeletingHeapLabels(deletedHeapBlocks(
+        steps[stepIndex]?.memory?.heap,
+        steps[stepIndex + 1]?.memory?.heap
+      ));
+      setDeletingData(deletedData(
+        steps[stepIndex]?.memory?.data_segment,
+        steps[stepIndex + 1]?.memory?.data_segment
+      ));
+    } else {
+      setDeletingStackIdxs(new Set());
+      setDeletingHeapLabels(new Set());
+      setDeletingData(false);
     }
+
+    setBlinkOn(true);
+    blinkRef.current && clearInterval(blinkRef.current);
+    blinkRef.current = setInterval(() => setBlinkOn(v => !v), 500);
+
+    return () => {
+      blinkRef.current && clearInterval(blinkRef.current);
+    };
+  }, [stepIndex, steps]);
+
+  // 출력 누적 관리
+  useEffect(() => {
+    if (!steps.length) return;
+    const newLine = steps[stepIndex]?.output || "";
+    if (newLine) {
+      setAccumulatedOutput(prev => prev + newLine + "\n");
+    }
+  }, [stepIndex, steps]);
+
+  const handleRun = () => {
+    if (!stepsData || stepsData.length === 0) {
+      alert('실행 단계 데이터가 없습니다.');
+      return;
+    }
+    setSteps(stepsData);
+    setStepIndex(0);
+    setAccumulatedOutput("");
+
+    let current = 0;
+    intervalRef.current && clearInterval(intervalRef.current);
+    intervalRef.current = setInterval(() => {
+      current++;
+      if (current >= stepsData.length) {
+        clearInterval(intervalRef.current);
+        blinkRef.current && clearInterval(blinkRef.current);
+      } else {
+        setStepIndex(current);
+      }
+    }, 3000);
   };
+
+  useEffect(() => {
+    return () => {
+      intervalRef.current && clearInterval(intervalRef.current);
+      blinkRef.current && clearInterval(blinkRef.current);
+    };
+  }, []);
 
   const handleScroll = () => {
     if (inputRef.current && lineRef.current) {
@@ -68,18 +218,115 @@ function App() {
     ));
   };
 
-  // 현재 스텝 정보 (steps가 비어 있을 시 기본 값)
-  const currentStep = steps[stepIndex] || { stack: [], heap: [], output: '', data: [], code: null };
+  function CustomStackGraph({ stack }) {
+    if (!stack || stack.length === 0) return null;
+
+    return (
+      <div className="stack-graph">
+        {stack.map((frame, idx) => {
+          const filteredVariables = {};
+          Object.entries(frame.variables || {}).forEach(([key, value]) => {
+            if (
+              (typeof value === "string" && /^0x[0-9a-f]+$/i.test(value)) ||
+              value === null
+            ) return;
+            filteredVariables[key] = value;
+          });
+
+          const isEmpty = Object.keys(filteredVariables).length === 0;
+
+          let className = "stack-frame";
+          if (!isEmpty && blinkStackFrameIdxs.has(idx) && blinkOn) className += " blink";
+          if (!isEmpty && deletingStackIdxs.has(idx) && blinkOn) className += " delete-blink";
+
+          if (isEmpty) return null;
+
+          return (
+            <div className={className} key={idx}>
+              <div className="stack-variable-container">
+                {Object.entries(filteredVariables).map(([key, value], i) => (
+                  <div className="stack-variable" key={i}>
+                    {key} = {String(value)}
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
+
+  function CustomHeapGraph({ heap, stack }) {
+    if (!heap || heap.length === 0) return null;
+
+    const addrToVarName = {};
+    (stack || []).forEach(frame => {
+      if (!frame.variables) return;
+      Object.entries(frame.variables).forEach(([varName, val]) => {
+        if (typeof val === 'string' && /^0x[0-9a-f]+$/i.test(val)) {
+          addrToVarName[val] = varName;
+        }
+      });
+    });
+
+    return (
+      <div className="heap-graph">
+        {heap.map((block, idx) => {
+          const [addr, val] = Object.entries(block)[0];
+          const displayName = addrToVarName[addr] || addr;
+          let className = "heap-block";
+          if (blinkHeapLabels.has(addr) && blinkOn) className += " blink";
+          if (deletingHeapLabels.has(idx) && blinkOn) className += " delete-blink";
+          return (
+            <div className={className} key={idx}>
+              {displayName} = {val !== null ? String(val) : 'null'}
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
+
+  function CustomDataGraph({ data }) {
+    const [displayData, setDisplayData] = useState(data);
+
+    useEffect(() => {
+      if (deletingData) {
+        const timer = setTimeout(() => {
+          setDisplayData(data);
+        }, 500);
+        return () => clearTimeout(timer);
+      } else {
+        setDisplayData(data);
+      }
+    }, [data, deletingData]);
+
+    if (!displayData || Object.keys(displayData).length === 0) return null;
+
+    let className = "data-graph";
+    if (blinkDataGraph && blinkOn) className += " blink";
+    if (deletingData && blinkOn) className += " delete-blink";
+
+    return (
+      <div className={className}>
+        {Object.entries(displayData).map(([key, value], i) => (
+          <div className="data-variable" key={i}>
+            {key} = {value}
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  const currentStep = steps[stepIndex] || { memory: { stack: [], heap: [], data_segment: {} }, output: '', line: '', line_index: '' };
 
   return (
     <div className="container">
-      {/* 좌측: 코드 입력창 */}
       <div className="left-panel">
         <h2>코드입력창</h2>
         <div className="scrollable-container">
-          <div className="line-numbers" ref={lineRef}>
-            {generateLineNumbers()}
-          </div>
+          <div className="line-numbers" ref={lineRef}>{generateLineNumbers()}</div>
           <textarea
             className="code-input"
             placeholder="코드를 입력하세요"
@@ -92,14 +339,10 @@ function App() {
         <button onClick={handleRun}>실행</button>
         <div className="bottom-divider" />
       </div>
-
-      {/* 우측: 메모리 시각화 패널 */}
       <div className="right-panel">
         <h2>메모리 시각화</h2>
         <div className="memory-container">
           <div className="memory-row">
-
-            {/* Stack 영역 */}
             <div className="mem-section">
               <div className="mem-title">
                 Stack
@@ -107,13 +350,10 @@ function App() {
               </div>
               <div className="mem-box">
                 <div className="mem-content stack-area">
-                  <StackGraph stack={currentStep.stack} />
+                  <CustomStackGraph stack={currentStep.memory.stack} />
                 </div>
-                <img src="/hci_logo.png" alt="HCI Logo" className="hci-logo" />
               </div>
             </div>
-
-            {/* Heap 영역 */}
             <div className="mem-section">
               <div className="mem-title">
                 Heap
@@ -121,12 +361,10 @@ function App() {
               </div>
               <div className="mem-box">
                 <div className="mem-content">
-                  <HeapGraph heap={currentStep.heap} />
+                  <CustomHeapGraph heap={currentStep.memory.heap} stack={currentStep.memory.stack} />
                 </div>
               </div>
             </div>
-
-            {/* Code + Data & 출력영역 */}
             <div className="right-column">
               <div className="mem-section">
                 <div className="mem-title">
@@ -135,22 +373,22 @@ function App() {
                 </div>
                 <div className="mem-box code-box">
                   <div className="mem-content">
-                    <DataGraph data={currentStep.data} />
+                    <CustomDataGraph data={currentStep.memory.data_segment} />
                   </div>
                 </div>
               </div>
               <div className="output-area">
                 <div className="mem-title">출력 결과</div>
                 <div className="output-box">
-                  {currentStep.output || '출력 결과가 여기에 표시됩니다'}
+                  {accumulatedOutput || '출력 결과가 여기에 표시됩니다'}
                 </div>
               </div>
             </div>
-
           </div>
         </div>
       </div>
     </div>
   );
 }
+
 export default App;
