@@ -213,6 +213,5 @@ if __name__ == "__main__":
     # 분석 실행
     result = analyze_c_code(sample_code)
 
-    # 예쁘게 출력
     import json
     print(json.dumps(result, indent=2, ensure_ascii=False))

@@ -1,282 +1,377 @@
-# simulator.py
-# 사용법:
-#   python simulator.py sample.c
-# 결과:
-#   timeline.json 파일 생성 (요구 포맷)
-
+import subprocess
 import os
-import sys
-import json
 import re
-from copy import deepcopy
 
-# gdb.py의 유틸들 사용
-from kwgdb import (
-    save_code_to_file,
-    compile_code,
-    run_gdb,
-    run_program_and_capture_stdout,
-    parse_gdb_output_enhanced,
-)
+# =========================
+#  1) 저장 & 컴파일
+# =========================
 
-# tree_parser.py의 정적 분석 사용
-from tree_parser import analyze_c_code
+def save_code_to_file(code: str, filename="main.c"):
+    with open(filename, "w", encoding="utf-8") as f:
+        f.write(code)
+    print(f"[+] C 코드가 {filename}에 저장되었습니다.")
 
-
-# ------------------------------ 유틸 ------------------------------
-
-INT_LIT_RE = re.compile(r'^[+-]?\d+$')
-PTR_RE = re.compile(r'0x[0-9a-fA-F]+')
-
-
-def to_int_if_possible(s: str):
-    """정수 리터럴 문자열이면 int로 변환, 아니면 원본문자열"""
-    if isinstance(s, int):
-        return s
-    if isinstance(s, str) and INT_LIT_RE.match(s.strip()):
-        try:
-            return int(s.strip())
-        except Exception:
-            return s
-    return s
+def compile_code(source_file="main.c", output_file="a.exe"):
+    r = subprocess.run(
+        ["gcc",
+         "-O0", "-g3",
+         "-fno-omit-frame-pointer",
+         "-fno-inline",
+         "-fno-optimize-sibling-calls",
+         source_file, "-o", output_file],
+        capture_output=True, text=True, encoding="utf-8", errors="replace"
+    )
+    if r.returncode != 0:
+        print("[!] 컴파일 실패:")
+        print(r.stderr)
+        return False
+    print(f"[+] 컴파일 성공: {output_file}")
+    return True
 
 
-def extract_ptr_address(val: str):
-    """로컬/아규먼트 값 문자열에서 포인터 주소(0x...)만 뽑아냄"""
-    if not isinstance(val, str):
-        return None
-    m = PTR_RE.search(val)
-    return m.group(0) if m else None
+# =========================
+#  2) 소스 라인 스캔
+# =========================
 
+def is_comment_or_blank(line: str, in_block_comment: bool):
+    s = (line or "").strip()
+    if s == "" or s in ("{", "}"):
+        return True, in_block_comment
+    if s.startswith("//"):
+        return True, in_block_comment
+    if "/*" in s:
+        in_block_comment = True
+    if "*/" in s:
+        in_block_comment = False
+        return True, in_block_comment
+    if in_block_comment:
+        return True, in_block_comment
+    return False, in_block_comment
 
-def parse_simple_expr(expr: str, var_env: dict):
-    """
-    아주 단순한 정수식만 처리:
-      - 정수 리터럴 (예: 4)
-      - 단항 +/- 정수
-      - 식별자 (로컬/아규먼트의 정수값이 있는 경우)
-      - 'a + 1', 'a - 1' (공백 자유) 정도의 2항
-    복잡한 건 문자열 그대로 반환.
-    """
-    if expr is None:
-        return None
-    s = expr.strip().rstrip(';')
+def load_source_lines(src="main.c"):
+    with open(src, "r", encoding="utf-8", errors="ignore") as f:
+        return [""] + [l.rstrip("\n") for l in f]  # 1-index
 
-    # 괄호 제거 한 번
-    if s.startswith('(') and s.endswith(')'):
-        s = s[1:-1].strip()
+def calc_executable_lines(src="main.c"):
+    lines = load_source_lines(src)
+    in_block = False
+    exec_lines = []
+    for i in range(1, len(lines)):
+        skip, in_block = is_comment_or_blank(lines[i], in_block)
+        if not skip:
+            exec_lines.append(i)
+    return exec_lines, lines
 
-    # 정수 리터럴
-    if INT_LIT_RE.match(s):
-        return int(s)
-
-    # 식별자
-    if re.match(r'^[A-Za-z_]\w*$', s):
-        v = var_env.get(s)
-        v_int = to_int_if_possible(v) if v is not None else None
-        return v_int if isinstance(v_int, int) else s
-
-    # a + b, a - b 간단 처리
-    m = re.match(r'^([A-Za-z_]\w*|\d+)\s*([+\-])\s*([A-Za-z_]\w*|\d+)$', s)
-    if m:
-        left, op, right = m.groups()
-        def val(x):
-            if INT_LIT_RE.match(x):
-                return int(x)
-            vv = var_env.get(x)
-            vv = to_int_if_possible(vv) if vv is not None else None
-            return vv if isinstance(vv, int) else None
-
-        lv = val(left)
-        rv = val(right)
-        if isinstance(lv, int) and isinstance(rv, int):
-            return lv + rv if op == '+' else lv - rv
-        # 계산 불가 시 원문 반환
-        return s
-
-    return s
-
-
-def merge_args_locals(args: dict, locals_: dict):
-    """args와 locals를 합쳐 variables로 반환 (locals가 우선)"""
-    merged = dict(args or {})
-    merged.update(locals_ or {})
-    return merged
-
-
-# ------------------------ 초기 메모리 구성 ------------------------
-
-def initial_data_segment_from_symbols(symbols: list) -> dict:
-    """
-    tree_parser.analyze_c_code 결과에서 전역/정적 변수만 추려 data_segment 구성.
-    location == 'data' → 초기값 문자열을 간단 변환(정수면 int)
-    location == 'bss'  → None
-    """
-    data_seg = {}
-    for s in symbols:
-        if s.get("kind") != "var":
+# (선언 라인 맵: { func: {var: decl_line} })
+def collect_decl_lines_by_func(src_path: str):
+    lines = load_source_lines(src_path)
+    func_map = {}
+    func = None
+    brace = 0
+    func_pat = re.compile(r'^\s*[A-Za-z_][\w\s\*\(\)]+\s+([A-Za-z_]\w*)\s*\([^;]*\)\s*\{')
+    decl_pat = re.compile(
+        r'^\s*(?:static\s+)?(?:const\s+)?'
+        r'(?:(?:unsigned|signed)\s+)?'
+        r'(?:(?:long\s+long|long|short)\s+)?'
+        r'(?:int|char|float|double)\s+([^;]+);'
+    )
+    for i in range(1, len(lines)):
+        line = lines[i]
+        if func is None:
+            m = func_pat.match(line)
+            if m:
+                func = m.group(1)
+                func_map.setdefault(func, {})
+                brace = 1
             continue
-        loc = s.get("location")
-        sc = s.get("scope", {})
-        if loc in ("data", "bss"):
-            # 전역 혹은 static(local) 모두 data_segment로 모읍니다.
-            name = s.get("name")
-            if not name:
-                continue
-            if loc == "bss":
-                data_seg[name] = None
-            else:
-                init = s.get("value")
-                data_seg[name] = to_int_if_possible(init) if init is not None else None
-    return data_seg
+        brace += line.count("{")
+        brace -= line.count("}")
+        m = decl_pat.match(line)
+        if m:
+            tail = m.group(1)
+            for part in [p.strip() for p in tail.split(",")]:
+                part = part.split("=", 1)[0].strip()
+                part = part.replace("*", " ")
+                part = re.sub(r'\[[^\]]*\]', ' ', part)
+                tokens = [t for t in re.split(r'\s+', part) if t]
+                if tokens:
+                    name = tokens[-1]
+                    if re.match(r'^[A-Za-z_]\w*$', name):
+                        func_map[func][name] = i
+        if brace <= 0:
+            func = None
+    return func_map
 
 
-# --------------------------- 메인 로직 ----------------------------
+# =========================
+#  3) GDB 스크립트(라인별 BP + 시작 스냅샷)
+# =========================
 
-def build_timeline_from_code(code: str, max_steps: int = 200):
+def generate_gdb_script_linebps(exec_lines, source_file="main.c"):
     """
-    요구 포맷의 timeline을 생성해 반환.
-    - data_segment: 정적 분석 기반(전역/정적)
-    - stack: top frame만 1개 (function + variables)
-    - heap: malloc/free/*p=... 간단 추론
-    - output: printf 실행 시 그 스텝에서 새로 생긴 출력만
+    - start 직후 현재 위치를 1회 로그(첫 printf 줄에서 출력이 소비되도록)
+    - main.c의 모든 실행 라인에 break + 공통 commands(로그 후 continue)
+    - 마지막에 단 한 번 continue로 끝까지 실행
     """
-    # 1) 코드 저장 (gdb.py는 main.c 기준으로 작동)
-    save_code_to_file(code, filename="main.c")
+    script = ["set pagination off",
+              "set confirm off",
+              "set step-mode on",
+              "set breakpoint pending on",
+              "directory .",
+              # 출력 함수 내부 진입 방지(안전빵)
+              "skip function printf",
+              "skip function fprintf",
+              "skip function vprintf",
+              "skip function puts",
+              "skip function fputs",
+              "skip function putchar",
+              "skip function __mingw_printf",
+              "skip function __mingw_fprintf",
+              "skip function __mingw_vprintf",
+              "skip function __msvcrt_printf",
+              "skip function __msvcrt_fprintf",
+              "start",
+              # ▶ 시작 스냅샷 (여기서 'continue' 금지!)
+              'printf "##STEP##\\n"',
+              "frame 0",
+              "info line",
+              'printf "##ARGS##\\n"',
+              "info args",
+              'printf "##LOCALS##\\n"',
+              "info locals",
+              ]
 
-    # 2) 정적 분석 (초기 data_segment)
-    symbols = analyze_c_code(code)
-    base_data_segment = initial_data_segment_from_symbols(symbols)
+    # 🔧 여기서 모든 라인에 브레이크포인트 설치 + commands 지정
+    for ln in exec_lines:
+        script.append(f"break {source_file}:{ln}")
+        script += [
+            "commands",
+            "silent",
+            'printf "##STEP##\\n"',
+            "frame 0",
+            "info line",
+            'printf "##ARGS##\\n"',
+            "info args",
+            'printf "##LOCALS##\\n"',
+            "info locals",
+            "continue",
+            "end"
+        ]
 
-    # 3) 컴파일
-    if not compile_code(source_file="main.c", output_file="a.exe"):
-        raise SystemExit("[!] 컴파일 실패로 중단")
+    # ✅ 이제서야 한 번만 continue 해서 끝까지 실행
+    script.append("continue")
+    script.append("quit")
 
-    # 4) GDB 스텝 추출
-    gdb_out = run_gdb(binary="a.exe", max_steps=max_steps)
-    executed_lines, executed_code, frames = parse_gdb_output_enhanced(gdb_out, source_file="main.c")
+    with open("gdb_script.txt", "w", encoding="utf-8") as f:
+        f.write("\n".join(script))
 
-    # 5) 일반 실행 출력 토큰
-    stdout_tokens = run_program_and_capture_stdout(binary="a.exe")  # 줄 단위 토큰
+def run_gdb(binary="a.exe", exec_lines=None, source_file="main.c"):
+    if exec_lines is None:
+        exec_lines, _ = calc_executable_lines(source_file)
+    generate_gdb_script_linebps(exec_lines, source_file)
+    r = subprocess.run(
+        ["gdb", "--batch", "-x", "gdb_script.txt", binary],
+        capture_output=True, text=True, encoding="utf-8", errors="replace"
+    )
+    return r.stdout or ""
 
-    # 6) 타임라인 구성
+
+# =========================
+#  4) 일반 실행(stdout 수집)
+# =========================
+
+def run_program_and_capture_stdout(binary="a.exe", timeout_sec=None):
+    prog = os.path.abspath(binary) if not os.path.isabs(binary) else binary
+    try:
+        r = subprocess.run([prog], capture_output=True, text=True,
+                           encoding="utf-8", errors="replace",
+                           timeout=timeout_sec)
+        out = r.stdout or ""
+    except subprocess.TimeoutExpired as e:
+        out = e.stdout or ""
+    return out.splitlines(keepends=True)
+
+
+# =========================
+#  5) GDB 로그 파싱
+# =========================
+
+def parse_gdb_output_linebps(output, source_file="main.c"):
+    RE_INFO_LINE = re.compile(r'Line\s+(\d+)\s+of\s+"?([^"]+)"?')
+    RE_FUNC      = re.compile(r'^#0\s+([A-Za-z_][\w$.@]*)\s*\(')
+
+    src = load_source_lines(source_file)
+    N = len(src) - 1
+    src_base = os.path.basename(source_file)
+
+    def code(ln): return src[ln] if 1 <= ln <= N else ""
+
+    executed_lines, executed_code, frames = [], [], []
+    in_block_comment = False
+
+    cur_func = "main"
+    cur_line = None
+    collecting = None
+    args = {}
+    locals_ = {}
+
+    def flush():
+        nonlocal args, locals_, cur_func, cur_line, in_block_comment
+        if cur_line is None:
+            return
+        s = code(cur_line)
+        skip, in_block_comment = is_comment_or_blank(s, in_block_comment)
+        if skip:
+            args.clear(); locals_.clear(); cur_line = None
+            return
+        # (줄+함수) 중복 억제
+        if executed_lines and executed_lines[-1] == cur_line and frames and frames[-1]["func"] == cur_func:
+            args.clear(); locals_.clear(); cur_line = None
+            return
+        executed_lines.append(cur_line)
+        executed_code.append(s)
+        frames.append({
+            "func": cur_func,
+            "line": cur_line,
+            "args": args.copy(),
+            "locals": locals_.copy()
+        })
+        args.clear(); locals_.clear(); cur_line = None
+
+    for raw in output.splitlines():
+        line = raw.rstrip("\n")
+
+        if line == "##STEP##":
+            flush()
+            cur_func = "main"; cur_line = None
+            collecting = None
+            continue
+
+        if line.startswith("#0 "):
+            m = RE_FUNC.match(line)
+            if m:
+                cur_func = m.group(1)
+            continue
+
+        if line == "##ARGS##":
+            collecting = "args"; continue
+        if line == "##LOCALS##":
+            collecting = "locals"; continue
+
+        if "Line " in line:
+            mi = RE_INFO_LINE.search(line)
+            if mi:
+                ln = int(mi.group(1)); fn = os.path.basename(mi.group(2))
+                if fn == src_base:
+                    cur_line = ln
+            continue
+
+        if collecting in ("args", "locals"):
+            if "=" in line:
+                k, v = line.split("=", 1)
+                k = k.strip(); v = " ".join(v.strip().split())
+                if re.match(r'^[A-Za-z_]\w*$', k):
+                    if collecting == "args":   args[k]   = v
+                    else:                      locals_[k] = v
+            continue
+
+    flush()
+    return executed_lines, executed_code, frames
+
+
+# =========================
+#  6) 타임라인 조립 (+ 출력 매칭 & 로컬 필터)
+# =========================
+
+PRINT_RE = re.compile(r'\b(printf|puts|putchar|fputs|fprintf)\b')
+
+def trace_c_execution(code: str):
+    save_code_to_file(code)
+    if not compile_code():
+        return
+
+    # 실행 가능한 라인 목록
+    exec_lines, _src = calc_executable_lines("main.c")
+    decl_map = collect_decl_lines_by_func("main.c")
+
+    # (A) GDB: 모든 라인에서 스냅샷 수집
+    gdb_output = run_gdb(exec_lines=exec_lines, source_file="main.c")
+    executed_lines, executed_code, frames = parse_gdb_output_linebps(gdb_output, "main.c")
+
+    # (B) 일반 실행: stdout 토큰 수집
+    stdout_queue = run_program_and_capture_stdout()
+
+    # (C) 타임라인 + 출력 매칭 & 로컬 변수 필터링
     timeline = []
-
-    # time 0: 초기 메모리 상태
-    timeline.append({
-        "time": 0,
-        "line_index": 0,
-        "line": "프로그램 시작 및 전역변수 초기화",
-        "memory": {
-            "data_segment": deepcopy(base_data_segment),
-            "heap": [],
-            "stack": []
-        },
-        "output": ""
-    })
-
-    # 힙 상태는 주소->값 딕셔너리로 내부 유지, 스냅샷 땐 [{"0x...": value}, ...]로 변환
-    heap_map = {}
-
-    # data_segment도 단계별 갱신(아주 단순한 전역 대입만)
-    current_data_segment = deepcopy(base_data_segment)
-
-    for idx, (ln, code_line, fr) in enumerate(zip(executed_lines, executed_code, frames), start=1):
-        func = fr.get("func", "")
-        args = fr.get("args", {}) or {}
-        locals_ = fr.get("locals", {}) or {}
-        variables = merge_args_locals(args, locals_)
-
-        # --- 출력(delta) 추출: printf가 몇 번 있는지 개수만큼 토큰 소비 ---
+    for idx, (ln, code_line, frame) in enumerate(zip(executed_lines, executed_code, frames)):
+        # 출력 매칭: 한 줄 내 호출 개수만큼 소비
+        emit_cnt = len(PRINT_RE.findall(code_line))
         step_output = ""
-        printf_cnt = code_line.count("printf(")
-        if printf_cnt > 0:
-            popped = []
-            for _ in range(printf_cnt):
-                if stdout_tokens:
-                    popped.append(stdout_tokens.pop(0))
-            step_output = "".join(popped)
+        for _ in range(emit_cnt):
+            if stdout_queue:
+                step_output += stdout_queue.pop(0)
 
-        # --- 힙 추론: malloc / free / *p = expr ---
-        # malloc: 'p = malloc(' 또는 'int *p = malloc('
-        m_malloc = re.search(r'([A-Za-z_]\w*)\s*=\s*malloc\s*\(', code_line)
-        if m_malloc:
-            p_name = m_malloc.group(1)
-            addr = extract_ptr_address(variables.get(p_name, ""))
-            if addr and addr not in heap_map:
-                heap_map[addr] = None  # 값은 아직 모름
+        # 로컬 변수: 선언 라인 이후만 노출
+        f = frame.get("func", "main")
+        locals_raw = dict(frame.get("locals") or {})
+        filtered_locals = {}
+        decls = decl_map.get(f, {})
+        for name, val in locals_raw.items():
+            dln = decls.get(name)
+            if dln is None or ln >= dln:
+                filtered_locals[name] = val
 
-        # free(p)
-        m_free = re.search(r'free\s*\(\s*([A-Za-z_]\w*)\s*\)', code_line)
-        if m_free:
-            p_name = m_free.group(1)
-            addr = extract_ptr_address(variables.get(p_name, ""))
-            if addr and addr in heap_map:
-                del heap_map[addr]
-
-        # *p = expr;
-        m_store = re.search(r'\*\s*([A-Za-z_]\w*)\s*=\s*(.+);', code_line)
-        if m_store:
-            p_name = m_store.group(1)
-            rhs = m_store.group(2).strip()
-            addr = extract_ptr_address(variables.get(p_name, ""))
-            if addr:
-                # 간단한 정수 계산만 시도
-                val = parse_simple_expr(rhs, {k: to_int_if_possible(v) for k, v in variables.items()})
-                heap_map[addr] = val
-
-        # --- 전역변수 단순 대입(g = 123;) 갱신 (정수 리터럴만)
-        m_gset = re.match(r'^\s*([A-Za-z_]\w*)\s*=\s*([^;]+);', code_line)
-        if m_gset:
-            name = m_gset.group(1)
-            rhs = m_gset.group(2)
-            if name in current_data_segment:
-                val = parse_simple_expr(rhs, {k: to_int_if_possible(v) for k, v in variables.items()})
-                if isinstance(val, int) or val is None:
-                    current_data_segment[name] = val
-
-        # --- 요구 포맷으로 스냅샷 작성 ---
-        stack_snapshot = [{
-            "function": func,
-            "variables": {k: to_int_if_possible(v) for k, v in variables.items()}
-        }]
-
-        heap_snapshot = [{addr: heap_map[addr]} for addr in sorted(heap_map.keys())]
-
-        snapshot = {
+        timeline.append({
             "time": idx,
             "line_index": ln,
             "line": code_line,
             "memory": {
-                "data_segment": deepcopy(current_data_segment),
-                "heap": heap_snapshot,
-                "stack": stack_snapshot
+                "stack": [{
+                    "function": f,
+                    "variables": {**(frame.get("args") or {}), **filtered_locals}
+                }],
+                "heap": []
             },
             "output": step_output
-        }
-        timeline.append(snapshot)
+        })
 
-    return timeline
+    print("[+] TIMELINE(JSON-like)]")
+    for t in timeline:
+        print(t)
 
 
-def main():
-    # 입력 파일(default: sample.c)
-    src = sys.argv[1] if len(sys.argv) >= 2 else "sample.c"
-    if not os.path.exists(src):
-        print(f"[!] 입력 파일을 찾을 수 없습니다: {src}")
-        sys.exit(1)
-
-    with open(src, "r", encoding="utf-8", errors="replace") as f:
-        code = f.read()
-
-    timeline = build_timeline_from_code(code, max_steps=200)
-
-    out_path = "timeline.json"
-    with open(out_path, "w", encoding="utf-8") as f:
-        json.dump(timeline, f, indent=2, ensure_ascii=False)
-
-    print(f"[+] 타임라인 저장 완료 → {out_path}")
-
+# =========================
+#  7) 데모 입력 (네가 준 코드 그대로 써도 됨)
+# =========================
 
 if __name__ == "__main__":
-    main()
+    c_code = r"""
+#include <stdio.h>
+#include <stdlib.h>
+
+int global_var = 10;        // 데이터 영역 (초기화된 전역변수)
+static int static_var = 20; // 데이터 영역 (static 변수)
+
+void foo(int param) {
+    int stack_var = 30;    
+
+    int* heap_var = (int*)malloc(sizeof(int));
+    if (heap_var == NULL) return;
+    *heap_var = 40;
+
+    printf("global_var: %d\n", global_var);
+    printf("static_var: %d\n", static_var);
+    printf("param: %d\n", param);
+    printf("stack_var: %d\n", stack_var);
+    printf("*heap_var: %d\n", *heap_var);
+
+    free(heap_var); 
+}
+
+int main() {
+    foo(50);
+    return 0;
+}
+
+"""
+    trace_c_execution(c_code)
