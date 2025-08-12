@@ -441,3 +441,24 @@
 .back-button:hover {
   background-color: #e0e0e0;
 }
+
+/* CodeMirror 스타일 덮어쓰기 */
+.cm-editor {
+  height: 52vh !important;
+  font-family: 'Nanum Gothic', sans-serif !important;
+  font-size: 1.14vw !important;
+  line-height: 2.8vh !important;
+}
+
+.cm-scroller {
+  overflow: auto !important;
+}
+
+.cm-line {
+  padding-left: 8px !important;
+}
+
+/* 하이라이트 라인 */
+.cm-line.current-line {
+  background-color: rgba(255, 230, 150, 0.6) !important;
+}

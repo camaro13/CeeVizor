@@ -3,6 +3,8 @@
     "start": "react-scripts start"
   },
   "dependencies": {
+    "@codemirror/lang-cpp": "^6.0.3",
+    "@uiw/react-codemirror": "^4.24.2",
     "axios": "^1.11.0",
     "classnames": "^2.5.1",
     "d3": "^7.9.0",

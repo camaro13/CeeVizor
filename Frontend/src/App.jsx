@@ -2,9 +2,53 @@ import React, { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './App.css';
 import stepsData from './steps.json';
+import CodeMirror from '@uiw/react-codemirror';
+import { cpp } from '@codemirror/lang-cpp';
+import { EditorView, Decoration, DecorationSet, ViewPlugin, ViewUpdate } from '@codemirror/view';
+
+function highlightLine(lineNumber, doc) {
+  if (!lineNumber || !doc) return EditorView.decorations.of(Decoration.none);
+
+  const line = doc.line(lineNumber); // CodeMirror의 문서에서 해당 줄 위치 찾기
+  return EditorView.decorations.of(
+    Decoration.set([
+      Decoration.line({
+        attributes: { class: 'current-line' }
+      }).range(line.from)
+    ])
+  );
+}
+
+// 특정 줄의 위치 계산
+function updateLinePos(lineNumber) {
+  return { from: 0, to: 0, line: lineNumber - 1 }; // 0-based index
+}
 
 function App() {
+
+  
+function findCurrentLineNumber(steps, stepIndex, code) {
+  if (!steps[stepIndex]) return null;
+
+  // line_index가 있으면 바로 사용
+  if (typeof steps[stepIndex].line_index === 'number') {
+    return steps[stepIndex].line_index + 1; // 0-based → 1-based
+  }
+
+  // 기존 방식: line 텍스트로 찾기
+  if (steps[stepIndex].line) {
+    const currentLineText = steps[stepIndex].line.trim();
+    const lines = code.split('\n');
+    const idx = lines.findIndex(l => l.trim() === currentLineText);
+    if (idx >= 0) return idx + 1;
+  }
+
+  return null;
+}
+
+
   // 기본 상태
+  const [cmView, setCmView] = useState(null);
   const [steps, setSteps] = useState([]);
   const [code, setCode] = useState('');
   const [infoVisible, setInfoVisible] = useState(null);
@@ -352,14 +396,16 @@ function CustomDataGraph({ data, blinkDataGraph, deletingData, blinkOn }) {
             <div className="line-numbers" ref={lineRef}>
               {generateLineNumbers()}
             </div>
-            <textarea
-              className="code-input"
-              placeholder="코드를 입력하세요"
-              ref={inputRef}
-              value={code}
-              onChange={e => setCode(e.target.value)}
-              onScroll={handleScroll}
-            />
+            <CodeMirror
+  value={code}
+  height="52vh"
+  extensions={[
+    cpp(),
+    cmView ? highlightLine(findCurrentLineNumber(steps, stepIndex, code), cmView.state.doc) : []
+  ]}
+  onCreateEditor={(view) => setCmView(view)}
+  onChange={(value) => setCode(value)}
+/>
           </div>
           <div className="button-container">
             <div className="top-buttons">
