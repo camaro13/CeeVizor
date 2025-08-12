@@ -65,19 +65,34 @@ function App() {
   }
 
   function blinkHeapBlocks(prev, curr) {
-    const prevMap = {};
-    (prev || []).forEach(block => {
-      const [label, value] = Object.entries(block)[0];
-      prevMap[label] = value;
-    });
-    const blinkLabels = [];
-    (curr || []).forEach(block => {
-      const [label, value] = Object.entries(block)[0];
-      if (!(label in prevMap) || prevMap[label] !== value) blinkLabels.push(label);
-    });
-    return new Set(blinkLabels);
-  }
+  const prevMap = {};
+  (prev || []).forEach(block => {
+    let label, value;
+    if ('address' in block && 'value' in block) {
+      label = block.address;
+      value = block.value;
+    } else {
+      [label, value] = Object.entries(block)[0];
+    }
+    prevMap[label] = value;
+  });
 
+  const blinkLabels = [];
+  (curr || []).forEach(block => {
+    let label, value;
+    if ('address' in block && 'value' in block) {
+      label = block.address;
+      value = block.value;
+    } else {
+      [label, value] = Object.entries(block)[0];
+    }
+    if (!(label in prevMap) || prevMap[label] !== value) {
+      blinkLabels.push(label);
+    }
+  });
+
+  return new Set(blinkLabels);
+}
   function blinkData(prev, curr) {
     if (JSON.stringify(prev) === JSON.stringify(curr)) return false;
     const prevMap = {};
@@ -246,34 +261,44 @@ function App() {
   }
 
   // Heap 시각화 컴포넌트
-  function CustomHeapGraph({ heap, stack }) {
-    if (!heap || heap.length === 0) return null;
-    const addrToVarName = {};
-    (stack || []).forEach(frame => {
-      if (!frame.variables) return;
-      Object.entries(frame.variables).forEach(([varName, val]) => {
-        if (typeof val === 'string' && /^0x[0-9a-f]+$/i.test(val)) {
-          addrToVarName[val] = varName;
-        }
-      });
+function CustomHeapGraph({ heap, stack }) {
+  if (!heap || heap.length === 0) return null;
+
+  const addrToVarName = {};
+  (stack || []).forEach(frame => {
+    if (!frame.variables) return;
+    Object.entries(frame.variables).forEach(([varName, val]) => {
+      if (typeof val === 'string' && /^0x[0-9a-f]+$/i.test(val)) {
+        addrToVarName[val] = varName;
+      }
     });
-    return (
-      <div className="heap-graph">
-        {heap.map((block, idx) => {
-          const [addr, val] = Object.entries(block)[0];
-          const displayName = addrToVarName[addr] || addr;
-          let className = "heap-block";
-          if (blinkHeapLabels.has(addr) && blinkOn) className += " blink";
-          if (deletingHeapLabels.has(idx) && blinkOn) className += " delete-blink";
-          return (
-            <div className={className} key={idx}>
-              {displayName} = {val !== null ? String(val) : 'null'}
-            </div>
-          );
-        })}
-      </div>
-    );
-  }
+  });
+
+  return (
+    <div className="heap-graph">
+      {heap.map((block, idx) => {
+        let addr, val;
+        if ('address' in block && 'value' in block) {
+          addr = block.address;
+          val = block.value;
+        } else {
+          [addr, val] = Object.entries(block)[0];
+        }
+
+        const displayName = addrToVarName[addr] || addr;
+        let className = "heap-block";
+        // blinkHeapLabels는 addr 값 그대로를 써야 이전/현재 비교가 일치함
+        if (blinkHeapLabels.has(addr) && blinkOn) className += " blink";
+        if (deletingHeapLabels.has(idx) && blinkOn) className += " delete-blink";
+        return (
+          <div className={className} key={idx}>
+            {displayName} = {val !== null ? String(val) : 'null'}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
 
   // Data 시각화 컴포넌트 수정: 삭제될 key만 delete-blink 클래스 부여
 function CustomDataGraph({ data, blinkDataGraph, deletingData, blinkOn }) {
