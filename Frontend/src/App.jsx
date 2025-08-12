@@ -397,15 +397,15 @@ function CustomDataGraph({ data, blinkDataGraph, deletingData, blinkOn }) {
               {generateLineNumbers()}
             </div>
             <CodeMirror
-  value={code}
-  height="52vh"
-  extensions={[
-    cpp(),
-    cmView ? highlightLine(findCurrentLineNumber(steps, stepIndex, code), cmView.state.doc) : []
-  ]}
-  onCreateEditor={(view) => setCmView(view)}
-  onChange={(value) => setCode(value)}
-/>
+              value={code}
+              height="52vh"
+              extensions={[
+                cpp(),
+                cmView ? highlightLine(findCurrentLineNumber(steps, stepIndex, code), cmView.state.doc) : []
+              ]}
+              onCreateEditor={(view) => setCmView(view)}
+              onChange={(value) => setCode(value)}
+            />
           </div>
           <div className="button-container">
             <div className="top-buttons">
