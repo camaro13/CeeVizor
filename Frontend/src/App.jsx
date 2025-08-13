@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './App.css';
 import stepsData from './steps.json';
@@ -6,17 +6,22 @@ import CodeMirror from '@uiw/react-codemirror';
 import { cpp } from '@codemirror/lang-cpp';
 import { EditorView, Decoration, DecorationSet, ViewPlugin, ViewUpdate } from '@codemirror/view';
 
-function highlightLine(lineNumber, doc) {
-  if (!lineNumber || !doc) return EditorView.decorations.of(Decoration.none);
 
-  const line = doc.line(lineNumber); // CodeMirror의 문서에서 해당 줄 위치 찾기
-  return EditorView.decorations.of(
-    Decoration.set([
-      Decoration.line({
-        attributes: { class: 'current-line' }
-      }).range(line.from)
-    ])
-  );
+//👸현송 : 이 부분 때문에 실행이 안되어 가지고 좀 보완하겠습니다.
+// 존재하는 줄이 있을 때만 하이라이팅 하도록 보완
+function highlightLine(view, lineNumber) {
+  // 객체/값이 없으면 확장 추가하지 않음
+  if (!view || !Number.isInteger(lineNumber)) return [];
+
+  const lines = view.state.doc.lines; // 문서 총 줄수
+  // 범위를 벗어나면 확장 추가하지 않음 (여기서 막아주니 RangeError 발생 안함)
+  if (lineNumber < 1 || lineNumber > lines) return [];
+
+  const line = view.state.doc.line(lineNumber); // 1-based 인덱스
+  const deco = Decoration.set([
+    Decoration.line({ attributes: { class: 'current-line' } }).range(line.from)
+  ]);
+  return [EditorView.decorations.of(deco)];
 }
 
 // 특정 줄의 위치 계산
@@ -26,7 +31,7 @@ function updateLinePos(lineNumber) {
 
 function App() {
 
-  
+
 function findCurrentLineNumber(steps, stepIndex, code) {
   if (!steps[stepIndex]) return null;
 
@@ -35,12 +40,14 @@ function findCurrentLineNumber(steps, stepIndex, code) {
     return steps[stepIndex].line_index + 1; // 0-based → 1-based
   }
 
+  //👸현송 : 이부분도 보완
   // 기존 방식: line 텍스트로 찾기
+  // line 문자열 매칭(임시 방편): 동일한 줄 텍스트를 찾아서 1-based 인덱스 반환
   if (steps[stepIndex].line) {
-    const currentLineText = steps[stepIndex].line.trim();
-    const lines = code.split('\n');
+    const currentLineText = (steps[stepIndex].line || '').trim();
+    const lines = (code || '').split('\n');
     const idx = lines.findIndex(l => l.trim() === currentLineText);
-    if (idx >= 0) return idx + 1;
+    if (idx >= 0) return idx + 1; // 1-based
   }
 
   return null;
@@ -71,7 +78,59 @@ function findCurrentLineNumber(steps, stepIndex, code) {
   const lineRef = useRef(null);
   const intervalRef = useRef();
   const blinkRef = useRef();
+  //👸현송 : cmView/steps/stepIndex/code가 바뀔 때마다 안전하게 확장을 만든 뒤 전달 추가
+  // CodeMirror extensions를 안전하게 구성
+  const cmExtensions = useMemo(() => {
+    // 기본 확장: C/C++ 문법 하이라이트
+    const basic = [cpp()];
 
+    // 아직 view가 없으면 기본만
+    if (!cmView) return basic;
+
+    // 현재 하이라이트할 줄 번호(1-based) 계산
+    const ln = findCurrentLineNumber(steps, stepIndex, code);
+
+    // 존재하는 줄일 때만 하이라이트 확장 추가
+    return basic.concat(highlightLine(cmView, ln));
+  }, 
+  [cmView, steps, stepIndex, code]);
+
+  //👸현송 : 초기화 함수 기능 추가
+  const handleResetClick = () => {
+    // 1) 진행 중인 인터벌/블링크 타이머 정리
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+    if (blinkRef.current) {
+      clearInterval(blinkRef.current);
+      blinkRef.current = null;
+    }
+    // 2) 출력창에 메시지 표시
+    setShowResetMessage(true);
+
+    // 3) 시각화와 코드 상태 초기화
+    setCode('');                     // 코드 입력창 비우기
+    setAccumulatedOutput('');        // 출력 누적 비우기
+    setError('');                    // 에러 메시지 제거
+    setStepIndex(0);                 // 인덱스 초기화
+    setSteps([]);                    // 메모리 박스들 비우기 (fallback로 빈 상태 렌더됨)
+
+    // 4) 깜빡임/삭제 관련 상태도 안전하게 초기화 (화면 깔끔)
+    setBlinkOn(true);
+    setBlinkStackFrameIdxs(new Set());
+    setBlinkHeapLabels(new Set());
+    setBlinkDataGraph(false);
+    setDeletingStackIdxs(new Set());
+    setDeletingHeapLabels(new Set());
+    setDeletingData(false);
+    setDeletedDataKeys(new Set());
+
+    // 5) 메시지는 1.2초 정도 보여주고 자동 숨김
+    setTimeout(() => setShowResetMessage(false), 1200);
+  };
+
+  
   // JSON 데이터 초기 로드 (첫 단계 데이터 비우기)
   useEffect(() => {
     fetch('/data/sample.json')
@@ -394,7 +453,6 @@ function CustomDataGraph({ data, blinkDataGraph, deletingData, blinkOn }) {
           <h2>코드입력창</h2>
           <div className="scrollable-container">
             <div className="line-numbers" ref={lineRef}>
-              {generateLineNumbers()}
             </div>
             <CodeMirror
               value={code}
@@ -491,8 +549,15 @@ function CustomDataGraph({ data, blinkDataGraph, deletingData, blinkOn }) {
                   <div className="output-box" style={{ whiteSpace: 'pre-wrap' }}>
                     {loading && '로딩 중...'}
                     {!loading && error && <span style={{ color: '#d33' }}>{error}</span>}
-                    {!loading && !error && !accumulatedOutput && '전체 실행을 눌러주세요'}
-                    {!loading && !error && accumulatedOutput && (accumulatedOutput ? accumulatedOutput : '(출력 없음)')}
+                    {/*👸현송 : 출력결과 메시지 디테일 수정 */}
+                    {/* 초기화 메시지: 리셋 직후에만 표시 */}
+                    {!loading && !error && showResetMessage && ('초기화 되었습니다.')}
+
+                    {/* 출력이 있으면 출력 표시 */}
+                    {!loading && !error && !showResetMessage && accumulatedOutput && (accumulatedOutput || '(출력 없음)')}
+
+                    {/* 아무 것도 없으면 안내 문구 */}
+                    {!loading && !error && !showResetMessage && !accumulatedOutput && ('실행버튼을 눌러주세요.')}
                   </div>
                 </div>
               </div>
