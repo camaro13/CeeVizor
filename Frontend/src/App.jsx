@@ -61,6 +61,7 @@ function findCurrentLineNumber(steps, stepIndex, code) {
   const [infoVisible, setInfoVisible] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
+  const [showResetMessage, setShowResetMessage] = useState(false); // 초기화 메시지 표시 여부
 
   // 기능 상태 (깜빡임, 삭제 등)
   const [stepIndex, setStepIndex] = useState(0);
@@ -78,6 +79,7 @@ function findCurrentLineNumber(steps, stepIndex, code) {
   const lineRef = useRef(null);
   const intervalRef = useRef();
   const blinkRef = useRef();
+
   //👸현송 : cmView/steps/stepIndex/code가 바뀔 때마다 안전하게 확장을 만든 뒤 전달 추가
   // CodeMirror extensions를 안전하게 구성
   const cmExtensions = useMemo(() => {
@@ -127,7 +129,7 @@ function findCurrentLineNumber(steps, stepIndex, code) {
     setDeletedDataKeys(new Set());
 
     // 5) 메시지는 1.2초 정도 보여주고 자동 숨김
-    setTimeout(() => setShowResetMessage(false), 1200);
+    setTimeout(() => setShowResetMessage(false), 3000);
   };
 
   
@@ -470,7 +472,7 @@ function CustomDataGraph({ data, blinkDataGraph, deletingData, blinkOn }) {
               <button onClick={() => alert('한 줄 실행은 나중에 연결 예정입니다.')}>한 줄 실행</button>
               <button onClick={handleRun} disabled={loading}>전체 실행</button>
             </div>
-            <button className="full-width-btn" onClick={() => window.location.reload()}>
+            <button className="full-width-btn" onClick={handleResetClick}> 
               시각화 초기화
             </button>
           </div>

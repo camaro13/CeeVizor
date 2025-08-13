@@ -21,35 +21,6 @@
   user-select: none;
 }
 
-.scrollable-container {
-  display: flex;
-  flex-direction: row;
-  height: 52vh;
-  border: 0.2vw solid #333;
-  background-color: #fff;
-}
-
-.line-numbers {
-  width: 2.2vw;
-  background-color: #fff;
-  text-align: right;
-  padding: 0.7vh 0.4vw 0 0;
-  font-family: 'Nanum Gothic', sans-serif;
-  color: #687086;
-  border-right: 2px solid #ccc;
-  font-size: 1.14vw;
-  line-height: 2.4vh;
-  user-select: none;
-  overflow: hidden;
-}
-
-.line-number {
-  height: 2.8vh;
-  line-height: 2.8vh;
-  font-size: 1.14vw;
-  font-family: 'Nanum Gothic', sans-serif;
-}
-
 .code-input {
   flex: 1;
   font-family: 'Nanum Gothic', sans-serif;
