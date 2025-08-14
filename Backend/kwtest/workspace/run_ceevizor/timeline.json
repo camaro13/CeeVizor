@@ -6,7 +6,9 @@
     "memory": {
       "data_segment": {
         "G_init": 10,
-        "SG_init": 32
+        "SG_init": 32,
+        "G_bss": "NULL",
+        "SG_bss": "NULL"
       },
       "heap": [],
       "stack": []
@@ -15,12 +17,14 @@
   },
   {
     "time": 1,
-    "line_index": 63,
-    "line": "    int a = 7, b = 3;   // ← 여기서는 a,b가 잘 보임(대부분 환경)",
+    "line_index": 101,
+    "line": "    int a = 7, b = 3;",
     "memory": {
       "data_segment": {
         "G_init": 10,
-        "SG_init": 32
+        "SG_init": 32,
+        "G_bss": "NULL",
+        "SG_bss": "NULL"
       },
       "heap": [],
       "stack": [
@@ -37,12 +41,14 @@
   },
   {
     "time": 2,
-    "line_index": 65,
+    "line_index": 103,
     "line": "    printf(\"globals: G_init=%d G_bss=%d SG_init=%d SG_bss=%d\\n\", G_init, G_bss, SG_init, SG_bss);",
     "memory": {
       "data_segment": {
         "G_init": 10,
-        "SG_init": 32
+        "SG_init": 32,
+        "G_bss": "NULL",
+        "SG_bss": "NULL"
       },
       "heap": [],
       "stack": [
@@ -59,12 +65,14 @@
   },
   {
     "time": 3,
-    "line_index": 69,
-    "line": "    swap(&a, &b);       // ← 이 호출 라인이나 바로 이전/다음 printf 라인에서",
+    "line_index": 107,
+    "line": "    swap(&a, &b);",
     "memory": {
       "data_segment": {
         "G_init": 10,
-        "SG_init": 32
+        "SG_init": 32,
+        "G_bss": "NULL",
+        "SG_bss": "NULL"
       },
       "heap": [],
       "stack": [
@@ -82,11 +90,13 @@
   {
     "time": 4,
     "line_index": 21,
-    "line": "    int tmp = *a;                // 선언+초기화 (일부 gdb에서 info locals 빈값)",
+    "line": "    int tmp = *a;",
     "memory": {
       "data_segment": {
         "G_init": 10,
-        "SG_init": 32
+        "SG_init": 32,
+        "G_bss": "NULL",
+        "SG_bss": "NULL"
       },
       "heap": [],
       "stack": [
@@ -100,7 +110,7 @@
         {
           "function": "swap",
           "variables": {
-            "tmp": "NULL"
+            "tmp": "7"
           }
         }
       ]
@@ -114,21 +124,23 @@
     "memory": {
       "data_segment": {
         "G_init": 10,
-        "SG_init": 32
+        "SG_init": 32,
+        "G_bss": "NULL",
+        "SG_bss": "NULL"
       },
       "heap": [],
       "stack": [
         {
           "function": "main",
           "variables": {
-            "a": "7",
+            "a": "3",
             "b": "3"
           }
         },
         {
           "function": "swap",
           "variables": {
-            "tmp": "NULL"
+            "tmp": "7"
           }
         }
       ]
@@ -142,21 +154,23 @@
     "memory": {
       "data_segment": {
         "G_init": 10,
-        "SG_init": 32
+        "SG_init": 32,
+        "G_bss": "NULL",
+        "SG_bss": "NULL"
       },
       "heap": [],
       "stack": [
         {
           "function": "main",
           "variables": {
-            "a": "7",
+            "a": "3",
             "b": "3"
           }
         },
         {
           "function": "swap",
           "variables": {
-            "tmp": "NULL"
+            "tmp": "7"
           }
         }
       ]
@@ -170,21 +184,23 @@
     "memory": {
       "data_segment": {
         "G_init": 10,
-        "SG_init": 32
+        "SG_init": 32,
+        "G_bss": "NULL",
+        "SG_bss": "NULL"
       },
       "heap": [],
       "stack": [
         {
           "function": "main",
           "variables": {
-            "a": "7",
+            "a": "3",
             "b": "3"
           }
         },
         {
           "function": "swap",
           "variables": {
-            "tmp": "NULL"
+            "tmp": "7"
           }
         }
       ]
@@ -193,18 +209,22 @@
   },
   {
     "time": 8,
-    "line_index": 75,
-    "line": "    int s = sum_heap(a + b);  // ← 여기도 마찬가지로 빈값이 들어오기 쉽다",
+    "line_index": 111,
+    "line": "    int s = sum_heap(a + b);",
     "memory": {
       "data_segment": {
         "G_init": 10,
-        "SG_init": 32
+        "SG_init": 32,
+        "G_bss": "NULL",
+        "SG_bss": "NULL"
       },
       "heap": [],
       "stack": [
         {
           "function": "main",
           "variables": {
+            "a": "3",
+            "b": "3",
             "s": "NULL"
           }
         }
@@ -219,14 +239,16 @@
     "memory": {
       "data_segment": {
         "G_init": 10,
-        "SG_init": 32
+        "SG_init": 32,
+        "G_bss": "NULL",
+        "SG_bss": "NULL"
       },
       "heap": [],
       "stack": [
         {
           "function": "main",
           "variables": {
-            "a": "7",
+            "a": "3",
             "b": "3",
             "s": "NULL"
           }
@@ -234,7 +256,7 @@
         {
           "function": "sum_heap",
           "variables": {
-            "p": "NULL"
+            "p": "<heap:p>"
           }
         }
       ]
@@ -248,14 +270,16 @@
     "memory": {
       "data_segment": {
         "G_init": 10,
-        "SG_init": 32
+        "SG_init": 32,
+        "G_bss": "NULL",
+        "SG_bss": "NULL"
       },
       "heap": [],
       "stack": [
         {
           "function": "main",
           "variables": {
-            "a": "7",
+            "a": "3",
             "b": "3",
             "s": "NULL"
           }
@@ -263,7 +287,7 @@
         {
           "function": "sum_heap",
           "variables": {
-            "p": "NULL"
+            "p": "<heap:p>"
           }
         }
       ]
@@ -277,14 +301,16 @@
     "memory": {
       "data_segment": {
         "G_init": 10,
-        "SG_init": 32
+        "SG_init": 32,
+        "G_bss": "NULL",
+        "SG_bss": "NULL"
       },
       "heap": [],
       "stack": [
         {
           "function": "main",
           "variables": {
-            "a": "7",
+            "a": "3",
             "b": "3",
             "s": "NULL"
           }
@@ -292,7 +318,7 @@
         {
           "function": "sum_heap",
           "variables": {
-            "p": "NULL"
+            "p": "<heap:p>"
           }
         }
       ]
@@ -301,19 +327,21 @@
   },
   {
     "time": 12,
-    "line_index": 43,
+    "line_index": 41,
     "line": "    int acc = 0;",
     "memory": {
       "data_segment": {
         "G_init": 10,
-        "SG_init": 32
+        "SG_init": 32,
+        "G_bss": "NULL",
+        "SG_bss": "NULL"
       },
       "heap": [],
       "stack": [
         {
           "function": "main",
           "variables": {
-            "a": "7",
+            "a": "3",
             "b": "3",
             "s": "NULL"
           }
@@ -321,6 +349,7 @@
         {
           "function": "sum_heap",
           "variables": {
+            "p": "<heap:p>",
             "acc": "0"
           }
         }
@@ -330,19 +359,21 @@
   },
   {
     "time": 13,
-    "line_index": 45,
-    "line": "    for (int i = 0; i < 3; ++i) {   // i 선언 라인도 종종 locals 빈값",
+    "line_index": 43,
+    "line": "    for (int i = 0; i < 3; ++i) {",
     "memory": {
       "data_segment": {
         "G_init": 10,
-        "SG_init": 32
+        "SG_init": 32,
+        "G_bss": "NULL",
+        "SG_bss": "NULL"
       },
       "heap": [],
       "stack": [
         {
           "function": "main",
           "variables": {
-            "a": "7",
+            "a": "3",
             "b": "3",
             "s": "NULL"
           }
@@ -350,8 +381,9 @@
         {
           "function": "sum_heap",
           "variables": {
-            "p": "NULL",
-            "acc": "0"
+            "p": "<heap:p>",
+            "acc": "0",
+            "i": 0
           }
         }
       ]
@@ -360,19 +392,21 @@
   },
   {
     "time": 14,
-    "line_index": 47,
+    "line_index": 45,
     "line": "        acc += *p + i;",
     "memory": {
       "data_segment": {
         "G_init": 10,
-        "SG_init": 32
+        "SG_init": 32,
+        "G_bss": "NULL",
+        "SG_bss": "NULL"
       },
       "heap": [],
       "stack": [
         {
           "function": "main",
           "variables": {
-            "a": "7",
+            "a": "3",
             "b": "3",
             "s": "NULL"
           }
@@ -380,8 +414,9 @@
         {
           "function": "sum_heap",
           "variables": {
-            "p": "NULL",
-            "acc": "0"
+            "p": "<heap:p>",
+            "acc": "0",
+            "i": 0
           }
         }
       ]
@@ -390,19 +425,21 @@
   },
   {
     "time": 15,
-    "line_index": 47,
+    "line_index": 45,
     "line": "        acc += *p + i;",
     "memory": {
       "data_segment": {
         "G_init": 10,
-        "SG_init": 32
+        "SG_init": 32,
+        "G_bss": "NULL",
+        "SG_bss": "NULL"
       },
       "heap": [],
       "stack": [
         {
           "function": "main",
           "variables": {
-            "a": "7",
+            "a": "3",
             "b": "3",
             "s": "NULL"
           }
@@ -410,8 +447,9 @@
         {
           "function": "sum_heap",
           "variables": {
-            "p": "NULL",
-            "acc": "0"
+            "p": "<heap:p>",
+            "acc": "0",
+            "i": 1
           }
         }
       ]
@@ -420,19 +458,21 @@
   },
   {
     "time": 16,
-    "line_index": 47,
+    "line_index": 45,
     "line": "        acc += *p + i;",
     "memory": {
       "data_segment": {
         "G_init": 10,
-        "SG_init": 32
+        "SG_init": 32,
+        "G_bss": "NULL",
+        "SG_bss": "NULL"
       },
       "heap": [],
       "stack": [
         {
           "function": "main",
           "variables": {
-            "a": "7",
+            "a": "3",
             "b": "3",
             "s": "NULL"
           }
@@ -440,8 +480,9 @@
         {
           "function": "sum_heap",
           "variables": {
-            "p": "NULL",
-            "acc": "0"
+            "p": "<heap:p>",
+            "acc": "0",
+            "i": 2
           }
         }
       ]
@@ -450,19 +491,21 @@
   },
   {
     "time": 17,
-    "line_index": 51,
+    "line_index": 49,
     "line": "    printf(\"sum_heap: *p=%d acc=%d\\n\", *p, acc);",
     "memory": {
       "data_segment": {
         "G_init": 10,
-        "SG_init": 32
+        "SG_init": 32,
+        "G_bss": "NULL",
+        "SG_bss": "NULL"
       },
       "heap": [],
       "stack": [
         {
           "function": "main",
           "variables": {
-            "a": "7",
+            "a": "3",
             "b": "3",
             "s": "NULL"
           }
@@ -470,8 +513,9 @@
         {
           "function": "sum_heap",
           "variables": {
-            "p": "NULL",
-            "acc": "0"
+            "p": "<heap:p>",
+            "acc": "0",
+            "i": 2
           }
         }
       ]
@@ -480,19 +524,21 @@
   },
   {
     "time": 18,
-    "line_index": 53,
+    "line_index": 51,
     "line": "    free(p);",
     "memory": {
       "data_segment": {
         "G_init": 10,
-        "SG_init": 32
+        "SG_init": 32,
+        "G_bss": "NULL",
+        "SG_bss": "NULL"
       },
       "heap": [],
       "stack": [
         {
           "function": "main",
           "variables": {
-            "a": "7",
+            "a": "3",
             "b": "3",
             "s": "NULL"
           }
@@ -500,8 +546,9 @@
         {
           "function": "sum_heap",
           "variables": {
-            "p": "NULL",
-            "acc": "0"
+            "p": "<heap:p>",
+            "acc": "0",
+            "i": 2
           }
         }
       ]
@@ -510,28 +557,31 @@
   },
   {
     "time": 19,
-    "line_index": 55,
+    "line_index": 53,
     "line": "    return acc;",
     "memory": {
       "data_segment": {
         "G_init": 10,
-        "SG_init": 32
+        "SG_init": 32,
+        "G_bss": "NULL",
+        "SG_bss": "NULL"
       },
       "heap": [],
       "stack": [
         {
           "function": "main",
           "variables": {
-            "a": "7",
+            "a": "3",
             "b": "3",
-            "s": "NULL"
+            "s": 0
           }
         },
         {
           "function": "sum_heap",
           "variables": {
-            "p": "NULL",
-            "acc": "0"
+            "p": "<heap:p>",
+            "acc": "0",
+            "i": 2
           }
         }
       ]
@@ -540,44 +590,672 @@
   },
   {
     "time": 20,
-    "line_index": 77,
-    "line": "    printf(\"main: a=%d b=%d s=%d\\n\", a, b, s);",
+    "line_index": 113,
+    "line": "    int t1 = bump_static(1);",
     "memory": {
       "data_segment": {
         "G_init": 10,
-        "SG_init": 32
+        "SG_init": 32,
+        "G_bss": "NULL",
+        "SG_bss": "NULL"
       },
       "heap": [],
       "stack": [
         {
           "function": "main",
           "variables": {
-            "a": "7",
+            "a": "3",
             "b": "3",
-            "s": "NULL"
+            "s": 0,
+            "t1": "NULL"
           }
         }
       ]
     },
-    "output": "main: a=3 b=7 s=33\n"
+    "output": ""
   },
   {
     "time": 21,
-    "line_index": 81,
-    "line": "    return 0;",
+    "line_index": 63,
+    "line": "    cnt += x;",
     "memory": {
       "data_segment": {
         "G_init": 10,
-        "SG_init": 32
+        "SG_init": 32,
+        "G_bss": "NULL",
+        "SG_bss": "NULL"
       },
       "heap": [],
       "stack": [
         {
           "function": "main",
           "variables": {
-            "a": "7",
+            "a": "3",
             "b": "3",
-            "s": "NULL"
+            "s": 0,
+            "t1": "NULL"
+          }
+        },
+        {
+          "function": "bump_static",
+          "variables": {}
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 22,
+    "line_index": 65,
+    "line": "    printf(\"bump_static: cnt=%d\\n\", cnt);",
+    "memory": {
+      "data_segment": {
+        "G_init": 10,
+        "SG_init": 32,
+        "G_bss": "NULL",
+        "SG_bss": "NULL"
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {
+            "a": "3",
+            "b": "3",
+            "s": 0,
+            "t1": "NULL"
+          }
+        },
+        {
+          "function": "bump_static",
+          "variables": {}
+        }
+      ]
+    },
+    "output": "bump_static: cnt=1\n"
+  },
+  {
+    "time": 23,
+    "line_index": 67,
+    "line": "    return cnt;",
+    "memory": {
+      "data_segment": {
+        "G_init": 10,
+        "SG_init": 32,
+        "G_bss": "NULL",
+        "SG_bss": "NULL"
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {
+            "a": "3",
+            "b": "3",
+            "s": 0,
+            "t1": 1
+          }
+        },
+        {
+          "function": "bump_static",
+          "variables": {}
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 24,
+    "line_index": 115,
+    "line": "    int t2 = bump_static(2);",
+    "memory": {
+      "data_segment": {
+        "G_init": 10,
+        "SG_init": 32,
+        "G_bss": "NULL",
+        "SG_bss": "NULL"
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {
+            "a": "3",
+            "b": "3",
+            "s": 0,
+            "t1": 1,
+            "t2": "NULL"
+          }
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 25,
+    "line_index": 63,
+    "line": "    cnt += x;",
+    "memory": {
+      "data_segment": {
+        "G_init": 10,
+        "SG_init": 32,
+        "G_bss": "NULL",
+        "SG_bss": "NULL"
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {
+            "a": "3",
+            "b": "3",
+            "s": 0,
+            "t1": 1,
+            "t2": "NULL"
+          }
+        },
+        {
+          "function": "bump_static",
+          "variables": {}
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 26,
+    "line_index": 65,
+    "line": "    printf(\"bump_static: cnt=%d\\n\", cnt);",
+    "memory": {
+      "data_segment": {
+        "G_init": 10,
+        "SG_init": 32,
+        "G_bss": "NULL",
+        "SG_bss": "NULL"
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {
+            "a": "3",
+            "b": "3",
+            "s": 0,
+            "t1": 1,
+            "t2": "NULL"
+          }
+        },
+        {
+          "function": "bump_static",
+          "variables": {}
+        }
+      ]
+    },
+    "output": "bump_static: cnt=3\n"
+  },
+  {
+    "time": 27,
+    "line_index": 67,
+    "line": "    return cnt;",
+    "memory": {
+      "data_segment": {
+        "G_init": 10,
+        "SG_init": 32,
+        "G_bss": "NULL",
+        "SG_bss": "NULL"
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {
+            "a": "3",
+            "b": "3",
+            "s": 0,
+            "t1": 1,
+            "t2": 2
+          }
+        },
+        {
+          "function": "bump_static",
+          "variables": {}
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 28,
+    "line_index": 117,
+    "line": "    int t3 = twice_malloc(s);",
+    "memory": {
+      "data_segment": {
+        "G_init": 10,
+        "SG_init": 32,
+        "G_bss": "NULL",
+        "SG_bss": "NULL"
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {
+            "a": "3",
+            "b": "3",
+            "s": 0,
+            "t1": 1,
+            "t2": 2,
+            "t3": "NULL"
+          }
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 29,
+    "line_index": 75,
+    "line": "    int *p = (int*)malloc(sizeof(int));",
+    "memory": {
+      "data_segment": {
+        "G_init": 10,
+        "SG_init": 32,
+        "G_bss": "NULL",
+        "SG_bss": "NULL"
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {
+            "a": "3",
+            "b": "3",
+            "s": 0,
+            "t1": 1,
+            "t2": 2,
+            "t3": "NULL"
+          }
+        },
+        {
+          "function": "twice_malloc",
+          "variables": {
+            "p": "<heap:p>"
+          }
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 30,
+    "line_index": 77,
+    "line": "    int *q = (int*)malloc(sizeof(int));",
+    "memory": {
+      "data_segment": {
+        "G_init": 10,
+        "SG_init": 32,
+        "G_bss": "NULL",
+        "SG_bss": "NULL"
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {
+            "a": "3",
+            "b": "3",
+            "s": 0,
+            "t1": 1,
+            "t2": 2,
+            "t3": "NULL"
+          }
+        },
+        {
+          "function": "twice_malloc",
+          "variables": {
+            "p": "<heap:p>",
+            "q": "<heap:q>"
+          }
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 31,
+    "line_index": 79,
+    "line": "    if (!p || !q) return -1;",
+    "memory": {
+      "data_segment": {
+        "G_init": 10,
+        "SG_init": 32,
+        "G_bss": "NULL",
+        "SG_bss": "NULL"
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {
+            "a": "3",
+            "b": "3",
+            "s": 0,
+            "t1": 1,
+            "t2": 2,
+            "t3": "NULL"
+          }
+        },
+        {
+          "function": "twice_malloc",
+          "variables": {
+            "p": "<heap:p>",
+            "q": "<heap:q>"
+          }
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 32,
+    "line_index": 81,
+    "line": "    *p = n;",
+    "memory": {
+      "data_segment": {
+        "G_init": 10,
+        "SG_init": 32,
+        "G_bss": "NULL",
+        "SG_bss": "NULL"
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {
+            "a": "3",
+            "b": "3",
+            "s": 0,
+            "t1": 1,
+            "t2": 2,
+            "t3": "NULL"
+          }
+        },
+        {
+          "function": "twice_malloc",
+          "variables": {
+            "p": "<heap:p>",
+            "q": "<heap:q>"
+          }
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 33,
+    "line_index": 83,
+    "line": "    *q = n + 1;",
+    "memory": {
+      "data_segment": {
+        "G_init": 10,
+        "SG_init": 32,
+        "G_bss": "NULL",
+        "SG_bss": "NULL"
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {
+            "a": "3",
+            "b": "3",
+            "s": 0,
+            "t1": 1,
+            "t2": 2,
+            "t3": "NULL"
+          }
+        },
+        {
+          "function": "twice_malloc",
+          "variables": {
+            "p": "<heap:p>",
+            "q": "<heap:q>"
+          }
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 34,
+    "line_index": 85,
+    "line": "    int r = *p + *q;",
+    "memory": {
+      "data_segment": {
+        "G_init": 10,
+        "SG_init": 32,
+        "G_bss": "NULL",
+        "SG_bss": "NULL"
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {
+            "a": "3",
+            "b": "3",
+            "s": 0,
+            "t1": 1,
+            "t2": 2,
+            "t3": "NULL"
+          }
+        },
+        {
+          "function": "twice_malloc",
+          "variables": {
+            "p": "<heap:p>",
+            "q": "<heap:q>",
+            "r": 0
+          }
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 35,
+    "line_index": 87,
+    "line": "    printf(\"twice_malloc: p=%d q=%d r=%d\\n\", *p, *q, r);",
+    "memory": {
+      "data_segment": {
+        "G_init": 10,
+        "SG_init": 32,
+        "G_bss": "NULL",
+        "SG_bss": "NULL"
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {
+            "a": "3",
+            "b": "3",
+            "s": 0,
+            "t1": 1,
+            "t2": 2,
+            "t3": "NULL"
+          }
+        },
+        {
+          "function": "twice_malloc",
+          "variables": {
+            "p": "<heap:p>",
+            "q": "<heap:q>",
+            "r": 0
+          }
+        }
+      ]
+    },
+    "output": "twice_malloc: p=33 q=34 r=67\n"
+  },
+  {
+    "time": 36,
+    "line_index": 89,
+    "line": "    free(p);",
+    "memory": {
+      "data_segment": {
+        "G_init": 10,
+        "SG_init": 32,
+        "G_bss": "NULL",
+        "SG_bss": "NULL"
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {
+            "a": "3",
+            "b": "3",
+            "s": 0,
+            "t1": 1,
+            "t2": 2,
+            "t3": "NULL"
+          }
+        },
+        {
+          "function": "twice_malloc",
+          "variables": {
+            "p": "<heap:p>",
+            "q": "<heap:q>",
+            "r": 0
+          }
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 37,
+    "line_index": 91,
+    "line": "    free(q);",
+    "memory": {
+      "data_segment": {
+        "G_init": 10,
+        "SG_init": 32,
+        "G_bss": "NULL",
+        "SG_bss": "NULL"
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {
+            "a": "3",
+            "b": "3",
+            "s": 0,
+            "t1": 1,
+            "t2": 2,
+            "t3": "NULL"
+          }
+        },
+        {
+          "function": "twice_malloc",
+          "variables": {
+            "p": "<heap:p>",
+            "q": "<heap:q>",
+            "r": 0
+          }
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 38,
+    "line_index": 93,
+    "line": "    return r;",
+    "memory": {
+      "data_segment": {
+        "G_init": 10,
+        "SG_init": 32,
+        "G_bss": "NULL",
+        "SG_bss": "NULL"
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {
+            "a": "3",
+            "b": "3",
+            "s": 0,
+            "t1": 1,
+            "t2": 2,
+            "t3": 0
+          }
+        },
+        {
+          "function": "twice_malloc",
+          "variables": {
+            "p": "<heap:p>",
+            "q": "<heap:q>",
+            "r": 0
+          }
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 39,
+    "line_index": 121,
+    "line": "    printf(\"main: a=%d b=%d s=%d t1=%d t2=%d t3=%d\\n\", a, b, s, t1, t2, t3);",
+    "memory": {
+      "data_segment": {
+        "G_init": 10,
+        "SG_init": 32,
+        "G_bss": "NULL",
+        "SG_bss": "NULL"
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {
+            "a": "3",
+            "b": "3",
+            "s": 0,
+            "t1": 1,
+            "t2": 2,
+            "t3": 0
+          }
+        }
+      ]
+    },
+    "output": "main: a=3 b=7 s=33 t1=1 t2=3 t3=67\n"
+  },
+  {
+    "time": 40,
+    "line_index": 123,
+    "line": "    return 0;",
+    "memory": {
+      "data_segment": {
+        "G_init": 10,
+        "SG_init": 32,
+        "G_bss": "NULL",
+        "SG_bss": "NULL"
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {
+            "a": "3",
+            "b": "3",
+            "s": 0,
+            "t1": 1,
+            "t2": 2,
+            "t3": 0
           }
         }
       ]

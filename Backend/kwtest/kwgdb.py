@@ -122,7 +122,7 @@ def generate_gdb_script_linebps(exec_lines, source_file="main.c"):
         "set confirm off",
         "set step-mode on",
         "set breakpoint pending on",
-        "set backtrace limit 64",
+        "set backtrace limit 64",   # 중복 한 줄만 유지
         "directory .",
 
         # 시작 지점 1회 스냅샷

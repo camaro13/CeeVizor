@@ -240,6 +240,21 @@ commands
   printf "##ENDSTEP##\n"
   continue
 end
+break main.c:41
+commands
+  silent
+  printf "##STEP##\n"
+  printf "##BT##\n"
+  bt
+  frame 0
+  info line
+  printf "##ARGS##\n"
+  info args
+  printf "##LOCALS##\n"
+  info locals
+  printf "##ENDSTEP##\n"
+  continue
+end
 break main.c:43
 commands
   silent
@@ -270,7 +285,7 @@ commands
   printf "##ENDSTEP##\n"
   continue
 end
-break main.c:47
+break main.c:49
 commands
   silent
   printf "##STEP##\n"
@@ -315,7 +330,7 @@ commands
   printf "##ENDSTEP##\n"
   continue
 end
-break main.c:55
+break main.c:59
 commands
   silent
   printf "##STEP##\n"
@@ -375,7 +390,22 @@ commands
   printf "##ENDSTEP##\n"
   continue
 end
-break main.c:69
+break main.c:67
+commands
+  silent
+  printf "##STEP##\n"
+  printf "##BT##\n"
+  bt
+  frame 0
+  info line
+  printf "##ARGS##\n"
+  info args
+  printf "##LOCALS##\n"
+  info locals
+  printf "##ENDSTEP##\n"
+  continue
+end
+break main.c:73
 commands
   silent
   printf "##STEP##\n"
@@ -420,7 +450,262 @@ commands
   printf "##ENDSTEP##\n"
   continue
 end
+break main.c:79
+commands
+  silent
+  printf "##STEP##\n"
+  printf "##BT##\n"
+  bt
+  frame 0
+  info line
+  printf "##ARGS##\n"
+  info args
+  printf "##LOCALS##\n"
+  info locals
+  printf "##ENDSTEP##\n"
+  continue
+end
 break main.c:81
+commands
+  silent
+  printf "##STEP##\n"
+  printf "##BT##\n"
+  bt
+  frame 0
+  info line
+  printf "##ARGS##\n"
+  info args
+  printf "##LOCALS##\n"
+  info locals
+  printf "##ENDSTEP##\n"
+  continue
+end
+break main.c:83
+commands
+  silent
+  printf "##STEP##\n"
+  printf "##BT##\n"
+  bt
+  frame 0
+  info line
+  printf "##ARGS##\n"
+  info args
+  printf "##LOCALS##\n"
+  info locals
+  printf "##ENDSTEP##\n"
+  continue
+end
+break main.c:85
+commands
+  silent
+  printf "##STEP##\n"
+  printf "##BT##\n"
+  bt
+  frame 0
+  info line
+  printf "##ARGS##\n"
+  info args
+  printf "##LOCALS##\n"
+  info locals
+  printf "##ENDSTEP##\n"
+  continue
+end
+break main.c:87
+commands
+  silent
+  printf "##STEP##\n"
+  printf "##BT##\n"
+  bt
+  frame 0
+  info line
+  printf "##ARGS##\n"
+  info args
+  printf "##LOCALS##\n"
+  info locals
+  printf "##ENDSTEP##\n"
+  continue
+end
+break main.c:89
+commands
+  silent
+  printf "##STEP##\n"
+  printf "##BT##\n"
+  bt
+  frame 0
+  info line
+  printf "##ARGS##\n"
+  info args
+  printf "##LOCALS##\n"
+  info locals
+  printf "##ENDSTEP##\n"
+  continue
+end
+break main.c:91
+commands
+  silent
+  printf "##STEP##\n"
+  printf "##BT##\n"
+  bt
+  frame 0
+  info line
+  printf "##ARGS##\n"
+  info args
+  printf "##LOCALS##\n"
+  info locals
+  printf "##ENDSTEP##\n"
+  continue
+end
+break main.c:93
+commands
+  silent
+  printf "##STEP##\n"
+  printf "##BT##\n"
+  bt
+  frame 0
+  info line
+  printf "##ARGS##\n"
+  info args
+  printf "##LOCALS##\n"
+  info locals
+  printf "##ENDSTEP##\n"
+  continue
+end
+break main.c:99
+commands
+  silent
+  printf "##STEP##\n"
+  printf "##BT##\n"
+  bt
+  frame 0
+  info line
+  printf "##ARGS##\n"
+  info args
+  printf "##LOCALS##\n"
+  info locals
+  printf "##ENDSTEP##\n"
+  continue
+end
+break main.c:101
+commands
+  silent
+  printf "##STEP##\n"
+  printf "##BT##\n"
+  bt
+  frame 0
+  info line
+  printf "##ARGS##\n"
+  info args
+  printf "##LOCALS##\n"
+  info locals
+  printf "##ENDSTEP##\n"
+  continue
+end
+break main.c:103
+commands
+  silent
+  printf "##STEP##\n"
+  printf "##BT##\n"
+  bt
+  frame 0
+  info line
+  printf "##ARGS##\n"
+  info args
+  printf "##LOCALS##\n"
+  info locals
+  printf "##ENDSTEP##\n"
+  continue
+end
+break main.c:107
+commands
+  silent
+  printf "##STEP##\n"
+  printf "##BT##\n"
+  bt
+  frame 0
+  info line
+  printf "##ARGS##\n"
+  info args
+  printf "##LOCALS##\n"
+  info locals
+  printf "##ENDSTEP##\n"
+  continue
+end
+break main.c:111
+commands
+  silent
+  printf "##STEP##\n"
+  printf "##BT##\n"
+  bt
+  frame 0
+  info line
+  printf "##ARGS##\n"
+  info args
+  printf "##LOCALS##\n"
+  info locals
+  printf "##ENDSTEP##\n"
+  continue
+end
+break main.c:113
+commands
+  silent
+  printf "##STEP##\n"
+  printf "##BT##\n"
+  bt
+  frame 0
+  info line
+  printf "##ARGS##\n"
+  info args
+  printf "##LOCALS##\n"
+  info locals
+  printf "##ENDSTEP##\n"
+  continue
+end
+break main.c:115
+commands
+  silent
+  printf "##STEP##\n"
+  printf "##BT##\n"
+  bt
+  frame 0
+  info line
+  printf "##ARGS##\n"
+  info args
+  printf "##LOCALS##\n"
+  info locals
+  printf "##ENDSTEP##\n"
+  continue
+end
+break main.c:117
+commands
+  silent
+  printf "##STEP##\n"
+  printf "##BT##\n"
+  bt
+  frame 0
+  info line
+  printf "##ARGS##\n"
+  info args
+  printf "##LOCALS##\n"
+  info locals
+  printf "##ENDSTEP##\n"
+  continue
+end
+break main.c:121
+commands
+  silent
+  printf "##STEP##\n"
+  printf "##BT##\n"
+  bt
+  frame 0
+  info line
+  printf "##ARGS##\n"
+  info args
+  printf "##LOCALS##\n"
+  info locals
+  printf "##ENDSTEP##\n"
+  continue
+end
+break main.c:123
 commands
   silent
   printf "##STEP##\n"
