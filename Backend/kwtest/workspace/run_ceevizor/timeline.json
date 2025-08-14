@@ -4,7 +4,10 @@
     "line_index": 0,
     "line": "프로그램 시작 및 전역변수 초기화",
     "memory": {
-      "data_segment": {},
+      "data_segment": {
+        "G_init": 10,
+        "SG_init": 32
+      },
       "heap": [],
       "stack": []
     },
@@ -12,18 +15,20 @@
   },
   {
     "time": 1,
-    "line_index": 13,
-    "line": "  int num1 = 11, num2 = 5;",
+    "line_index": 63,
+    "line": "    int a = 7, b = 3;   // ← 여기서는 a,b가 잘 보임(대부분 환경)",
     "memory": {
-      "data_segment": {},
+      "data_segment": {
+        "G_init": 10,
+        "SG_init": 32
+      },
       "heap": [],
       "stack": [
         {
           "function": "main",
           "variables": {
-            "sum": "0",
-            "num1": "11",
-            "num2": "5"
+            "a": "7",
+            "b": "3"
           }
         }
       ]
@@ -32,37 +37,42 @@
   },
   {
     "time": 2,
-    "line_index": 21,
-    "line": "  sum = add(num1, num2);",
+    "line_index": 65,
+    "line": "    printf(\"globals: G_init=%d G_bss=%d SG_init=%d SG_bss=%d\\n\", G_init, G_bss, SG_init, SG_bss);",
     "memory": {
-      "data_segment": {},
+      "data_segment": {
+        "G_init": 10,
+        "SG_init": 32
+      },
       "heap": [],
       "stack": [
         {
           "function": "main",
           "variables": {
-            "num1": "11",
-            "num2": "5",
-            "sum": "0"
+            "a": "7",
+            "b": "3"
           }
         }
       ]
     },
-    "output": ""
+    "output": "globals: G_init=10 G_bss=0 SG_init=32 SG_bss=0\n"
   },
   {
     "time": 3,
-    "line_index": 39,
-    "line": "  return a + b;",
+    "line_index": 69,
+    "line": "    swap(&a, &b);       // ← 이 호출 라인이나 바로 이전/다음 printf 라인에서",
     "memory": {
-      "data_segment": {},
+      "data_segment": {
+        "G_init": 10,
+        "SG_init": 32
+      },
       "heap": [],
       "stack": [
         {
-          "function": "add",
+          "function": "main",
           "variables": {
-            "a": "11",
-            "b": "5"
+            "a": "7",
+            "b": "3"
           }
         }
       ]
@@ -71,38 +81,503 @@
   },
   {
     "time": 4,
-    "line_index": 25,
-    "line": "  printf(\"두 수의 합: %d\\n\", sum);",
+    "line_index": 21,
+    "line": "    int tmp = *a;                // 선언+초기화 (일부 gdb에서 info locals 빈값)",
     "memory": {
-      "data_segment": {},
+      "data_segment": {
+        "G_init": 10,
+        "SG_init": 32
+      },
       "heap": [],
       "stack": [
         {
           "function": "main",
           "variables": {
-            "num1": "11",
-            "num2": "5",
-            "sum": "16"
+            "a": "7",
+            "b": "3"
+          }
+        },
+        {
+          "function": "swap",
+          "variables": {
+            "tmp": "NULL"
           }
         }
       ]
     },
-    "output": "두 수의 합: 16\n"
+    "output": ""
   },
   {
     "time": 5,
-    "line_index": 29,
-    "line": "  return 0;",
+    "line_index": 23,
+    "line": "    *a = *b;",
     "memory": {
-      "data_segment": {},
+      "data_segment": {
+        "G_init": 10,
+        "SG_init": 32
+      },
       "heap": [],
       "stack": [
         {
           "function": "main",
           "variables": {
-            "num1": "11",
-            "num2": "5",
-            "sum": "16"
+            "a": "7",
+            "b": "3"
+          }
+        },
+        {
+          "function": "swap",
+          "variables": {
+            "tmp": "NULL"
+          }
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 6,
+    "line_index": 25,
+    "line": "    *b = tmp;",
+    "memory": {
+      "data_segment": {
+        "G_init": 10,
+        "SG_init": 32
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {
+            "a": "7",
+            "b": "3"
+          }
+        },
+        {
+          "function": "swap",
+          "variables": {
+            "tmp": "NULL"
+          }
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 7,
+    "line_index": 27,
+    "line": "    printf(\"swap: a=%d b=%d\\n\", *a, *b);",
+    "memory": {
+      "data_segment": {
+        "G_init": 10,
+        "SG_init": 32
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {
+            "a": "7",
+            "b": "3"
+          }
+        },
+        {
+          "function": "swap",
+          "variables": {
+            "tmp": "NULL"
+          }
+        }
+      ]
+    },
+    "output": "swap: a=3 b=7\n"
+  },
+  {
+    "time": 8,
+    "line_index": 75,
+    "line": "    int s = sum_heap(a + b);  // ← 여기도 마찬가지로 빈값이 들어오기 쉽다",
+    "memory": {
+      "data_segment": {
+        "G_init": 10,
+        "SG_init": 32
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {
+            "s": "NULL"
+          }
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 9,
+    "line_index": 35,
+    "line": "    int *p = (int*)malloc(sizeof(int));",
+    "memory": {
+      "data_segment": {
+        "G_init": 10,
+        "SG_init": 32
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {
+            "a": "7",
+            "b": "3",
+            "s": "NULL"
+          }
+        },
+        {
+          "function": "sum_heap",
+          "variables": {
+            "p": "NULL"
+          }
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 10,
+    "line_index": 37,
+    "line": "    if (!p) return -1;",
+    "memory": {
+      "data_segment": {
+        "G_init": 10,
+        "SG_init": 32
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {
+            "a": "7",
+            "b": "3",
+            "s": "NULL"
+          }
+        },
+        {
+          "function": "sum_heap",
+          "variables": {
+            "p": "NULL"
+          }
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 11,
+    "line_index": 39,
+    "line": "    *p = n;",
+    "memory": {
+      "data_segment": {
+        "G_init": 10,
+        "SG_init": 32
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {
+            "a": "7",
+            "b": "3",
+            "s": "NULL"
+          }
+        },
+        {
+          "function": "sum_heap",
+          "variables": {
+            "p": "NULL"
+          }
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 12,
+    "line_index": 43,
+    "line": "    int acc = 0;",
+    "memory": {
+      "data_segment": {
+        "G_init": 10,
+        "SG_init": 32
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {
+            "a": "7",
+            "b": "3",
+            "s": "NULL"
+          }
+        },
+        {
+          "function": "sum_heap",
+          "variables": {
+            "acc": "0"
+          }
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 13,
+    "line_index": 45,
+    "line": "    for (int i = 0; i < 3; ++i) {   // i 선언 라인도 종종 locals 빈값",
+    "memory": {
+      "data_segment": {
+        "G_init": 10,
+        "SG_init": 32
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {
+            "a": "7",
+            "b": "3",
+            "s": "NULL"
+          }
+        },
+        {
+          "function": "sum_heap",
+          "variables": {
+            "p": "NULL",
+            "acc": "0"
+          }
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 14,
+    "line_index": 47,
+    "line": "        acc += *p + i;",
+    "memory": {
+      "data_segment": {
+        "G_init": 10,
+        "SG_init": 32
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {
+            "a": "7",
+            "b": "3",
+            "s": "NULL"
+          }
+        },
+        {
+          "function": "sum_heap",
+          "variables": {
+            "p": "NULL",
+            "acc": "0"
+          }
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 15,
+    "line_index": 47,
+    "line": "        acc += *p + i;",
+    "memory": {
+      "data_segment": {
+        "G_init": 10,
+        "SG_init": 32
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {
+            "a": "7",
+            "b": "3",
+            "s": "NULL"
+          }
+        },
+        {
+          "function": "sum_heap",
+          "variables": {
+            "p": "NULL",
+            "acc": "0"
+          }
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 16,
+    "line_index": 47,
+    "line": "        acc += *p + i;",
+    "memory": {
+      "data_segment": {
+        "G_init": 10,
+        "SG_init": 32
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {
+            "a": "7",
+            "b": "3",
+            "s": "NULL"
+          }
+        },
+        {
+          "function": "sum_heap",
+          "variables": {
+            "p": "NULL",
+            "acc": "0"
+          }
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 17,
+    "line_index": 51,
+    "line": "    printf(\"sum_heap: *p=%d acc=%d\\n\", *p, acc);",
+    "memory": {
+      "data_segment": {
+        "G_init": 10,
+        "SG_init": 32
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {
+            "a": "7",
+            "b": "3",
+            "s": "NULL"
+          }
+        },
+        {
+          "function": "sum_heap",
+          "variables": {
+            "p": "NULL",
+            "acc": "0"
+          }
+        }
+      ]
+    },
+    "output": "sum_heap: *p=10 acc=33\n"
+  },
+  {
+    "time": 18,
+    "line_index": 53,
+    "line": "    free(p);",
+    "memory": {
+      "data_segment": {
+        "G_init": 10,
+        "SG_init": 32
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {
+            "a": "7",
+            "b": "3",
+            "s": "NULL"
+          }
+        },
+        {
+          "function": "sum_heap",
+          "variables": {
+            "p": "NULL",
+            "acc": "0"
+          }
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 19,
+    "line_index": 55,
+    "line": "    return acc;",
+    "memory": {
+      "data_segment": {
+        "G_init": 10,
+        "SG_init": 32
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {
+            "a": "7",
+            "b": "3",
+            "s": "NULL"
+          }
+        },
+        {
+          "function": "sum_heap",
+          "variables": {
+            "p": "NULL",
+            "acc": "0"
+          }
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 20,
+    "line_index": 77,
+    "line": "    printf(\"main: a=%d b=%d s=%d\\n\", a, b, s);",
+    "memory": {
+      "data_segment": {
+        "G_init": 10,
+        "SG_init": 32
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {
+            "a": "7",
+            "b": "3",
+            "s": "NULL"
+          }
+        }
+      ]
+    },
+    "output": "main: a=3 b=7 s=33\n"
+  },
+  {
+    "time": 21,
+    "line_index": 81,
+    "line": "    return 0;",
+    "memory": {
+      "data_segment": {
+        "G_init": 10,
+        "SG_init": 32
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {
+            "a": "7",
+            "b": "3",
+            "s": "NULL"
           }
         }
       ]

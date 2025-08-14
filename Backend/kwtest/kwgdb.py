@@ -58,8 +58,6 @@ def calc_executable_lines(src="main.c"):
             exec_lines.append(i)
     return exec_lines, lines
 
-import re
-
 # 함수별 지역 변수 선언 라인 수집
 def collect_decl_lines_by_func(src_path: str):
     lines = load_source_lines(src_path)
@@ -119,52 +117,48 @@ def collect_decl_lines_by_func(src_path: str):
 
 # 각 실행 라인에 BP를 걸고 스냅샷 출력하는 GDB 스크립트 생성
 def generate_gdb_script_linebps(exec_lines, source_file="main.c"):
-    script = ["set pagination off",
-              "set confirm off",
-              "set step-mode on",
-              "set breakpoint pending on",
-              "directory .",
-              "skip function printf",
-              "skip function fprintf",
-              "skip function vprintf",
-              "skip function puts",
-              "skip function fputs",
-              "skip function putchar",
-              "skip function __mingw_printf",
-              "skip function __mingw_fprintf",
-              "skip function __mingw_vprintf",
-              "skip function __msvcrt_printf",
-              "skip function __msvcrt_fprintf",
-              "start",
-              'printf "##STEP##\\n"',
-              "frame 0",
-              "info line",
-              'printf "##ARGS##\\n"',
-              "info args",
-              'printf "##LOCALS##\\n"',
-              "info locals",
-              'printf "##ENDCOLLECT##\\n"',
-              ]
+    script = [
+        "set pagination off",
+        "set confirm off",
+        "set step-mode on",
+        "set breakpoint pending on",
+        "set backtrace limit 64",
+        "directory .",
+
+        # 시작 지점 1회 스냅샷
+        "start",
+        'printf "##STEP##\\n"',
+        'printf "##BT##\\n"',
+        "bt",
+        "frame 0",
+        "info line",
+        'printf "##ARGS##\\n"',
+        "info args",
+        'printf "##LOCALS##\\n"',
+        "info locals",
+        'printf "##ENDSTEP##\\n"',
+    ]
 
     for ln in exec_lines:
-        script.append(f"break {source_file}:{ln}")
         script += [
+            f"break {source_file}:{ln}",
             "commands",
-            "silent",
-            'printf "##STEP##\\n"',
-            "frame 0",
-            "info line",
-            'printf "##ARGS##\\n"',
-            "info args",
-            'printf "##LOCALS##\\n"',
-            "info locals",
-            'printf "##ENDCOLLECT##\\n"',
-            "continue",
-            "end"
+            "  silent",
+            '  printf "##STEP##\\n"',
+            '  printf "##BT##\\n"',
+            "  bt",
+            "  frame 0",
+            "  info line",
+            '  printf "##ARGS##\\n"',
+            "  info args",
+            '  printf "##LOCALS##\\n"',
+            "  info locals",
+            '  printf "##ENDSTEP##\\n"',
+            "  continue",
+            "end",
         ]
 
-    script.append("continue")
-    script.append("quit")
+    script += ["continue", "quit"]
 
     with open("gdb_script.txt", "w", encoding="utf-8") as f:
         f.write("\n".join(script))
@@ -174,9 +168,15 @@ def run_gdb(binary="a.exe", exec_lines=None, source_file="main.c"):
     if exec_lines is None:
         exec_lines, _ = calc_executable_lines(source_file)
     generate_gdb_script_linebps(exec_lines, source_file)
+
+    env = os.environ.copy()
+    env["LC_ALL"] = "C"
+    env["LANG"] = "C"
+
     r = subprocess.run(
-        ["gdb", "--batch", "-x", "gdb_script.txt", binary],
-        capture_output=True, text=True, encoding="utf-8", errors="replace"
+        ["gdb", "--quiet", "--batch", "-x", "gdb_script.txt", binary],
+        capture_output=True, text=True, encoding="utf-8", errors="replace",
+        env=env,
     )
     return r.stdout or ""
 
@@ -194,88 +194,113 @@ def run_program_and_capture_stdout(binary="a.exe", timeout_sec=None):
 
 # GDB 출력 로그를 파싱하여 실행 프레임 순서를 구성
 def parse_gdb_output_linebps(output, source_file="main.c"):
+    # info line 백업 패턴 (환경 따라 다를 수 있음)
     RE_INFO_LINE = re.compile(r'Line\s+(\d+)\s+of\s+"?([^"]+)"?')
-    RE_FUNC      = re.compile(r'^#0\s+([A-Za-z_][\w$.@]*)\s*\(')
+
+    # bt: 두 가지 형태 모두 잡기
+    # A) "#1 main (...)"           → 함수명이 바로 나오는 형태
+    RE_BT_FUNC_A = re.compile(r'^#(\d+)\s+([A-Za-z_][\w$.@]*)\s*\(')
+    # B) "#1 0xADDR in main (...)" → 주소 뒤에 'in 함수명'이 나오는 형태
+    RE_BT_FUNC_B = re.compile(r'^#(\d+)\s+0x[0-9a-fA-F]+\s+in\s+([A-Za-z_][\w$.@]*)\s*\(')
+
+    # bt 위치: "#i ... at path:line"
+    RE_BT_LOC    = re.compile(r'^#(\d+).*\s+at\s+(.+?):(\d+)\b')
 
     src = load_source_lines(source_file)
-    N = len(src) - 1
     src_base = os.path.basename(source_file)
 
-    def code(ln): return src[ln] if 1 <= ln <= N else ""
+    steps = []
+    collecting = None          # None | "bt" | "args" | "locals"
+    bt_names = {}              # {frame_index: func_name}
+    cur_top_func = None
+    cur_top_line = None
+    cur_args = {}
+    cur_locals = {}
 
-    executed_lines, executed_code, frames = [], [], []
-    in_block_comment = False
-
-    cur_func = "main"
-    cur_line = None
-    collecting = None
-    args = {}
-    locals_ = {}
-
-    def flush():
-        nonlocal args, locals_, cur_func, cur_line, in_block_comment
-        if cur_line is None:
+    def flush_step():
+        nonlocal bt_names, cur_top_func, cur_top_line, cur_args, cur_locals
+        if not bt_names and cur_top_line is None and not cur_args and not cur_locals:
+            bt_names = {}; cur_top_func = None; cur_top_line = None
+            cur_args = {}; cur_locals = {}
             return
-        s = code(cur_line)
-        skip, in_block_comment = is_comment_or_blank(s, in_block_comment)
-        if skip:
-            args.clear(); locals_.clear(); cur_line = None
-            return
-        if executed_lines and executed_lines[-1] == cur_line and frames and frames[-1]["func"] == cur_func:
-            args.clear(); locals_.clear(); cur_line = None
-            return
-        executed_lines.append(cur_line)
-        executed_code.append(s)
-        frames.append({
-            "func": cur_func,
-            "line": cur_line,
-            "args": args.copy(),
-            "locals": locals_.copy()
+        # callstack: bottom -> top (큰 index → 아래, #0 → 맨 위)
+        idxs = sorted(bt_names.keys())
+        callstack = [{"func": bt_names[i], "index": i} for i in reversed(idxs)]
+        steps.append({
+            "func":   cur_top_func,
+            "line":   cur_top_line,
+            "args":   cur_args.copy(),
+            "locals": cur_locals.copy(),
+            "callstack": callstack,
         })
-        args.clear(); locals_.clear(); cur_line = None
+        bt_names = {}; cur_top_func = None; cur_top_line = None
+        cur_args = {}; cur_locals = {}
+
+    # 빈 출력 대비: 항상 tuple 반환
+    if not isinstance(output, str) or not output:
+        return [], [], []
 
     for raw in output.splitlines():
         line = raw.rstrip("\n")
 
         if line == "##STEP##":
-            flush()
-            cur_func = "main"; cur_line = None
+            flush_step()
+            collecting = None
+            continue
+        if line == "##BT##":
+            collecting = "bt"
+            continue
+        if line == "##ENDSTEP##":
+            flush_step()
             collecting = None
             continue
 
-        if line.startswith("#0 "):
-            m = RE_FUNC.match(line)
-            if m:
-                cur_func = m.group(1)
+        if collecting == "bt":
+            # 함수명 추출 (A/B 두 패턴 시도)
+            mA = RE_BT_FUNC_A.match(line)
+            mB = RE_BT_FUNC_B.match(line)
+            if mA or mB:
+                fi = int((mA or mB).group(1))
+                fn = (mA or mB).group(2)
+                bt_names[fi] = fn
+                if fi == 0:
+                    cur_top_func = fn
+
+            # 파일:줄 추출 (특히 #0용)
+            m2 = RE_BT_LOC.match(line)
+            if m2:
+                fi2 = int(m2.group(1)); path = m2.group(2); ln = int(m2.group(3))
+                if fi2 == 0 and os.path.basename(path) == src_base:
+                    cur_top_line = ln
             continue
 
         if line == "##ARGS##":
             collecting = "args"; continue
         if line == "##LOCALS##":
             collecting = "locals"; continue
-        if line == "##ENDCOLLECT##": 
-            collecting = None
-            continue
 
+        # 보조: info line에서도 잡히면 덮어쓰기
         if "Line " in line:
             mi = RE_INFO_LINE.search(line)
             if mi:
                 ln = int(mi.group(1)); fn = os.path.basename(mi.group(2))
                 if fn == src_base:
-                    cur_line = ln
+                    cur_top_line = ln
             continue
 
-        if collecting in ("args", "locals"):
-            if "=" in line:
-                k, v = line.split("=", 1)
-                k = k.strip(); v = " ".join(v.strip().split())
-                if re.match(r'^[A-Za-z_]\w*$', k):
-                    if collecting == "args":   args[k]   = v
-                    else:                      locals_[k] = v
+        if collecting in ("args", "locals") and "=" in line:
+            k, v = line.split("=", 1)
+            k = k.strip(); v = " ".join(v.strip().split())
+            if re.match(r'^[A-Za-z_]\w*$', k):
+                if collecting == "args":   cur_args[k]   = v
+                else:                      cur_locals[k] = v
             continue
 
-    flush()
-    return executed_lines, executed_code, frames
+    flush_step()
+
+    executed_lines = [s["line"] for s in steps]
+    executed_code  = [src[ln] if ln else "" for ln in executed_lines]
+    return executed_lines, executed_code, steps
 
 PRINT_CALL_RE = re.compile(r'\b(printf|puts|putchar|fputs|fprintf)\s*\(')
 
@@ -340,15 +365,43 @@ def trace_c_execution(code: str):
             if dln is None or ln > dln:
                 filtered_locals[name] = val
 
+        # trace_c_execution 내부 for 루프의 timeline.append 앞쪽을 이렇게 바꿔
+        callstack = frame.get("callstack") or [{
+            "index": 0,
+            "func": frame.get("func", "main"),
+            "line": frame.get("line"),
+            "args": frame.get("args") or {},
+            "locals": frame.get("locals") or {}
+        }]
+
+        stack_frames = []
+        decls_map = collect_decl_lines_by_func("main.c")  # 이 파일에서는 정규식 판별을 그대로 사용 중
+
+        for fr in callstack:
+            fn = fr.get("func") or "?"
+            ln_fr = fr.get("line")
+            args_fr = fr.get("args") or {}
+            locals_raw_fr = fr.get("locals") or {}
+
+            filtered = {}
+            decls = decls_map.get(fn, {})
+            for name, val in locals_raw_fr.items():
+                dln = decls.get(name)
+                if dln is None or (ln_fr and ln_fr > dln):
+                    filtered[name] = val
+
+            stack_frames.append({
+                "function": fn,
+                "variables": {**args_fr, **filtered}
+            })
+
+
         timeline.append({
             "time": idx,
             "line_index": ln,
             "line": code_line,
             "memory": {
-                "stack": [{
-                    "function": f,
-                    "variables": {**(frame.get("args") or {}), **filtered_locals}
-                }],
+                "stack": stack_frames,
                 "heap": []
             },
             "output": ""

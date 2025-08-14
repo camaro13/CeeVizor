@@ -1,26 +1,6 @@
 [
   {
     "kind": "function",
-    "name": "add",
-    "return_type": "int",
-    "parameters": [
-      {
-        "name": "a",
-        "type": "int"
-      },
-      {
-        "name": "b",
-        "type": "int"
-      }
-    ],
-    "location": "code",
-    "scope": {
-      "kind": "global"
-    },
-    "line": 19
-  },
-  {
-    "kind": "function",
     "name": "main",
     "return_type": "int",
     "parameters": [],
@@ -28,36 +8,166 @@
     "scope": {
       "kind": "global"
     },
+    "line": 31
+  },
+  {
+    "kind": "function",
+    "name": "sum_heap",
+    "return_type": "int",
+    "parameters": [
+      {
+        "name": "n",
+        "type": "int"
+      }
+    ],
+    "location": "code",
+    "scope": {
+      "kind": "global"
+    },
+    "line": 17
+  },
+  {
+    "kind": "function",
+    "name": "swap",
+    "return_type": "void",
+    "parameters": [],
+    "location": "code",
+    "scope": {
+      "kind": "global"
+    },
+    "line": 10
+  },
+  {
+    "kind": "var",
+    "name": "a",
+    "type": "int",
+    "scope": {
+      "kind": "function",
+      "func": "main"
+    },
+    "storage": "auto",
+    "location": "stack",
+    "value": "7",
+    "pointer": false,
+    "points_to": null,
+    "line": 32
+  },
+  {
+    "kind": "var",
+    "name": "b",
+    "type": "int",
+    "scope": {
+      "kind": "function",
+      "func": "main"
+    },
+    "storage": "auto",
+    "location": "stack",
+    "value": "3",
+    "pointer": false,
+    "points_to": null,
+    "line": 32
+  },
+  {
+    "kind": "var",
+    "name": "s",
+    "type": "int",
+    "scope": {
+      "kind": "function",
+      "func": "main"
+    },
+    "storage": "auto",
+    "location": "stack",
+    "value": "sum_heap(a + b)",
+    "pointer": false,
+    "points_to": null,
+    "line": 38
+  },
+  {
+    "kind": "var",
+    "name": "acc",
+    "type": "int",
+    "scope": {
+      "kind": "function",
+      "func": "sum_heap"
+    },
+    "storage": "auto",
+    "location": "stack",
+    "value": "0",
+    "pointer": false,
+    "points_to": null,
+    "line": 22
+  },
+  {
+    "kind": "var",
+    "name": "i",
+    "type": "int",
+    "scope": {
+      "kind": "function",
+      "func": "sum_heap"
+    },
+    "storage": "auto",
+    "location": "stack",
+    "value": "0",
+    "pointer": false,
+    "points_to": null,
+    "line": 23
+  },
+  {
+    "kind": "var",
+    "name": "p",
+    "type": "int*",
+    "scope": {
+      "kind": "function",
+      "func": "sum_heap"
+    },
+    "storage": "auto",
+    "location": "heap",
+    "value": "(int*)malloc(sizeof(int))",
+    "pointer": true,
+    "points_to": null,
+    "line": 18
+  },
+  {
+    "kind": "var",
+    "name": "tmp",
+    "type": "int",
+    "scope": {
+      "kind": "function",
+      "func": "swap"
+    },
+    "storage": "auto",
+    "location": "stack",
+    "value": "*a",
+    "pointer": false,
+    "points_to": null,
+    "line": 11
+  },
+  {
+    "kind": "var",
+    "name": "G_init",
+    "type": "int",
+    "scope": {
+      "kind": "global"
+    },
+    "storage": "auto",
+    "location": "data",
+    "value": "10",
+    "pointer": false,
+    "points_to": null,
+    "line": 5
+  },
+  {
+    "kind": "var",
+    "name": "SG_init",
+    "type": "int",
+    "scope": {
+      "kind": "global"
+    },
+    "storage": "static",
+    "location": "data",
+    "value": "32",
+    "pointer": false,
+    "points_to": null,
     "line": 6
-  },
-  {
-    "kind": "var",
-    "name": "num1",
-    "type": "int",
-    "scope": {
-      "kind": "function",
-      "func": "main"
-    },
-    "storage": "auto",
-    "location": "stack",
-    "value": "11",
-    "pointer": false,
-    "points_to": null,
-    "line": 7
-  },
-  {
-    "kind": "var",
-    "name": "num2",
-    "type": "int",
-    "scope": {
-      "kind": "function",
-      "func": "main"
-    },
-    "storage": "auto",
-    "location": "stack",
-    "value": "5",
-    "pointer": false,
-    "points_to": null,
-    "line": 7
   }
 ]
