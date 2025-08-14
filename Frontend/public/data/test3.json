@@ -1,0 +1,399 @@
+[
+  {
+    "time": 0,
+    "line_num": 9,
+    "line": "    int num = 5;",
+    "stack": {
+      "main": {
+        "num": {
+          "name": "num",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 1,
+    "line_num": 10,
+    "line": "    int result = factorial(num);",
+    "stack": {
+      "main": {
+        "num": {
+          "name": "num",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "result": {
+          "name": "result",
+          "type": "int",
+          "value": "factorial(num)",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 2,
+    "line_num": 4,
+    "line": "    if (n <= 1) return 1;",
+    "stack": {
+      "main": {
+        "num": {
+          "name": "num",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "result": {
+          "name": "result",
+          "type": "int",
+          "value": "factorial(num)",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 3,
+    "line_num": 5,
+    "line": "    return n * factorial(n - 1);",
+    "stack": {
+      "main": {
+        "num": {
+          "name": "num",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "result": {
+          "name": "result",
+          "type": "int",
+          "value": "factorial(num)",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 4,
+    "line_num": 4,
+    "line": "    if (n <= 1) return 1;",
+    "stack": {
+      "main": {
+        "num": {
+          "name": "num",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "result": {
+          "name": "result",
+          "type": "int",
+          "value": "factorial(num)",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 5,
+    "line_num": 5,
+    "line": "    return n * factorial(n - 1);",
+    "stack": {
+      "main": {
+        "num": {
+          "name": "num",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "result": {
+          "name": "result",
+          "type": "int",
+          "value": "factorial(num)",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 6,
+    "line_num": 4,
+    "line": "    if (n <= 1) return 1;",
+    "stack": {
+      "main": {
+        "num": {
+          "name": "num",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "result": {
+          "name": "result",
+          "type": "int",
+          "value": "factorial(num)",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 7,
+    "line_num": 5,
+    "line": "    return n * factorial(n - 1);",
+    "stack": {
+      "main": {
+        "num": {
+          "name": "num",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "result": {
+          "name": "result",
+          "type": "int",
+          "value": "factorial(num)",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 8,
+    "line_num": 4,
+    "line": "    if (n <= 1) return 1;",
+    "stack": {
+      "main": {
+        "num": {
+          "name": "num",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "result": {
+          "name": "result",
+          "type": "int",
+          "value": "factorial(num)",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 9,
+    "line_num": 5,
+    "line": "    return n * factorial(n - 1);",
+    "stack": {
+      "main": {
+        "num": {
+          "name": "num",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "result": {
+          "name": "result",
+          "type": "int",
+          "value": "factorial(num)",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 10,
+    "line_num": 4,
+    "line": "    if (n <= 1) return 1;",
+    "stack": {
+      "main": {
+        "num": {
+          "name": "num",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "result": {
+          "name": "result",
+          "type": "int",
+          "value": "factorial(num)",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 11,
+    "line_num": 6,
+    "line": "}",
+    "stack": {
+      "main": {
+        "num": {
+          "name": "num",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "result": {
+          "name": "result",
+          "type": "int",
+          "value": "factorial(num)",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 12,
+    "line_num": 11,
+    "line": "    printf(\"%d! = %d\\n\", num, result);",
+    "stack": {
+      "main": {
+        "num": {
+          "name": "num",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "result": {
+          "name": "result",
+          "type": "int",
+          "value": "factorial(num)",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 13,
+    "line_num": 12,
+    "line": "    return 0;",
+    "stack": {
+      "main": {
+        "num": {
+          "name": "num",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "result": {
+          "name": "result",
+          "type": "int",
+          "value": "factorial(num)",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 14,
+    "line_num": 13,
+    "line": "}",
+    "stack": {
+      "main": {
+        "num": {
+          "name": "num",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "result": {
+          "name": "result",
+          "type": "int",
+          "value": "factorial(num)",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  }
+]

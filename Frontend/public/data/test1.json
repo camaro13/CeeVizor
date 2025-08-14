@@ -1,0 +1,398 @@
+[
+  {
+    "time": 0,
+    "line_num": 4,
+    "line": "    int a = 10;",
+    "stack": {
+      "main": {
+        "a": {
+          "name": "a",
+          "type": "int",
+          "value": "10",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 1,
+    "line_num": 5,
+    "line": "    int b = 20;",
+    "stack": {
+      "main": {
+        "a": {
+          "name": "a",
+          "type": "int",
+          "value": "10",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "b": {
+          "name": "b",
+          "type": "int",
+          "value": "20",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 2,
+    "line_num": 6,
+    "line": "    int *p = &a;",
+    "stack": {
+      "main": {
+        "a": {
+          "name": "a",
+          "type": "int",
+          "value": "10",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "b": {
+          "name": "b",
+          "type": "int",
+          "value": "20",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "p": {
+          "name": "p",
+          "type": "int",
+          "value": "&a",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 3,
+    "line_num": 8,
+    "line": "    printf(\"a = %d, b = %d\\n\", a, b);",
+    "stack": {
+      "main": {
+        "a": {
+          "name": "a",
+          "type": "int",
+          "value": "10",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "b": {
+          "name": "b",
+          "type": "int",
+          "value": "20",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "p": {
+          "name": "p",
+          "type": "int",
+          "value": "&a",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 4,
+    "line_num": 11,
+    "line": "    p = &b;",
+    "stack": {
+      "main": {
+        "a": {
+          "name": "a",
+          "type": "int",
+          "value": "10",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "b": {
+          "name": "b",
+          "type": "int",
+          "value": "20",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "p": {
+          "name": "p",
+          "type": "int",
+          "value": "&a",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 5,
+    "line_num": 9,
+    "line": "    printf(\"*p = %d\\n\", *p);",
+    "stack": {
+      "main": {
+        "a": {
+          "name": "a",
+          "type": "int",
+          "value": "10",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "b": {
+          "name": "b",
+          "type": "int",
+          "value": "20",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "p": {
+          "name": "p",
+          "type": "int",
+          "value": "&a",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 6,
+    "line_num": 11,
+    "line": "    p = &b;",
+    "stack": {
+      "main": {
+        "a": {
+          "name": "a",
+          "type": "int",
+          "value": "10",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "b": {
+          "name": "b",
+          "type": "int",
+          "value": "20",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "p": {
+          "name": "p",
+          "type": "int",
+          "value": "&a",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 7,
+    "line_num": 12,
+    "line": "    *p = 30;",
+    "stack": {
+      "main": {
+        "a": {
+          "name": "a",
+          "type": "int",
+          "value": "10",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "b": {
+          "name": "b",
+          "type": "int",
+          "value": "20",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "p": {
+          "name": "p",
+          "type": "int",
+          "value": "&a",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 8,
+    "line_num": 14,
+    "line": "    printf(\"a = %d, b = %d\\n\", a, b);",
+    "stack": {
+      "main": {
+        "a": {
+          "name": "a",
+          "type": "int",
+          "value": "10",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "b": {
+          "name": "b",
+          "type": "int",
+          "value": "20",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "p": {
+          "name": "p",
+          "type": "int",
+          "value": "&a",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 9,
+    "line_num": 11,
+    "line": "    p = &b;",
+    "stack": {
+      "main": {
+        "a": {
+          "name": "a",
+          "type": "int",
+          "value": "10",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "b": {
+          "name": "b",
+          "type": "int",
+          "value": "20",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "p": {
+          "name": "p",
+          "type": "int",
+          "value": "&a",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 10,
+    "line_num": 15,
+    "line": "    return 0;",
+    "stack": {
+      "main": {
+        "a": {
+          "name": "a",
+          "type": "int",
+          "value": "10",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "b": {
+          "name": "b",
+          "type": "int",
+          "value": "20",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "p": {
+          "name": "p",
+          "type": "int",
+          "value": "&a",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 11,
+    "line_num": 16,
+    "line": "}",
+    "stack": {
+      "main": {
+        "a": {
+          "name": "a",
+          "type": "int",
+          "value": "10",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "b": {
+          "name": "b",
+          "type": "int",
+          "value": "20",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "p": {
+          "name": "p",
+          "type": "int",
+          "value": "&a",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  }
+]

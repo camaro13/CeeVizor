@@ -123,7 +123,7 @@
   flex-direction: column;
   align-items: center;
   width: 18vw;
-  min-height: 38vh; /* UI쪽 높이 적용 */
+  min-height: 3vh; /* UI쪽 높이 적용 */
 }
 
 .mem-box {
@@ -166,7 +166,7 @@
 
 /* 출력 결과 */
 .output-section {
-  width: 93%;
+  width: 92%;
   margin-top: 2vh;
   pointer-events: auto;
 }
@@ -431,5 +431,24 @@
 
 /* 하이라이트 라인 */
 .cm-line.current-line {
-  background-color: rgba(255, 230, 150, 0.6) !important;
+  background-color: rgba(255, 241, 197, 0.6) !important;
 }
+
+/*현송 : 경고 메시지 */
+.placeholder {
+  height: 100%;
+  display: grid;
+  place-items: center;
+  color: #888;
+  font-size: .95rem;
+  border: 1px dashed #bbb;
+  border-radius: 10px;
+  padding: 24px;
+}
+.modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.45); display:flex; align-items:center; justify-content:center; z-index: 9999; }
+.modal { background:#fff; width:min(92vw,420px); border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,.25); overflow:hidden; }
+.modal-title { font-weight:700; padding:14px 18px; border-bottom:1px solid #eee; }
+.modal-body { padding:18px; line-height:1.5; }
+.modal-actions { display:flex; justify-content:flex-end; gap:8px; padding:12px 18px 18px; }
+.modal-actions > button { padding:8px 14px; border-radius:8px; border:1px solid #ddd; background:#f7f7f7; cursor:pointer; }
+.modal-actions > button:hover { background:#eee; }

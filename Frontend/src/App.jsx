@@ -6,6 +6,57 @@ import CodeMirror from '@uiw/react-codemirror';
 import { cpp } from '@codemirror/lang-cpp';
 import { EditorView, Decoration, DecorationSet, ViewPlugin, ViewUpdate } from '@codemirror/view';
 
+// 👸현송 : json 데이터에서 단계 정보를 정규화하는 함수
+// 줄 번호 통일, stack 객체 → [{ function, variables }], heap, data → data_segment ㅇ
+// 이 함수는 steps.json 파일의 각 단계 데이터를 정규화하여 일관된 형식으로 변환
+function normalizeStep(raw) {
+  // 줄 번호 통일
+  const lineNumber =
+    typeof raw.line_index === 'number' ? raw.line_index + 1 :
+    typeof raw.line_num === 'number' ? raw.line_num : null;
+
+  // stack: 객체 → [{ function, variables }]
+  const stackObj = raw.memory?.stack ?? raw.stack ?? {};
+  const stackFrames = Object.entries(stackObj).map(([funcName, varsObj]) => {
+    const variables = {};
+    Object.entries(varsObj || {}).forEach(([varName, v]) => {
+      if (v && typeof v === 'object' && 'value' in v) {
+        variables[varName] = v.value; // value 필드만 꺼냄
+      } else {
+        variables[varName] = v;
+      }
+    });
+    return { function: funcName, variables };
+  });
+
+  // heap
+  const heapRaw = raw.memory?.heap ?? raw.heap ?? [];
+  const heap = Array.isArray(heapRaw) ? heapRaw : [];
+
+  // data → data_segment
+  const dataRaw = raw.memory?.data_segment ?? raw.data ?? {};
+  const data_segment = Array.isArray(dataRaw)
+    ? Object.fromEntries(dataRaw.map(([k, v]) => [k, v]))
+    : (dataRaw || {});
+
+  return {
+    time: raw.time ?? null,
+    line: raw.line ?? '',
+    lineNumber,
+    memory: {
+      stack: stackFrames,
+      heap,
+      data_segment,
+    },
+    output: raw.output ?? '',
+  };
+}
+// 👸현송 : json 전체 배열을 변환
+function normalizeSteps(json) {
+  if (!Array.isArray(json)) return [];
+  return json.map(normalizeStep);
+}
+
 
 //👸현송 : 이 부분 때문에 실행이 안되어 가지고 좀 보완하겠습니다.
 // 존재하는 줄이 있을 때만 하이라이팅 하도록 보완
@@ -31,27 +82,29 @@ function updateLinePos(lineNumber) {
 
 function App() {
 
-
+// 현송 : 하이라이팅 기능 활성화
+//  FIX: 하이라이트할 현재 라인 계산 (step 안전 정의 + lineNumber 지원)
 function findCurrentLineNumber(steps, stepIndex, code) {
-  if (!steps[stepIndex]) return null;
+  const step = Array.isArray(steps) ? steps[stepIndex] : null; // ✅ FIX: step 안전하게 정의
+  if (!step) return null;
 
-  // line_index가 있으면 바로 사용
-  if (typeof steps[stepIndex].line_index === 'number') {
-    return steps[stepIndex].line_index + 1; // 0-based → 1-based
-  }
+  // raw 형식(line_index: 0-based)도 처리
+  if (typeof step.line_index === 'number') return step.line_index + 1;
 
-  //👸현송 : 이부분도 보완
-  // 기존 방식: line 텍스트로 찾기
-  // line 문자열 매칭(임시 방편): 동일한 줄 텍스트를 찾아서 1-based 인덱스 반환
-  if (steps[stepIndex].line) {
-    const currentLineText = (steps[stepIndex].line || '').trim();
+  // FIX: normalizeStep()가 만든 1-based lineNumber도 처리
+  if (typeof step.lineNumber === 'number') return step.lineNumber;
+
+  // 기존: line 문자열 매칭
+  if (step.line) {
+    const currentLineText = (step.line || '').trim();
     const lines = (code || '').split('\n');
     const idx = lines.findIndex(l => l.trim() === currentLineText);
-    if (idx >= 0) return idx + 1; // 1-based
+    if (idx >= 0) return idx + 1;
   }
 
   return null;
 }
+
 
 
   // 기본 상태
@@ -61,7 +114,15 @@ function findCurrentLineNumber(steps, stepIndex, code) {
   const [infoVisible, setInfoVisible] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
-  const [showResetMessage, setShowResetMessage] = useState(false); // 초기화 메시지 표시 여부
+  const [showResetMessage, setShowResetMessage] = useState(false); // 👸현송 : 초기화 메시지 표시 여부
+  const [selectedFile, setSelectedFile] = useState('sample.json'); // 👸현송 : 선택된 JSON 파일 이름 (나중에 지울거임)
+  // 현송 :  상태 추가 / 메시지창 & 메모리영역 바로실행되는 거 문제 해결을 위한 상태들
+  const [loadedSteps, setLoadedSteps] = useState([]);  // 로드만 해두는 원본
+  const [isRunning, setIsRunning] = useState(false);   // 실행 중 여부
+  const [modalOpen, setModalOpen] = useState(false);   // 경고 모달
+  const [modalMsg, setModalMsg] = useState('');        // 모달 메시지
+  
+
 
   // 기능 상태 (깜빡임, 삭제 등)
   const [stepIndex, setStepIndex] = useState(0);
@@ -79,7 +140,11 @@ function findCurrentLineNumber(steps, stepIndex, code) {
   const lineRef = useRef(null);
   const intervalRef = useRef();
   const blinkRef = useRef();
+  const openWarn = (msg) => { setModalMsg(msg); setModalOpen(true); }; //현송 : 경고 모달 열기 함수
 
+
+
+  
   //👸현송 : cmView/steps/stepIndex/code가 바뀔 때마다 안전하게 확장을 만든 뒤 전달 추가
   // CodeMirror extensions를 안전하게 구성
   const cmExtensions = useMemo(() => {
@@ -128,11 +193,24 @@ function findCurrentLineNumber(steps, stepIndex, code) {
     setDeletingData(false);
     setDeletedDataKeys(new Set());
 
-    // 5) 메시지는 1.2초 정도 보여주고 자동 숨김
-    setTimeout(() => setShowResetMessage(false), 3000);
+    setIsRunning(false); // 실행 중 상태 해제
+    setSteps([]); // steps 상태 초기화
+    setStepIndex(0);// 초기화 후에는 실행 전 상태로
+    setTimeout(() => setShowResetMessage(false), 3000); // 1.2초 후 메시지 숨김
+
   };
 
-  
+  // 👸현송 : json 테스트 파일이 여러개라 바로바로 테스트할 수 있도록 기능 추가 
+  // 현송 : ++ .json 파일 변환해서 저장하는 명령어 추가
+const handleJsonChange = (e) => {
+  const fileName = e.target.value;
+  setSelectedFile(fileName);
+  fetch(`/data/${fileName}`)
+    .then(res => res.json())
+    .then(json => setLoadedSteps(normalizeSteps(json))) // 현송 : 드롭다운 변경도 steps 말고 loadedSteps만 갱신
+    .catch(err => setError('JSON 파일 인식 실패: ' + err.message));
+};
+    
   // JSON 데이터 초기 로드 (첫 단계 데이터 비우기)
   useEffect(() => {
     fetch('/data/sample.json')
@@ -140,15 +218,25 @@ function findCurrentLineNumber(steps, stepIndex, code) {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res.json();
       })
+
+      // 👸현송 : 바로 메모리영역 실행되는거 수정
       .then(json => {
-        if (Array.isArray(json) && json.length > 0) {
-          json[0].memory.data_segment = {};
-        }
-        setSteps(Array.isArray(json) ? json : []);
-      })
+          const normalized = normalizeSteps(json);
+          // 초기에는 실행 전 상태로 보관만
+          // (참고) 첫 단계 data_segment 비우는 커스텀 룰 유지하려면 여기서 normalized[0]만 조정
+          if (normalized.length > 0 && normalized[0]?.memory?.data_segment) {
+            normalized[0].memory.data_segment = {};
+          }
+          setLoadedSteps(normalized);
+          setSteps([]);         // ★ 실행 전에는 비워둠
+          setStepIndex(0);
+          setIsRunning(false);
+        })
+      
       .catch(err => setError('json 파일 로드 실패: ' + err.message))
       .finally(() => setLoading(false));
   }, []);
+
 
   // 각종 깜빡임 및 삭제 대상 계산 함수 (스택, 힙, 데이터)
   function blinkStackFrames(prev, curr) {
@@ -296,17 +384,28 @@ function findCurrentLineNumber(steps, stepIndex, code) {
   }, [stepIndex, steps]);
 
   // 전체 실행 핸들러
+  // 현송 : 코드 입력창이 비어있거나 실행할 단계 데이터가 없을 때 경고 메시지 표시
   const handleRun = () => {
-    setSteps(stepsData);
+    if (!code.trim()) {
+      openWarn('코드를 입력한 뒤 실행해주세요.');
+      return;
+    }
+    const data = loadedSteps.length ? loadedSteps : stepsData;
+    if (!data.length) {
+      openWarn('실행할 단계 데이터가 없습니다.');
+      return;
+    }
+    setIsRunning(true);  
+    setSteps(data);
     setStepIndex(0);
     setAccumulatedOutput("");
+
     let current = 0;
-    intervalRef.current && clearInterval(intervalRef.current);
+    clearInterval(intervalRef.current);
     intervalRef.current = setInterval(() => {
       current++;
-      if (current >= stepsData.length) {
+      if (current >= data.length) {
         clearInterval(intervalRef.current);
-        blinkRef.current && clearInterval(blinkRef.current);
       } else {
         setStepIndex(current);
       }
@@ -331,6 +430,27 @@ function findCurrentLineNumber(steps, stepIndex, code) {
   const toggleInfo = (type) => {
     setInfoVisible(prev => prev === type ? null : type);
   };
+
+// 현송 : 한 줄 실행도 동일 가드
+const handleStepOnce = () => {
+  if (!code.trim()) {
+    openWarn('코드를 입력한 뒤 실행해주세요.');
+    return;
+  }
+  const data = loadedSteps.length ? loadedSteps : stepsData;
+  if (!data.length) {
+    openWarn('실행할 단계 데이터가 없습니다.');
+    return;
+  }
+  if (!isRunning) {
+    setIsRunning(true);
+    setSteps(data);
+    setStepIndex(0);
+  } else {
+    setStepIndex((i) => Math.min(i + 1, data.length - 1));
+  }
+};
+
 
   // Stack 시각화 컴포넌트
   function CustomStackGraph({ stack }) {
@@ -456,22 +576,34 @@ function CustomDataGraph({ data, blinkDataGraph, deletingData, blinkOn }) {
           <div className="scrollable-container">
             <div className="line-numbers" ref={lineRef}>
             </div>
-            <CodeMirror
-              value={code}
-              height="52vh"
-              extensions={[
-                cpp(),
-                cmView ? highlightLine(findCurrentLineNumber(steps, stepIndex, code), cmView.state.doc) : []
-              ]}
-              onCreateEditor={(view) => setCmView(view)}
-              onChange={(value) => setCode(value)}
-            />
+              {/* 현송 : 코드입력창 약간 수정 */}
+              {/* AFTER (FIX: memo된 cmExtensions 그대로 전달) */}
+              <CodeMirror
+                value={code}
+                height="52vh"
+                extensions={cmExtensions}              // 여기 FIX
+                onCreateEditor={(view) => setCmView(view)}
+                onChange={(value) => setCode(value)}
+              />
           </div>
           <div className="button-container">
+            {/* 👸현송 : 파일 선택 드롭아웃 추가 (임시) */}
+            <select
+              value={selectedFile}
+              onChange={handleJsonChange}
+              style={{ width: '100%', marginBottom: '8px' }}
+            >
+              <option value="sample.json">sample.json</option>
+              <option value="test1.json">test1.json</option>
+              <option value="test2.json">test2.json</option>
+              <option value="test3.json">test3.json</option>
+            </select>
+
             <div className="top-buttons">
-              <button onClick={() => alert('한 줄 실행은 나중에 연결 예정입니다.')}>한 줄 실행</button>
+              <button onClick={handleStepOnce}>한 줄 실행</button>  {/* 현송 : 함수 연결 */}
               <button onClick={handleRun} disabled={loading}>전체 실행</button>
             </div>
+
             <button className="full-width-btn" onClick={handleResetClick}> 
               시각화 초기화
             </button>
@@ -481,92 +613,99 @@ function CustomDataGraph({ data, blinkDataGraph, deletingData, blinkOn }) {
         <div className="right-panel">
           <h2>메모리 시각화</h2>
           <div className="memory-container">
-            <div className="memory-row">
-
-              {/* Stack 영역 */}
-              <div className="mem-section no-pointer">
-                <div className="mem-title" style={{ position: 'relative' }}>
-                  Stack
-                  <img src="/question_mark.png" alt="스택 정보" className="help-icon" onClick={() => toggleInfo('stack')} />
-                  {infoVisible === 'stack' && (
-                    <div className="info-popup local">
-                      <button className="close-btn" onClick={() => setInfoVisible(null)}>×</button>
-                      <p><strong>Stack:</strong> 함수 호출 시 자동으로 생성되는 스택프레임들이 저장되는 공간입니다.</p>
-                    </div>
-                  )}
-                </div>
-                <div className="mem-box">
-                  <div className="mem-content stack-area">
-                    <CustomStackGraph stack={currentStep.memory.stack} />
-                  </div>
-                </div>
-              </div>
-
-              {/* Heap 영역 */}
-              <div className="mem-section no-pointer">
-                <div className="mem-title" style={{ position: 'relative' }}>
-                  Heap
-                  <img src="/question_mark.png" alt="힙 정보" className="help-icon" onClick={() => toggleInfo('heap')} />
-                  {infoVisible === 'heap' && (
-                    <div className="info-popup local">
-                      <button className="close-btn" onClick={() => setInfoVisible(null)}>×</button>
-                      <p><strong>Heap:</strong> 동적으로 할당된 배열, 구조체 등의 객체들이 저장되는 메모리 영역입니다.</p>
-                    </div>
-                  )}
-                </div>
-                <div className="mem-box">
-                  <div className="mem-content">
-                    <CustomHeapGraph heap={currentStep.memory.heap} stack={currentStep.memory.stack} />
-                  </div>
-                </div>
-              </div>
-
-              {/* Data 영역 */}
-              <div className="mem-section no-pointer data-section">
-                <div className="mem-title" style={{ position: 'relative' }}>
-                  Data
-                  <img src="/question_mark.png" alt="데이터 정보" className="help-icon" onClick={() => toggleInfo('data')} />
-                  {infoVisible === 'data' && (
-                    <div className="info-popup local">
-                      <button className="close-btn" onClick={() => setInfoVisible(null)}>×</button>
-                      <p><strong>Data:</strong> 전역 변수 및 정적 변수를 할당하는 영역입니다.</p>
-                    </div>
-                  )}
-                </div>
-                <div className="mem-box code-box">
-                  <div className="mem-content">
-                    {stepIndex > 0 && Object.keys(currentStep.memory.data_segment || {}).length > 0 && (
-                      <CustomDataGraph
-                        data={currentStep.memory.data_segment}
-                        blinkDataGraph={blinkDataGraph}
-                        blinkOn={blinkOn}
-                        deletingData={deletingData}  // 추가
-                        deletedDataKeys={deletedDataKeys}
-                      />
+              <div className="memory-row">
+                {/* Stack 영역 */}
+                <div className="mem-section no-pointer">
+                  <div className="mem-title" style={{ position: 'relative' }}>
+                    Stack
+                    <img src="/question_mark.png" alt="스택 정보" className="help-icon" onClick={() => toggleInfo('stack')} />
+                    {infoVisible === 'stack' && (
+                      <div className="info-popup local">
+                        <button className="close-btn" onClick={() => setInfoVisible(null)}>×</button>
+                        <p><strong>Stack:</strong> 함수 호출 시 자동으로 생성되는 스택프레임들이 저장되는 공간입니다.</p>
+                      </div>
                     )}
                   </div>
+                  <div className="mem-box">
+                    <div className="mem-content stack-area">
+                      <CustomStackGraph stack={currentStep.memory.stack} />
+                    </div>
+                  </div>
                 </div>
-                <div className="output-section pointer-allowed">
-                  <div className="mem-title">출력 결과</div>
-                  <div className="output-box" style={{ whiteSpace: 'pre-wrap' }}>
-                    {loading && '로딩 중...'}
-                    {!loading && error && <span style={{ color: '#d33' }}>{error}</span>}
-                    {/*👸현송 : 출력결과 메시지 디테일 수정 */}
-                    {/* 초기화 메시지: 리셋 직후에만 표시 */}
-                    {!loading && !error && showResetMessage && ('초기화 되었습니다.')}
 
-                    {/* 출력이 있으면 출력 표시 */}
-                    {!loading && !error && !showResetMessage && accumulatedOutput && (accumulatedOutput || '(출력 없음)')}
+                {/* Heap 영역 */}
+                <div className="mem-section no-pointer">
+                  <div className="mem-title" style={{ position: 'relative' }}>
+                    Heap
+                    <img src="/question_mark.png" alt="힙 정보" className="help-icon" onClick={() => toggleInfo('heap')} />
+                    {infoVisible === 'heap' && (
+                      <div className="info-popup local">
+                        <button className="close-btn" onClick={() => setInfoVisible(null)}>×</button>
+                        <p><strong>Heap:</strong> 동적으로 할당된 배열, 구조체 등의 객체들이 저장되는 메모리 영역입니다.</p>
+                      </div>
+                    )}
+                  </div>
+                  <div className="mem-box">
+                    <div className="mem-content">
+                      <CustomHeapGraph heap={currentStep.memory.heap} stack={currentStep.memory.stack} />
+                    </div>
+                  </div>
+                </div>
 
-                    {/* 아무 것도 없으면 안내 문구 */}
-                    {!loading && !error && !showResetMessage && !accumulatedOutput && ('실행버튼을 눌러주세요.')}
+                {/* Data 영역 */}
+                <div className="mem-section no-pointer data-section">
+                  <div className="mem-title" style={{ position: 'relative' }}>
+                    Data
+                    <img src="/question_mark.png" alt="데이터 정보" className="help-icon" onClick={() => toggleInfo('data')} />
+                    {infoVisible === 'data' && (
+                      <div className="info-popup local">
+                        <button className="close-btn" onClick={() => setInfoVisible(null)}>×</button>
+                        <p><strong>Data:</strong> 전역 변수 및 정적 변수를 할당하는 영역입니다.</p>
+                      </div>
+                    )}
+                  </div>
+                  <div className="mem-box code-box">
+                    <div className="mem-content">
+                      {stepIndex > 0 && Object.keys(currentStep.memory.data_segment || {}).length > 0 && (
+                        <CustomDataGraph
+                          data={currentStep.memory.data_segment}
+                          blinkDataGraph={blinkDataGraph}
+                          blinkOn={blinkOn}
+                          deletingData={deletingData}
+                          deletedDataKeys={deletedDataKeys}
+                        />
+                      )}
+                    </div>
+                  </div>
+                  <div className="output-section pointer-allowed">
+                    <div className="mem-title">출력 결과</div>
+                    <div className="output-box" style={{ whiteSpace: 'pre-wrap' }}>
+                      {loading && '로딩 중...'}
+                      {!loading && error && <span style={{ color: '#d33' }}>{error}</span>}
+                      {!loading && !error && showResetMessage && ('초기화 되었습니다.')}
+                      {!loading && !error && !showResetMessage && accumulatedOutput && (accumulatedOutput || '(출력 없음)')}
+                      {!loading && !error && !showResetMessage && !accumulatedOutput && ('실행버튼을 눌러주세요.')}
+                    </div>
                   </div>
                 </div>
               </div>
 
+            
+          </div>
+        </div>
+
+      {/* 현송 : 경고 모달 */}
+      {modalOpen && (
+        <div className="modal-backdrop" onClick={() => setModalOpen(false)}>
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-title">알림</div>
+            <div className="modal-body">{modalMsg}</div>
+            <div className="modal-actions">
+              <button onClick={() => setModalOpen(false)}>확인</button>
             </div>
           </div>
         </div>
+      )}
 
       </div>
       <div className="footer">

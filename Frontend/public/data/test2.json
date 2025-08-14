@@ -1,0 +1,1045 @@
+[
+  {
+    "time": 0,
+    "line_num": 5,
+    "line": "    int n = 5;",
+    "stack": {
+      "main": {
+        "n": {
+          "name": "n",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 1,
+    "line_num": 6,
+    "line": "    int *arr = malloc(n * sizeof(int));",
+    "stack": {
+      "main": {
+        "n": {
+          "name": "n",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "arr": {
+          "name": "arr",
+          "type": "int",
+          "value": "malloc(n * sizeof(int))",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 2,
+    "line_num": 8,
+    "line": "    for (int i = 0; i < n; i++) {",
+    "stack": {
+      "main": {
+        "n": {
+          "name": "n",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "arr": {
+          "name": "arr",
+          "type": "int",
+          "value": "malloc(n * sizeof(int))",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 3,
+    "line_num": 9,
+    "line": "        arr[i] = i * i;",
+    "stack": {
+      "main": {
+        "n": {
+          "name": "n",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "arr": {
+          "name": "arr",
+          "type": "int",
+          "value": "malloc(n * sizeof(int))",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 4,
+    "line_num": 8,
+    "line": "    for (int i = 0; i < n; i++) {",
+    "stack": {
+      "main": {
+        "n": {
+          "name": "n",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "arr": {
+          "name": "arr",
+          "type": "int",
+          "value": "malloc(n * sizeof(int))",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 5,
+    "line_num": 9,
+    "line": "        arr[i] = i * i;",
+    "stack": {
+      "main": {
+        "n": {
+          "name": "n",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "arr": {
+          "name": "arr",
+          "type": "int",
+          "value": "malloc(n * sizeof(int))",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 6,
+    "line_num": 8,
+    "line": "    for (int i = 0; i < n; i++) {",
+    "stack": {
+      "main": {
+        "n": {
+          "name": "n",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "arr": {
+          "name": "arr",
+          "type": "int",
+          "value": "malloc(n * sizeof(int))",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 7,
+    "line_num": 9,
+    "line": "        arr[i] = i * i;",
+    "stack": {
+      "main": {
+        "n": {
+          "name": "n",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "arr": {
+          "name": "arr",
+          "type": "int",
+          "value": "malloc(n * sizeof(int))",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 8,
+    "line_num": 8,
+    "line": "    for (int i = 0; i < n; i++) {",
+    "stack": {
+      "main": {
+        "n": {
+          "name": "n",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "arr": {
+          "name": "arr",
+          "type": "int",
+          "value": "malloc(n * sizeof(int))",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 9,
+    "line_num": 9,
+    "line": "        arr[i] = i * i;",
+    "stack": {
+      "main": {
+        "n": {
+          "name": "n",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "arr": {
+          "name": "arr",
+          "type": "int",
+          "value": "malloc(n * sizeof(int))",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 10,
+    "line_num": 8,
+    "line": "    for (int i = 0; i < n; i++) {",
+    "stack": {
+      "main": {
+        "n": {
+          "name": "n",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "arr": {
+          "name": "arr",
+          "type": "int",
+          "value": "malloc(n * sizeof(int))",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 11,
+    "line_num": 9,
+    "line": "        arr[i] = i * i;",
+    "stack": {
+      "main": {
+        "n": {
+          "name": "n",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "arr": {
+          "name": "arr",
+          "type": "int",
+          "value": "malloc(n * sizeof(int))",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 12,
+    "line_num": 8,
+    "line": "    for (int i = 0; i < n; i++) {",
+    "stack": {
+      "main": {
+        "n": {
+          "name": "n",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "arr": {
+          "name": "arr",
+          "type": "int",
+          "value": "malloc(n * sizeof(int))",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 13,
+    "line_num": 12,
+    "line": "    for (int i = 0; i < n; i++) {",
+    "stack": {
+      "main": {
+        "n": {
+          "name": "n",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "arr": {
+          "name": "arr",
+          "type": "int",
+          "value": "malloc(n * sizeof(int))",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "i": {
+          "name": "i",
+          "type": "int",
+          "value": "0",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 14,
+    "line_num": 13,
+    "line": "        printf(\"%d \", arr[i]);",
+    "stack": {
+      "main": {
+        "n": {
+          "name": "n",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "arr": {
+          "name": "arr",
+          "type": "int",
+          "value": "malloc(n * sizeof(int))",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "i": {
+          "name": "i",
+          "type": "int",
+          "value": "0",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 15,
+    "line_num": 11,
+    "line": "",
+    "stack": {
+      "main": {
+        "n": {
+          "name": "n",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "arr": {
+          "name": "arr",
+          "type": "int",
+          "value": "malloc(n * sizeof(int))",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "i": {
+          "name": "i",
+          "type": "int",
+          "value": "0",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 16,
+    "line_num": 12,
+    "line": "    for (int i = 0; i < n; i++) {",
+    "stack": {
+      "main": {
+        "n": {
+          "name": "n",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "arr": {
+          "name": "arr",
+          "type": "int",
+          "value": "malloc(n * sizeof(int))",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "i": {
+          "name": "i",
+          "type": "int",
+          "value": "0",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 17,
+    "line_num": 13,
+    "line": "        printf(\"%d \", arr[i]);",
+    "stack": {
+      "main": {
+        "n": {
+          "name": "n",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "arr": {
+          "name": "arr",
+          "type": "int",
+          "value": "malloc(n * sizeof(int))",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "i": {
+          "name": "i",
+          "type": "int",
+          "value": "0",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 18,
+    "line_num": 11,
+    "line": "",
+    "stack": {
+      "main": {
+        "n": {
+          "name": "n",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "arr": {
+          "name": "arr",
+          "type": "int",
+          "value": "malloc(n * sizeof(int))",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "i": {
+          "name": "i",
+          "type": "int",
+          "value": "0",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 19,
+    "line_num": 12,
+    "line": "    for (int i = 0; i < n; i++) {",
+    "stack": {
+      "main": {
+        "n": {
+          "name": "n",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "arr": {
+          "name": "arr",
+          "type": "int",
+          "value": "malloc(n * sizeof(int))",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "i": {
+          "name": "i",
+          "type": "int",
+          "value": "0",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 20,
+    "line_num": 13,
+    "line": "        printf(\"%d \", arr[i]);",
+    "stack": {
+      "main": {
+        "n": {
+          "name": "n",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "arr": {
+          "name": "arr",
+          "type": "int",
+          "value": "malloc(n * sizeof(int))",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "i": {
+          "name": "i",
+          "type": "int",
+          "value": "0",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 21,
+    "line_num": 11,
+    "line": "",
+    "stack": {
+      "main": {
+        "n": {
+          "name": "n",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "arr": {
+          "name": "arr",
+          "type": "int",
+          "value": "malloc(n * sizeof(int))",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "i": {
+          "name": "i",
+          "type": "int",
+          "value": "0",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 22,
+    "line_num": 12,
+    "line": "    for (int i = 0; i < n; i++) {",
+    "stack": {
+      "main": {
+        "n": {
+          "name": "n",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "arr": {
+          "name": "arr",
+          "type": "int",
+          "value": "malloc(n * sizeof(int))",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "i": {
+          "name": "i",
+          "type": "int",
+          "value": "0",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 23,
+    "line_num": 13,
+    "line": "        printf(\"%d \", arr[i]);",
+    "stack": {
+      "main": {
+        "n": {
+          "name": "n",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "arr": {
+          "name": "arr",
+          "type": "int",
+          "value": "malloc(n * sizeof(int))",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "i": {
+          "name": "i",
+          "type": "int",
+          "value": "0",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 24,
+    "line_num": 11,
+    "line": "",
+    "stack": {
+      "main": {
+        "n": {
+          "name": "n",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "arr": {
+          "name": "arr",
+          "type": "int",
+          "value": "malloc(n * sizeof(int))",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "i": {
+          "name": "i",
+          "type": "int",
+          "value": "0",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 25,
+    "line_num": 12,
+    "line": "    for (int i = 0; i < n; i++) {",
+    "stack": {
+      "main": {
+        "n": {
+          "name": "n",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "arr": {
+          "name": "arr",
+          "type": "int",
+          "value": "malloc(n * sizeof(int))",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "i": {
+          "name": "i",
+          "type": "int",
+          "value": "0",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 26,
+    "line_num": 13,
+    "line": "        printf(\"%d \", arr[i]);",
+    "stack": {
+      "main": {
+        "n": {
+          "name": "n",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "arr": {
+          "name": "arr",
+          "type": "int",
+          "value": "malloc(n * sizeof(int))",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "i": {
+          "name": "i",
+          "type": "int",
+          "value": "0",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 27,
+    "line_num": 11,
+    "line": "",
+    "stack": {
+      "main": {
+        "n": {
+          "name": "n",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "arr": {
+          "name": "arr",
+          "type": "int",
+          "value": "malloc(n * sizeof(int))",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "i": {
+          "name": "i",
+          "type": "int",
+          "value": "0",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 28,
+    "line_num": 12,
+    "line": "    for (int i = 0; i < n; i++) {",
+    "stack": {
+      "main": {
+        "n": {
+          "name": "n",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "arr": {
+          "name": "arr",
+          "type": "int",
+          "value": "malloc(n * sizeof(int))",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "i": {
+          "name": "i",
+          "type": "int",
+          "value": "0",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 29,
+    "line_num": 15,
+    "line": "    printf(\"\\n\");",
+    "stack": {
+      "main": {
+        "n": {
+          "name": "n",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "arr": {
+          "name": "arr",
+          "type": "int",
+          "value": "malloc(n * sizeof(int))",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "i": {
+          "name": "i",
+          "type": "int",
+          "value": "0",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 30,
+    "line_num": 17,
+    "line": "    free(arr);",
+    "stack": {
+      "main": {
+        "n": {
+          "name": "n",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "arr": {
+          "name": "arr",
+          "type": "int",
+          "value": "malloc(n * sizeof(int))",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "i": {
+          "name": "i",
+          "type": "int",
+          "value": "0",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 31,
+    "line_num": 18,
+    "line": "    return 0;",
+    "stack": {
+      "main": {
+        "n": {
+          "name": "n",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "arr": {
+          "name": "arr",
+          "type": "int",
+          "value": "malloc(n * sizeof(int))",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "i": {
+          "name": "i",
+          "type": "int",
+          "value": "0",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  },
+  {
+    "time": 32,
+    "line_num": 19,
+    "line": "}",
+    "stack": {
+      "main": {
+        "n": {
+          "name": "n",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "arr": {
+          "name": "arr",
+          "type": "int",
+          "value": "malloc(n * sizeof(int))",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "i": {
+          "name": "i",
+          "type": "int",
+          "value": "0",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": [],
+    "data": []
+  }
+]
