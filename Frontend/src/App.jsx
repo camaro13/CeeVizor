@@ -177,7 +177,6 @@ function findCurrentLineNumber(steps, stepIndex, code) {
     setShowResetMessage(true);
 
     // 3) 시각화와 코드 상태 초기화
-    setCode('');                     // 코드 입력창 비우기
     setAccumulatedOutput('');        // 출력 누적 비우기
     setError('');                    // 에러 메시지 제거
     setStepIndex(0);                 // 인덱스 초기화
