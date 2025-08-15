@@ -2,7 +2,7 @@
   {
     "time": 0,
     "line_num": 3,
-    "line": "int counter = 0;        ",
+    "line": "int counter = 0;",
     "stack": {},
     "heap": {},
     "data": {

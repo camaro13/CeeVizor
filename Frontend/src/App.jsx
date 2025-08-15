@@ -50,6 +50,9 @@ function normalizeStep(raw) {
     },
     output: raw.output ?? '',
   };
+
+
+  
 }
 // 👸현송 : json 전체 배열을 변환
 function normalizeSteps(json) {
@@ -335,7 +338,7 @@ const handleJsonChange = (e) => {
     ));
 
     if (stepIndex === 0) {
-      setBlinkDataGraph(false);
+      setBlinkDataGraph(true);
     } else {
       const prevData = stepIndex === 1 ? {} : steps[stepIndex - 1]?.memory?.data_segment;
       setBlinkDataGraph(blinkData(prevData, steps[stepIndex]?.memory?.data_segment));
@@ -531,11 +534,9 @@ function CustomDataGraph({ data, blinkDataGraph, deletingData, blinkOn }) {
 
   useEffect(() => {
     if (deletingData) {
-      // 삭제 애니메이션 1초(1000ms) 동안 보여주고 그 후에 상자 숨김
       setShow(true);
       deleteTimeout.current = setTimeout(() => setShow(false), 1000);
     } else {
-      // 삭제 중이 아닌 경우 무조건 보여줌
       setShow(true);
       if (deleteTimeout.current) clearTimeout(deleteTimeout.current);
     }
@@ -549,16 +550,20 @@ function CustomDataGraph({ data, blinkDataGraph, deletingData, blinkOn }) {
   let className = "data-graph";
   if (blinkDataGraph && blinkOn) className += " blink";
   if (deletingData && blinkOn) className += " delete-blink";
-
-  return (
-    <div className={className}>
-      {Object.entries(data).map(([key, value], i) => (
-        <div className="data-variable" key={i}>
-          {key} = {value}
-        </div>
-      ))}
-    </div>
-  );
+  
+return (
+  <div className={className}>
+    {data.global && Object.entries(data.global).map(([key, v], i) => (
+      <div className="data-variable" key={i}>
+        {
+          v.type === 'char' && /^\w+\[\d+\]$/.test(v.name)
+            ? `char ${v.name} = "${v.value}"`
+            : `${v.type || ''} ${v.name} = ${v.value}`
+        }
+      </div>
+    ))}
+  </div>
+);
 }
 
 
@@ -665,7 +670,7 @@ function CustomDataGraph({ data, blinkDataGraph, deletingData, blinkOn }) {
                   </div>
                   <div className="mem-box code-box">
                     <div className="mem-content">
-                      {stepIndex > 0 && Object.keys(currentStep.memory.data_segment || {}).length > 0 && (
+                      {stepIndex >= 0 && Object.keys(currentStep.memory.data_segment || {}).length > 0 && (
                         <CustomDataGraph
                           data={currentStep.memory.data_segment}
                           blinkDataGraph={blinkDataGraph}
