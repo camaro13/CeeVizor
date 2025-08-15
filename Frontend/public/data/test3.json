@@ -11,12 +11,13 @@
           "value": "5",
           "pointer": false,
           "points_to": null,
-          "scope": "main"
+          "scope": "main",
+          "pending_init": true
         }
       }
     },
-    "heap": [],
-    "data": []
+    "heap": {},
+    "data": {}
   },
   {
     "time": 1,
@@ -30,7 +31,8 @@
           "value": "5",
           "pointer": false,
           "points_to": null,
-          "scope": "main"
+          "scope": "main",
+          "pending_init": true
         },
         "result": {
           "name": "result",
@@ -38,12 +40,13 @@
           "value": "factorial(num)",
           "pointer": false,
           "points_to": null,
-          "scope": "main"
+          "scope": "main",
+          "pending_init": true
         }
       }
     },
-    "heap": [],
-    "data": []
+    "heap": {},
+    "data": {}
   },
   {
     "time": 2,
@@ -57,7 +60,8 @@
           "value": "5",
           "pointer": false,
           "points_to": null,
-          "scope": "main"
+          "scope": "main",
+          "pending_init": true
         },
         "result": {
           "name": "result",
@@ -65,12 +69,13 @@
           "value": "factorial(num)",
           "pointer": false,
           "points_to": null,
-          "scope": "main"
+          "scope": "main",
+          "pending_init": true
         }
       }
     },
-    "heap": [],
-    "data": []
+    "heap": {},
+    "data": {}
   },
   {
     "time": 3,
@@ -84,7 +89,8 @@
           "value": "5",
           "pointer": false,
           "points_to": null,
-          "scope": "main"
+          "scope": "main",
+          "pending_init": true
         },
         "result": {
           "name": "result",
@@ -92,12 +98,13 @@
           "value": "factorial(num)",
           "pointer": false,
           "points_to": null,
-          "scope": "main"
+          "scope": "main",
+          "pending_init": true
         }
       }
     },
-    "heap": [],
-    "data": []
+    "heap": {},
+    "data": {}
   },
   {
     "time": 4,
@@ -111,7 +118,8 @@
           "value": "5",
           "pointer": false,
           "points_to": null,
-          "scope": "main"
+          "scope": "main",
+          "pending_init": true
         },
         "result": {
           "name": "result",
@@ -119,12 +127,13 @@
           "value": "factorial(num)",
           "pointer": false,
           "points_to": null,
-          "scope": "main"
+          "scope": "main",
+          "pending_init": true
         }
       }
     },
-    "heap": [],
-    "data": []
+    "heap": {},
+    "data": {}
   },
   {
     "time": 5,
@@ -138,7 +147,8 @@
           "value": "5",
           "pointer": false,
           "points_to": null,
-          "scope": "main"
+          "scope": "main",
+          "pending_init": true
         },
         "result": {
           "name": "result",
@@ -146,12 +156,13 @@
           "value": "factorial(num)",
           "pointer": false,
           "points_to": null,
-          "scope": "main"
+          "scope": "main",
+          "pending_init": true
         }
       }
     },
-    "heap": [],
-    "data": []
+    "heap": {},
+    "data": {}
   },
   {
     "time": 6,
@@ -165,7 +176,8 @@
           "value": "5",
           "pointer": false,
           "points_to": null,
-          "scope": "main"
+          "scope": "main",
+          "pending_init": true
         },
         "result": {
           "name": "result",
@@ -173,12 +185,13 @@
           "value": "factorial(num)",
           "pointer": false,
           "points_to": null,
-          "scope": "main"
+          "scope": "main",
+          "pending_init": true
         }
       }
     },
-    "heap": [],
-    "data": []
+    "heap": {},
+    "data": {}
   },
   {
     "time": 7,
@@ -192,7 +205,8 @@
           "value": "5",
           "pointer": false,
           "points_to": null,
-          "scope": "main"
+          "scope": "main",
+          "pending_init": true
         },
         "result": {
           "name": "result",
@@ -200,12 +214,13 @@
           "value": "factorial(num)",
           "pointer": false,
           "points_to": null,
-          "scope": "main"
+          "scope": "main",
+          "pending_init": true
         }
       }
     },
-    "heap": [],
-    "data": []
+    "heap": {},
+    "data": {}
   },
   {
     "time": 8,
@@ -219,7 +234,8 @@
           "value": "5",
           "pointer": false,
           "points_to": null,
-          "scope": "main"
+          "scope": "main",
+          "pending_init": true
         },
         "result": {
           "name": "result",
@@ -227,12 +243,13 @@
           "value": "factorial(num)",
           "pointer": false,
           "points_to": null,
-          "scope": "main"
+          "scope": "main",
+          "pending_init": true
         }
       }
     },
-    "heap": [],
-    "data": []
+    "heap": {},
+    "data": {}
   },
   {
     "time": 9,
@@ -246,7 +263,8 @@
           "value": "5",
           "pointer": false,
           "points_to": null,
-          "scope": "main"
+          "scope": "main",
+          "pending_init": true
         },
         "result": {
           "name": "result",
@@ -254,12 +272,13 @@
           "value": "factorial(num)",
           "pointer": false,
           "points_to": null,
-          "scope": "main"
+          "scope": "main",
+          "pending_init": true
         }
       }
     },
-    "heap": [],
-    "data": []
+    "heap": {},
+    "data": {}
   },
   {
     "time": 10,
@@ -273,7 +292,8 @@
           "value": "5",
           "pointer": false,
           "points_to": null,
-          "scope": "main"
+          "scope": "main",
+          "pending_init": true
         },
         "result": {
           "name": "result",
@@ -281,12 +301,13 @@
           "value": "factorial(num)",
           "pointer": false,
           "points_to": null,
-          "scope": "main"
+          "scope": "main",
+          "pending_init": true
         }
       }
     },
-    "heap": [],
-    "data": []
+    "heap": {},
+    "data": {}
   },
   {
     "time": 11,
@@ -300,7 +321,8 @@
           "value": "5",
           "pointer": false,
           "points_to": null,
-          "scope": "main"
+          "scope": "main",
+          "pending_init": true
         },
         "result": {
           "name": "result",
@@ -308,12 +330,13 @@
           "value": "factorial(num)",
           "pointer": false,
           "points_to": null,
-          "scope": "main"
+          "scope": "main",
+          "pending_init": true
         }
       }
     },
-    "heap": [],
-    "data": []
+    "heap": {},
+    "data": {}
   },
   {
     "time": 12,
@@ -327,20 +350,22 @@
           "value": "5",
           "pointer": false,
           "points_to": null,
-          "scope": "main"
+          "scope": "main",
+          "pending_init": true
         },
         "result": {
           "name": "result",
           "type": "int",
-          "value": "factorial(num)",
+          "value": "120",
           "pointer": false,
           "points_to": null,
           "scope": "main"
         }
       }
     },
-    "heap": [],
-    "data": []
+    "heap": {},
+    "data": {},
+    "stdout": "5! = 120\n"
   },
   {
     "time": 13,
@@ -354,20 +379,21 @@
           "value": "5",
           "pointer": false,
           "points_to": null,
-          "scope": "main"
+          "scope": "main",
+          "pending_init": true
         },
         "result": {
           "name": "result",
           "type": "int",
-          "value": "factorial(num)",
+          "value": "120",
           "pointer": false,
           "points_to": null,
           "scope": "main"
         }
       }
     },
-    "heap": [],
-    "data": []
+    "heap": {},
+    "data": {}
   },
   {
     "time": 14,
@@ -381,19 +407,20 @@
           "value": "5",
           "pointer": false,
           "points_to": null,
-          "scope": "main"
+          "scope": "main",
+          "pending_init": true
         },
         "result": {
           "name": "result",
           "type": "int",
-          "value": "factorial(num)",
+          "value": "120",
           "pointer": false,
           "points_to": null,
           "scope": "main"
         }
       }
     },
-    "heap": [],
-    "data": []
+    "heap": {},
+    "data": {}
   }
 ]
