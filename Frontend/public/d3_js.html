@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>D3 Heap, Stack & Various Graphs Visualization</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    body { font-family: sans-serif; }
+    .container { display: flex; flex-wrap: wrap; gap: 40px; }
+    .column { display: flex; flex-direction: column; align-items: center; margin-bottom: 40px; }
+    h2 { margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="column">
+      <h2>Heap</h2>
+      <svg id="heap-svg" width="300" height="250"></svg>
+    </div>
+    <div class="column">
+      <h2>Stack</h2>
+      <svg id="stack-svg" width="300" height="250"></svg>
+    </div>
+    <div class="column">
+      <h2>Bar Chart</h2>
+      <svg id="barchart-svg" width="300" height="250"></svg>
+    </div>
+    <div class="column">
+      <h2>Line Chart</h2>
+      <svg id="linechart-svg" width="300" height="250"></svg>
+    </div>
+    <div class="column">
+      <h2>Pie Chart</h2>
+      <svg id="piechart-svg" width="250" height="250"></svg>
+    </div>
+    <div class="column">
+      <h2>Scatter Plot</h2>
+      <svg id="scatter-svg" width="300" height="250"></svg>
+    </div>
+    <div class="column">
+      <h2>Network</h2>
+      <svg id="network-svg" width="300" height="250"></svg>
+    </div>
+  </div>
+  <script>
+    // -------- Heap --------
+    const heapData = {
+      name: "10",
+      children: [
+        { name: "5" },
+        { name: "8" }
+      ]
+    };
+    const heapSvg = d3.select("#heap-svg");
+    const treeLayout = d3.tree().size([220, 120]);
+    const root = d3.hierarchy(heapData);
+    treeLayout(root);
+    heapSvg.selectAll("line")
+      .data(root.links())
+      .enter()
+      .append("line")
+      .attr("x1", d => d.source.x + 40)
+      .attr("y1", d => d.source.y + 40)
+      .attr("x2", d => d.target.x + 40)
+      .attr("y2", d => d.target.y + 40)
+      .attr("stroke", "black");
+    heapSvg.selectAll("circle")
+      .data(root.descendants())
+      .enter()
+      .append("circle")
+      .attr("cx", d => d.x + 40)
+      .attr("cy", d => d.y + 40)
+      .attr("r", 25)
+      .attr("fill", "#90caf9");
+    heapSvg.selectAll("text")
+      .data(root.descendants())
+      .enter()
+      .append("text")
+      .attr("x", d => d.x + 40)
+      .attr("y", d => d.y + 45)
+      .attr("text-anchor", "middle")
+      .attr("font-size", "18px")
+      .attr("font-weight", "bold")
+      .text(d => d.data.name);
+
+    // -------- Stack --------
+    const stackData = [
+      { value: "A" },
+      { value: "B" },
+      { value: "main" }
+    ];
+    const stackSvg = d3.select("#stack-svg");
+    const boxWidth = 90, boxHeight = 35, gap = 10;
+    stackData.forEach((item, i) => {
+      stackSvg.append("rect")
+        .attr("x", 105)
+        .attr("y", 30 + i * (boxHeight + gap))
+        .attr("width", boxWidth)
+        .attr("height", boxHeight)
+        .attr("fill", "orange")
+        .attr("stroke", "black");
+      stackSvg.append("text")
+        .attr("x", 105 + boxWidth / 2)
+        .attr("y", 30 + i * (boxHeight + gap) + boxHeight / 2 + 6)
+        .attr("text-anchor", "middle")
+        .attr("font-size", "16px")
+        .attr("font-weight", "bold")
+        .text(item.value);
+    });
+
+    // -------- Bar Chart --------
+    const barData = [
+      { label: "A", value: 30 },
+      { label: "B", value: 80 },
+      { label: "C", value: 50 },
+      { label: "D", value: 70 }
+    ];
+    const barSvg = d3.select("#barchart-svg");
+    const bWidth = 220, bHeight = 180, bMargin = { top: 20, right: 20, bottom: 40, left: 40 };
+    const bx = d3.scaleBand()
+      .domain(barData.map(d => d.label))
+      .range([bMargin.left, bWidth - bMargin.right])
+      .padding(0.3);
+    const by = d3.scaleLinear()
+      .domain([0, d3.max(barData, d => d.value)])
+      .nice()
+      .range([bHeight - bMargin.bottom, bMargin.top]);
+    barSvg.append("g")
+      .attr("transform", `translate(0,${bHeight - bMargin.bottom})`)
+      .call(d3.axisBottom(bx));
+    barSvg.append("g")
+      .attr("transform", `translate(${bMargin.left},0)`)
+      .call(d3.axisLeft(by));
+    barSvg.selectAll("rect")
+      .data(barData)
+      .enter()
+      .append("rect")
+      .attr("x", d => bx(d.label))
+      .attr("y", d => by(d.value))
+      .attr("width", bx.bandwidth())
+      .attr("height", d => by(0) - by(d.value))
+      .attr("fill", "#4caf50");
+    barSvg.selectAll("text.bar")
+      .data(barData)
+      .enter()
+      .append("text")
+      .attr("class", "bar")
+      .attr("x", d => bx(d.label) + bx.bandwidth() / 2)
+      .attr("y", d => by(d.value) - 5)
+      .attr("text-anchor", "middle")
+      .attr("font-size", "14px")
+      .attr("fill", "#333")
+      .text(d => d.value);
+
+    // -------- Line Chart --------
+    const lineData = [
+      { x: 0, y: 20 },
+      { x: 1, y: 40 },
+      { x: 2, y: 35 },
+      { x: 3, y: 60 },
+      { x: 4, y: 50 }
+    ];
+    const lineSvg = d3.select("#linechart-svg");
+    const lMargin = { top: 20, right: 20, bottom: 30, left: 40 };
+    const lWidth = 220, lHeight = 180;
+    const lx = d3.scaleLinear()
+      .domain([0, d3.max(lineData, d => d.x)])
+      .range([lMargin.left, lWidth - lMargin.right]);
+    const ly = d3.scaleLinear()
+      .domain([0, d3.max(lineData, d => d.y)])
+      .range([lHeight - lMargin.bottom, lMargin.top]);
+    const line = d3.line()
+      .x(d => lx(d.x))
+      .y(d => ly(d.y));
+    lineSvg.append("g")
+      .attr("transform", `translate(0,${lHeight - lMargin.bottom})`)
+      .call(d3.axisBottom(lx).ticks(5));
+    lineSvg.append("g")
+      .attr("transform", `translate(${lMargin.left},0)`)
+      .call(d3.axisLeft(ly));
+    lineSvg.append("path")
+      .datum(lineData)
+      .attr("fill", "none")
+      .attr("stroke", "#2196f3")
+      .attr("stroke-width", 2)
+      .attr("d", line);
+    lineSvg.selectAll("circle")
+      .data(lineData)
+      .enter()
+      .append("circle")
+      .attr("cx", d => lx(d.x))
+      .attr("cy", d => ly(d.y))
+      .attr("r", 4)
+      .attr("fill", "#2196f3");
+
+    // -------- Pie Chart --------
+    const pieData = [
+      { label: "A", value: 30 },
+      { label: "B", value: 70 },
+      { label: "C", value: 45 }
+    ];
+    const pieSvg = d3.select("#piechart-svg")
+      .append("g")
+      .attr("transform", "translate(125,125)");
+    const radius = 100;
+    const color = d3.scaleOrdinal(d3.schemeCategory10);
+    const pie = d3.pie().value(d => d.value);
+    const arc = d3.arc().innerRadius(0).outerRadius(radius);
+    pieSvg.selectAll("path")
+      .data(pie(pieData))
+      .enter()
+      .append("path")
+      .attr("d", arc)
+      .attr("fill", (d, i) => color(i));
+    pieSvg.selectAll("text")
+      .data(pie(pieData))
+      .enter()
+      .append("text")
+      .attr("transform", d => `translate(${arc.centroid(d)})`)
+      .attr("text-anchor", "middle")
+      .attr("font-size", "14px")
+      .attr("fill", "#fff")
+      .text(d => d.data.label);
+
+    // -------- Scatter Plot --------
+    const scatterData = [
+      { x: 10, y: 30 }, { x: 20, y: 80 }, { x: 40, y: 50 }, { x: 60, y: 90 }, { x: 80, y: 60 }
+    ];
+    const sMargin = { top: 20, right: 20, bottom: 30, left: 40 };
+    const sWidth = 220, sHeight = 180;
+    const sx = d3.scaleLinear().domain([0, 100]).range([sMargin.left, sWidth - sMargin.right]);
+    const sy = d3.scaleLinear().domain([0, 100]).range([sHeight - sMargin.bottom, sMargin.top]);
+    const scatterSvg = d3.select("#scatter-svg");
+    scatterSvg.append("g")
+      .attr("transform", `translate(0,${sHeight - sMargin.bottom})`)
+      .call(d3.axisBottom(sx));
+    scatterSvg.append("g")
+      .attr("transform", `translate(${sMargin.left},0)`)
+      .call(d3.axisLeft(sy));
+    scatterSvg.selectAll("circle")
+      .data(scatterData)
+      .enter()
+      .append("circle")
+      .attr("cx", d => sx(d.x))
+      .attr("cy", d => sy(d.y))
+      .attr("r", 6)
+      .attr("fill", "#ff5722");
+
+    // -------- Network Graph --------
+    const nodes = [
+      { id: "A" }, { id: "B" }, { id: "C" }, { id: "D" }
+    ];
+    const links = [
+      { source: "A", target: "B" },
+      { source: "A", target: "C" },
+      { source: "B", target: "D" }
+    ];
+    const networkSvg = d3.select("#network-svg");
+    const simulation = d3.forceSimulation(nodes)
+      .force("link", d3.forceLink(links).id(d => d.id).distance(80))
+      .force("charge", d3.forceManyBody().strength(-200))
+      .force("center", d3.forceCenter(150, 125));
+    const link = networkSvg.append("g")
+      .selectAll("line")
+      .data(links)
+      .enter().append("line")
+      .attr("stroke", "#999");
+    const node = networkSvg.append("g")
+      .selectAll("circle")
+      .data(nodes)
+      .enter().append("circle")
+      .attr("r", 15)
+      .attr("fill", "#2196f3");
+    const label = networkSvg.append("g")
+      .selectAll("text")
+      .data(nodes)
+      .enter().append("text")
+      .attr("text-anchor", "middle")
+      .attr("dy", 5)
+      .attr("fill", "#fff")
+      .attr("font-size", "14px")
+      .text(d => d.id);
+    simulation.on("tick", () => {
+      link
+        .attr("x1", d => d.source.x)
+        .attr("y1", d => d.source.y)
+        .attr("x2", d => d.target.x)
+        .attr("y2", d => d.target.y);
+      node
+        .attr("cx", d => d.x)
+        .attr("cy", d => d.y);
+      label
+        .attr("x", d => d.x)
+        .attr("y", d => d.y);
+    });
+  </script>
+</body>
+</html>

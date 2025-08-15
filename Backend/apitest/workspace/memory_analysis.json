@@ -1,23 +1,100 @@
 [
   {
-    "name": "s",
+    "name": "counter",
     "type": "int",
-    "scope": "main",
-    "location": "stack",
-    "value": "42",
+    "scope": "global",
+    "location": "data",
+    "value": "0",
+    "pointer": false,
+    "points_to": null,
+    "line": 3
+  },
+  {
+    "name": "msg[20]",
+    "type": "char",
+    "scope": "global",
+    "location": "data",
+    "value": "\"Hello\"",
     "pointer": false,
     "points_to": null,
     "line": 4
   },
   {
-    "name": "q",
-    "type": "int*",
+    "name": "product",
+    "type": "int",
+    "scope": "multiply",
+    "location": "stack",
+    "value": "x * y",
+    "pointer": false,
+    "points_to": null,
+    "line": 11
+  },
+  {
+    "name": "a",
+    "type": "int",
     "scope": "main",
     "location": "stack",
-    "value": "&s",
+    "value": "4",
+    "pointer": false,
+    "points_to": null,
+    "line": 16
+  },
+  {
+    "name": "b",
+    "type": "int",
+    "scope": "main",
+    "location": "stack",
+    "value": "5",
+    "pointer": false,
+    "points_to": null,
+    "line": 17
+  },
+  {
+    "name": "result",
+    "type": "int",
+    "scope": "main",
+    "location": "stack",
+    "value": "multiply(a, b)",
+    "pointer": false,
+    "points_to": null,
+    "line": 18
+  },
+  {
+    "name": "p",
+    "type": "char*",
+    "scope": "main",
+    "location": "stack",
+    "value": "msg",
     "pointer": true,
     "points_to": null,
-    "line": 5
+    "line": 22
+  },
+  {
+    "name": "increment_counter",
+    "type": "function",
+    "return_type": "void",
+    "parameters": [],
+    "location": "code",
+    "scope": "global",
+    "line": 6
+  },
+  {
+    "name": "multiply",
+    "type": "function",
+    "return_type": "int",
+    "parameters": [
+      {
+        "name": "x",
+        "type": "int"
+      },
+      {
+        "name": "y",
+        "type": "int"
+      }
+    ],
+    "location": "code",
+    "scope": "global",
+    "line": 10
   },
   {
     "name": "main",
@@ -26,6 +103,6 @@
     "parameters": [],
     "location": "code",
     "scope": "global",
-    "line": 3
+    "line": 15
   }
 ]

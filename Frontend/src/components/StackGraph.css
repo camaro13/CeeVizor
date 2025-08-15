@@ -1,0 +1,32 @@
+.stack-graph {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 10px;
+}
+
+.stack-frame {
+  background-color: #d0f0e0;
+  padding: 12px 18px;
+  border: 2px solid #888;
+  border-radius: 12px;
+  font-family: 'Courier New', monospace;
+  font-size: 1.2rem;
+  width: 100%;
+  box-sizing: border-box;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+
+.stack-variable-container {
+  display: flex;
+  flex-direction: column-reverse; /* ✅ 핵심 */
+  gap: 6px;
+}
+
+
+.stack-variable {
+  font-family: 'Courier New', monospace;
+  font-size: 1.2rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
