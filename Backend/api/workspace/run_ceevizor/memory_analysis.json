@@ -1,0 +1,87 @@
+[
+  {
+    "kind": "function",
+    "name": "foo",
+    "return_type": "void",
+    "parameters": [
+      {
+        "name": "param",
+        "type": "int"
+      }
+    ],
+    "location": "code",
+    "scope": {
+      "kind": "global"
+    },
+    "line": 7
+  },
+  {
+    "kind": "function",
+    "name": "main",
+    "return_type": "int",
+    "parameters": [],
+    "location": "code",
+    "scope": {
+      "kind": "global"
+    },
+    "line": 23
+  },
+  {
+    "kind": "var",
+    "name": "heap_var",
+    "type": "int*",
+    "scope": {
+      "kind": "function",
+      "func": "foo"
+    },
+    "storage": "auto",
+    "location": "heap",
+    "value": "(int*)malloc(sizeof(int))",
+    "pointer": true,
+    "points_to": null,
+    "line": 10
+  },
+  {
+    "kind": "var",
+    "name": "stack_var",
+    "type": "int",
+    "scope": {
+      "kind": "function",
+      "func": "foo"
+    },
+    "storage": "auto",
+    "location": "stack",
+    "value": "30",
+    "pointer": false,
+    "points_to": null,
+    "line": 8
+  },
+  {
+    "kind": "var",
+    "name": "global_var",
+    "type": "int",
+    "scope": {
+      "kind": "global"
+    },
+    "storage": "auto",
+    "location": "data",
+    "value": "10",
+    "pointer": false,
+    "points_to": null,
+    "line": 4
+  },
+  {
+    "kind": "var",
+    "name": "static_var",
+    "type": "int",
+    "scope": {
+      "kind": "global"
+    },
+    "storage": "static",
+    "location": "data",
+    "value": "20",
+    "pointer": false,
+    "points_to": null,
+    "line": 5
+  }
+]
