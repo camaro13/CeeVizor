@@ -1,7 +1,6 @@
 import React, { useRef, useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './App.css';
-import stepsData from './steps.json';
 import CodeMirror from '@uiw/react-codemirror';
 import { cpp } from '@codemirror/lang-cpp';
 import { EditorView, Decoration, DecorationSet, ViewPlugin, ViewUpdate } from '@codemirror/view';
@@ -119,7 +118,6 @@ function findCurrentLineNumber(steps, stepIndex, code) {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
   const [showResetMessage, setShowResetMessage] = useState(false); // 👸현송 : 초기화 메시지 표시 여부
-  const [selectedFile, setSelectedFile] = useState('sample.json'); // 👸현송 : 선택된 JSON 파일 이름 (나중에 지울거임)
   // 현송 :  상태 추가 / 메시지창 & 메모리영역 바로실행되는 거 문제 해결을 위한 상태들
   const [loadedSteps, setLoadedSteps] = useState([]);  // 로드만 해두는 원본
   const [isRunning, setIsRunning] = useState(false);   // 실행 중 여부
@@ -202,7 +200,7 @@ setTimeout(() => {
     setIsRunning(false); // 실행 중 상태 해제
     setSteps([]); // steps 상태 초기화
     setStepIndex(0);// 초기화 후에는 실행 전 상태로
-    setTimeout(() => setShowResetMessage(false), 3000); // 1.2초 후 메시지 숨김
+    setTimeout(() => setShowResetMessage(false), 2500); // 2.5초 후 메시지 숨김
 
   };
 
@@ -219,7 +217,7 @@ const handleJsonChange = (e) => {
     
   // JSON 데이터 초기 로드 (첫 단계 데이터 비우기)
   useEffect(() => {
-    fetch('/data/sample.json')
+    fetch('/data/test.json')
       .then(res => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res.json();
@@ -229,10 +227,7 @@ const handleJsonChange = (e) => {
       .then(json => {
           const normalized = normalizeSteps(json);
           // 초기에는 실행 전 상태로 보관만
-          // (참고) 첫 단계 data_segment 비우는 커스텀 룰 유지하려면 여기서 normalized[0]만 조정
-          if (normalized.length > 0 && normalized[0]?.memory?.data_segment) {
-            normalized[0].memory.data_segment = {};
-          }
+
           setLoadedSteps(normalized);
           setSteps([]);         // ★ 실행 전에는 비워둠
           setStepIndex(0);
@@ -302,8 +297,12 @@ const handleJsonChange = (e) => {
   function deletedStackFrames(curr, next) {
     const currLen = (curr || []).length;
     const nextLen = (next || []).length;
+    if (nextLen >= currLen) return new Set();
+    // 현송 :새프레임이 아래에 생기지 않도록 수정 ( curr의 마지막 인덱스부터 삭제)
     const indices = [];
-    for (let i = nextLen; i < currLen; i++) indices.push(i);
+    for (let i = currLen - 1; i >= nextLen; i--) {
+      indices.push(i);
+    }
     return new Set(indices);
   }
 
@@ -392,46 +391,54 @@ const handleJsonChange = (e) => {
 
   // 전체 실행 핸들러
   // 현송 : 코드 입력창이 비어있거나 실행할 단계 데이터가 없을 때 경고 메시지 표시
-const handleRun = () => {
-  if (!code.trim()) {
-    openWarn('코드를 입력한 뒤 실행해주세요.');
-    return;
-  }
-  const data = loadedSteps.length ? loadedSteps : normalizeSteps(stepsData);
-  if (!data.length) {
-    openWarn('실행할 단계 데이터가 없습니다.');
-    return;
-  }
-  setIsRunning(true);  
-  setSteps(data);
-  setStepIndex(0);
-  setAccumulatedOutput("");
-  let current = 0;
-  clearInterval(intervalRef.current);
+  const handleRun = () => {
+    if (!code.trim()) {
+      openWarn('코드를 입력한 뒤 실행해주세요.');
+      return;
+    }
+    const data = loadedSteps.length ? loadedSteps : stepsData;
+    if (!data.length) {
+      openWarn('실행할 단계 데이터가 없습니다.');
+      return;
+    }
 
-  intervalRef.current = setInterval(() => {
-    current++;
-    if (current >= data.length) {
+    // 기존 자동실행 타이머가 있으면 먼저 정지
+    if (intervalRef.current) {
       clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
 
-      // ★★★ 실행 끝났을 때 삭제 애니메이션 트리거 ★★★
-      const lastStep = data[data.length - 1];
+    setIsRunning(true);  
+    setSteps(data);
+    setStepIndex(0);
+    setAccumulatedOutput("");
 
-      // Stack
-      if ((lastStep.memory.stack || []).length > 0)
-        setDeletingStackIdxs(new Set(
-          (lastStep.memory.stack || []).map((_, idx) => idx)
-        ));
-      // Data
-      if (Object.keys(lastStep.memory.data_segment || {}).length > 0)
-        setDeletingData(true);
-      // Heap
-      if ((lastStep.memory.heap || []).length > 0)
-        setDeletingHeapLabels(new Set(
-          (lastStep.memory.heap || []).map((_, idx) => idx)
-        ));
+        let current = 0;
+          clearInterval(intervalRef.current);
 
-      setBlinkOn(true);
+          intervalRef.current = setInterval(() => {
+            current++;
+            if (current >= data.length) {
+              clearInterval(intervalRef.current);
+
+              // ★★★ 실행 끝났을 때 삭제 애니메이션 트리거 ★★★
+              const lastStep = data[data.length - 1];
+
+              // Stack
+              if ((lastStep.memory.stack || []).length > 0)
+                setDeletingStackIdxs(new Set(
+                  (lastStep.memory.stack || []).map((_, idx) => idx)
+                ));
+              // Data
+              if (Object.keys(lastStep.memory.data_segment || {}).length > 0)
+                setDeletingData(true);
+              // Heap
+              if ((lastStep.memory.heap || []).length > 0)
+                setDeletingHeapLabels(new Set(
+                  (lastStep.memory.heap || []).map((_, idx) => idx)
+                ));
+
+              setBlinkOn(true);
 
       // 일정 시간 후 완전히 삭제
       setTimeout(() => {
@@ -466,7 +473,7 @@ const handleRun = () => {
     setInfoVisible(prev => prev === type ? null : type);
   };
 
-// 현송 : 한 줄 실행도 동일 가드
+// 현송 : 전체, 한줄 버튼 시간 꼬이는 거 수정 코드 
 const handleStepOnce = () => {
   const data = loadedSteps.length ? loadedSteps : stepsData;
   const lastStep = data[data.length - 1];
@@ -478,7 +485,15 @@ const handleStepOnce = () => {
     openWarn('실행할 단계 데이터가 없습니다.');
     return;
   }
-  if (!isRunning) {
+
+  // 자동실행 중이면 먼저 정지하고 수동 모드로 전환
+  if (intervalRef.current) {
+    clearInterval(intervalRef.current);
+    intervalRef.current = null;
+  }
+
+  // 아직 세션 시작 안 됐으면 초기 세팅(0번째 스텝으로 진입)
+  if (!steps.length) {
     setIsRunning(true);
     setSteps(data);
     setStepIndex(0);
@@ -510,38 +525,42 @@ const handleStepOnce = () => {
 };
 
 
+
   // Stack 시각화 컴포넌트
-  function CustomStackGraph({ stack }) {
-    if (!stack || stack.length === 0) return null;
-    return (
-      <div className="stack-graph">
-        {stack.map((frame, idx) => {
-          const filteredVariables = {};
-          Object.entries(frame.variables || {}).forEach(([key, value]) => {
-            if ((typeof value === "string" && /^0x[0-9a-f]+$/i.test(value)) || value === null) return;
-            filteredVariables[key] = value;
-          });
-          const isEmpty = Object.keys(filteredVariables).length === 0;
+  // 현송 : 백앤드에서 넘겨주는 데이터는 main -> 호출된 함수 순으로 아래로 쌓이는 구조라, map 돌리기 전에 reverse()g해서 위쪽으로 생기게 변경
+function CustomStackGraph({ stack }) {
+  if (!stack || stack.length === 0) return null;
+  return (
+    <div className="stack-graph">
+      {[...stack].map((frame, revIdx) => {
+        const idx = stack.length - 1 - revIdx; // 원래 인덱스 (깜빡임, 삭제 체크할 때 필요)
+        const filteredVariables = {};
+        Object.entries(frame.variables || {}).forEach(([key, value]) => {
+          if ((typeof value === "string" && /^0x[0-9a-f]+$/i.test(value)) || value === null) return;
+          filteredVariables[key] = value;
+        });
+        const isEmpty = Object.keys(filteredVariables).length === 0;
 
-          let className = "stack-frame";
-          if (!isEmpty && blinkStackFrameIdxs.has(idx) && blinkOn) className += " blink";
-          if (!isEmpty && deletingStackIdxs.has(idx) && blinkOn) className += " delete-blink";
-          if (isEmpty) className += " empty-frame";
-          if (isEmpty) return null;
+        let className = "stack-frame";
+        if (!isEmpty && blinkStackFrameIdxs.has(idx) && blinkOn) className += " blink";
+        if (!isEmpty && deletingStackIdxs.has(idx) && blinkOn) className += " delete-blink";
+        if (isEmpty) className += " empty-frame";
+        if (isEmpty) return null;
 
-          return (
-            <div className={className} key={idx}>
-              <div className="stack-variable-container">
-                {Object.entries(filteredVariables).map(([key, value], i) => (
-                  <div className="stack-variable" key={i}>{key} = {String(value)}</div>
-                ))}
-              </div>
+        return (
+          <div className={className} key={idx}>
+            <div className="stack-variable-container">
+              {Object.entries(filteredVariables).map(([key, value], i) => (
+                <div className="stack-variable" key={i}>{key} = {String(value)}</div>
+              ))}
             </div>
-          );
-        })}
-      </div>
-    );
-  }
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 
   // Heap 시각화 컴포넌트
 function CustomHeapGraph({ heap, stack }) {
@@ -652,18 +671,6 @@ function CustomDataGraph({ data, blinkDataGraph, deletingData, blinkOn }) {
               />
           </div>
           <div className="button-container">
-            {/* 👸현송 : 파일 선택 드롭아웃 추가 (임시) */}
-            <select
-              value={selectedFile}
-              onChange={handleJsonChange}
-              style={{ width: '100%', marginBottom: '8px' }}
-            >
-              <option value="sample.json">sample.json</option>
-              <option value="test.json">test.json</option>
-              <option value="test2.json">test2.json</option>
-              <option value="test3.json">test3.json</option>
-            </select>
-
             <div className="top-buttons">
               <button onClick={handleStepOnce}>한 줄 실행</button>  {/* 현송 : 함수 연결 */}
               <button onClick={handleRun} disabled={loading}>전체 실행</button>

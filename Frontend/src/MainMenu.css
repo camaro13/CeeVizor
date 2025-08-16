@@ -3,7 +3,6 @@ body {
   overflow: hidden; /* ← 스크롤바 강제 제거 */
 }
 
-
 .main-menu-container {
   display: flex;
   justify-content: space-between;
@@ -154,8 +153,8 @@ body {
   padding: 4vh 4vw;
   border-radius: 1vw;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-  min-width: 300px;
-  max-width: 600px;
+  min-width: 200px;
+  max-width: 800px;
   font-family: 'Nanum Gothic', sans-serif;
   text-align: center; /* 기본 가운데 */
   line-height: 1.6;
