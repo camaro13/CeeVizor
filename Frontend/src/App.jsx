@@ -187,7 +187,10 @@ function findCurrentLineNumber(steps, stepIndex, code) {
     setSteps([]);                    // 메모리 박스들 비우기 (fallback로 빈 상태 렌더됨)
 
     // 4) 깜빡임/삭제 관련 상태도 안전하게 초기화 (화면 깔끔)
-    setBlinkOn(true);
+    setBlinkOn(false);
+setTimeout(() => {
+  setBlinkOn(true);
+}, 50);
     setBlinkStackFrameIdxs(new Set());
     setBlinkHeapLabels(new Set());
     setBlinkDataGraph(false);
@@ -389,32 +392,60 @@ const handleJsonChange = (e) => {
 
   // 전체 실행 핸들러
   // 현송 : 코드 입력창이 비어있거나 실행할 단계 데이터가 없을 때 경고 메시지 표시
-  const handleRun = () => {
-    if (!code.trim()) {
-      openWarn('코드를 입력한 뒤 실행해주세요.');
-      return;
-    }
+const handleRun = () => {
+  if (!code.trim()) {
+    openWarn('코드를 입력한 뒤 실행해주세요.');
+    return;
+  }
   const data = loadedSteps.length ? loadedSteps : normalizeSteps(stepsData);
-    if (!data.length) {
-      openWarn('실행할 단계 데이터가 없습니다.');
-      return;
-    }
-    setIsRunning(true);  
-    setSteps(data);
-    setStepIndex(0);
-    setAccumulatedOutput("");
+  if (!data.length) {
+    openWarn('실행할 단계 데이터가 없습니다.');
+    return;
+  }
+  setIsRunning(true);  
+  setSteps(data);
+  setStepIndex(0);
+  setAccumulatedOutput("");
+  let current = 0;
+  clearInterval(intervalRef.current);
 
-    let current = 0;
-    clearInterval(intervalRef.current);
-    intervalRef.current = setInterval(() => {
-      current++;
-      if (current >= data.length) {
-        clearInterval(intervalRef.current);
-      } else {
-        setStepIndex(current);
-      }
-    }, 3000);
-  };
+  intervalRef.current = setInterval(() => {
+    current++;
+    if (current >= data.length) {
+      clearInterval(intervalRef.current);
+
+      // ★★★ 실행 끝났을 때 삭제 애니메이션 트리거 ★★★
+      const lastStep = data[data.length - 1];
+
+      // Stack
+      if ((lastStep.memory.stack || []).length > 0)
+        setDeletingStackIdxs(new Set(
+          (lastStep.memory.stack || []).map((_, idx) => idx)
+        ));
+      // Data
+      if (Object.keys(lastStep.memory.data_segment || {}).length > 0)
+        setDeletingData(true);
+      // Heap
+      if ((lastStep.memory.heap || []).length > 0)
+        setDeletingHeapLabels(new Set(
+          (lastStep.memory.heap || []).map((_, idx) => idx)
+        ));
+
+      setBlinkOn(true);
+
+      // 일정 시간 후 완전히 삭제
+      setTimeout(() => {
+        setSteps([]); // 모든 영역 비움
+        setDeletingStackIdxs(new Set());
+        setDeletingData(false);
+        setDeletingHeapLabels(new Set());
+      }, 3000);
+      // ★★★ 여기까지 실행 끝나고 정리! ★★★
+    } else {
+      setStepIndex(current);
+    }
+  }, 3000);
+};
 
   const navigate = useNavigate();
 
@@ -437,11 +468,12 @@ const handleJsonChange = (e) => {
 
 // 현송 : 한 줄 실행도 동일 가드
 const handleStepOnce = () => {
+  const data = loadedSteps.length ? loadedSteps : stepsData;
+  const lastStep = data[data.length - 1];
   if (!code.trim()) {
     openWarn('코드를 입력한 뒤 실행해주세요.');
     return;
   }
-  const data = loadedSteps.length ? loadedSteps : stepsData;
   if (!data.length) {
     openWarn('실행할 단계 데이터가 없습니다.');
     return;
@@ -451,7 +483,29 @@ const handleStepOnce = () => {
     setSteps(data);
     setStepIndex(0);
   } else {
-    setStepIndex((i) => Math.min(i + 1, data.length - 1));
+    setStepIndex(i => {
+      const nextIndex = Math.min(i + 1, data.length - 1);
+      if (nextIndex === data.length - 1) {
+        setDeletingData(true);
+        if ((lastStep.memory.stack || []).length > 0) {
+          setDeletingStackIdxs(new Set(lastStep.memory.stack.map((_, idx) => idx)));
+        }
+        if ((lastStep.memory.heap || []).length > 0) {
+          setDeletingHeapLabels(new Set(lastStep.memory.heap.map((_, idx) => idx)));
+        }
+        setBlinkOn(false);           // 깜빡임 초기화
+        setTimeout(() => setBlinkOn(true), 50); // 약간의 딜레이 후 다시 켜기
+        setTimeout(() => {
+          setDeletingData(false);
+          setDeletingStackIdxs(new Set());
+          setDeletingHeapLabels(new Set());
+          setSteps([]);
+          setIsRunning(false);
+          setStepIndex(0);
+        }, 3000);
+      }
+      return nextIndex;
+    });
   }
 };
 
@@ -537,7 +591,9 @@ function CustomDataGraph({ data, blinkDataGraph, deletingData, blinkOn }) {
   useEffect(() => {
     if (deletingData) {
       setShow(true);
-      deleteTimeout.current = setTimeout(() => setShow(false), 1000);
+      
+      // 3초 후에 데이터 영역 감추기
+      deleteTimeout.current = setTimeout(() => setShow(false), 3000);
     } else {
       setShow(true);
       if (deleteTimeout.current) clearTimeout(deleteTimeout.current);
@@ -547,25 +603,28 @@ function CustomDataGraph({ data, blinkDataGraph, deletingData, blinkOn }) {
     };
   }, [deletingData]);
 
+  // Data 영역을 숨길 조건 (삭제 애니메이션 후 사라짐)
   if (!show || !data || Object.keys(data).length === 0) return null;
 
+  // 클래스명 처리 (blink, delete-blink)
   let className = "data-graph";
   if (blinkDataGraph && blinkOn) className += " blink";
   if (deletingData && blinkOn) className += " delete-blink";
-  
-return (
-  <div className={className}>
-    {data.global && Object.entries(data.global).map(([key, v], i) => (
-      <div className="data-variable" key={i}>
-        {
-          v.type === 'char' && /^\w+\[\d+\]$/.test(v.name)
-            ? `char ${v.name} = "${v.value}"`
-            : `${v.type || ''} ${v.name} = ${v.value}`
-        }
-      </div>
-    ))}
-  </div>
-);
+
+  // 데이터 글로벌 변수만 순회하여 렌더링
+  return (
+    <div className={className}>
+      {data.global && Object.entries(data.global).map(([key, v], i) => (
+        <div className="data-variable" key={i}>
+          {
+              v.type === 'char' && /^\w+\[\d+\]$/.test(v.name)
+                ? `char ${v.name} = "${v.value.replace(/^"|"$/g, '')}"`
+                : `${v.type || ''} ${v.name} = ${v.value}`
+            }
+        </div>
+      ))}
+    </div>
+  );
 }
 
 
