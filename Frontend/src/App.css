@@ -348,8 +348,8 @@
 
 /* Data 영역 상자 스타일 */
 .data-graph {
-  background-color: #d9c5e9;       /* 연한 파랑 배경 */
-  border: 1.3px solid #b26ec4;     /* 부드러운 파랑 테두리 */
+  background-color: #d9c5e9;       /* 🌊현송 : 보라로 변경 */
+  border: 1.3px solid #b26ec4;     
   border-radius: 9px;              /* 둥근 모서리 */
   padding: 10px 11px;
   margin-bottom: 6px;

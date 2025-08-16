@@ -6,11 +6,92 @@ import CodeMirror from '@uiw/react-codemirror';
 import { cpp } from '@codemirror/lang-cpp';
 import { EditorView, Decoration, DecorationSet, ViewPlugin, ViewUpdate } from '@codemirror/view';
 
-// 👸현송 : json 데이터에서 단계 정보를 정규화하는 함수
-// 줄 번호 통일, stack 객체 → [{ function, variables }], heap, data → data_segment ㅇ
-// 이 함수는 steps.json 파일의 각 단계 데이터를 정규화하여 일관된 형식으로 변환
+/* ──────────────────────────────────────────────────────────────
+   🌊현송: printf 보정 유틸 ( %d, %s 최소 지원 )
+   - 백엔드에서 output이 비어 있는 printf 라인을 프론트에서 추론
+   ────────────────────────────────────────────────────────────── */
+function getVarValueFromStack(varName, stackFrames) {
+  // 스택의 상단 프레임부터 검색
+  for (let i = stackFrames.length - 1; i >= 0; i--) {
+    const v = stackFrames[i]?.variables?.[varName];
+    if (v !== undefined) return v;
+  }
+  return undefined;
+}
+// 현송 : *p 복잡한 인자 억지 추론 방지, 
+// ── 바꿔 넣기: printf 추론 함수 (복잡한 인자는 추론하지 않음) ─────────
+// ── printf 추론: 단순 식별자(a, b, foo)만 지원. *p, arr[i], a+b, &x 등은 추론 안 함 ──
+function derivePrintfOutput(line, stackFrames) {
+  const m = line.match(/printf\s*\(\s*"([^"]*)"\s*(?:,\s*(.*))?\)\s*;/);
+  if (!m) return null;
+
+  let format = m[1].replace(/\\n/g, '\n');         // "\n" 처리
+  const argsSrc = (m[2] || '').trim();
+  const args = argsSrc ? argsSrc.split(',').map(s => s.trim()).filter(Boolean) : [];
+
+  // ✅ 복잡한 인자(예: *p, arr[i], a+b, &x, foo())가 하나라도 있으면 아예 추론하지 않음
+  const SIMPLE_IDENT = /^[A-Za-z_]\w*$/;
+  if (args.some(a => !SIMPLE_IDENT.test(a))) return null;
+
+  let ai = 0;
+  // %d, %s만 지원
+  format = format.replace(/%[ds]/g, (spec) => {
+    const name = args[ai++] ?? '';
+    const v = getVarValueFromStack(name, stackFrames);
+
+    if (spec === '%s') {
+      const s = (v ?? '').toString();
+      return s.replace(/^"(.*)"$/, '$1');          // "문자열" 포맷은 따옴표 제거
+    }
+    return (v !== undefined && v !== null) ? String(v) : '0';
+  });
+
+  return format;
+}
+
+
+/* ──────────────────────────────────────────────────────────────
+   🌊현송: char 배열/배열-유사 객체 보정 유틸
+   - 백엔드 수정 없이 프론트에서 { "0": "H", "1": "i", ... } → "Hi" 로 보정
+   - 숫자 배열/다른 타입은 원형 유지
+   ────────────────────────────────────────────────────────────── */
+function looksLikeNumericKeyObject(o) {
+  return o && typeof o === 'object' && !Array.isArray(o) &&
+         Object.keys(o).length > 0 &&
+         Object.keys(o).every(k => /^\d+$/.test(k));
+}
+function objToArray(o) {
+  return Object.keys(o).sort((a, b) => +a - +b).map(k => o[k]);
+}
+function asCharStringIfApplicable(arr) {
+  if (!Array.isArray(arr)) return arr;
+  const out = [];
+  for (const v of arr) {
+    if (v === 0 || v === '\0' || v === null) break;  // 널 종료
+    if (typeof v === 'number') {
+      if (v >= 0 && v <= 255) out.push(String.fromCharCode(v)); else return arr;
+    } else if (typeof v === 'string') {
+      if (v.length === 1) out.push(v); else return arr;
+    } else return arr;
+  }
+  return out.length ? `"${out.join('')}"` : arr;     // 문자열로 압축
+}
+function normalizeArrayish(val) {
+  // value 래핑 제거 + 배열/배열-유사 객체 보정
+  if (val && typeof val === 'object' && 'value' in val) return normalizeArrayish(val.value);
+  if (Array.isArray(val)) return asCharStringIfApplicable(val);
+  if (looksLikeNumericKeyObject(val)) return asCharStringIfApplicable(objToArray(val));
+  return val;
+}
+
+/* ──────────────────────────────────────────────────────────────
+   🌊현송: json 단계 정규화 (※ 중복 선언 제거. 이 함수 한 개만 존재)
+   - 줄 번호 통일
+   - stack 객체 → [{ function, variables }]
+   - heap/data_segment의 값에 배열-유사 보정(normalizeArrayish) 적용
+   - printf 라인인데 output이 비어 있으면 추론(derivePrintfOutput)
+   ────────────────────────────────────────────────────────────── */
 function normalizeStep(raw) {
-  // 줄 번호 통일
   const lineNumber =
     typeof raw.line_index === 'number' ? raw.line_index + 1 :
     typeof raw.line_num === 'number' ? raw.line_num : null;
@@ -20,38 +101,54 @@ function normalizeStep(raw) {
   const stackFrames = Object.entries(stackObj).map(([funcName, varsObj]) => {
     const variables = {};
     Object.entries(varsObj || {}).forEach(([varName, v]) => {
-      if (v && typeof v === 'object' && 'value' in v) {
-        variables[varName] = v.value; // value 필드만 꺼냄
-      } else {
-        variables[varName] = v;
-      }
+      const rawVal = (v && typeof v === 'object' && 'value' in v) ? v.value : v;
+      variables[varName] = normalizeArrayish(rawVal);   // ◀ 배열/배열-유사 보정
     });
     return { function: funcName, variables };
   });
 
-  // heap
+  // heap: {address,value} 포맷/맵 포맷 모두 값 보정
   const heapRaw = raw.memory?.heap ?? raw.heap ?? [];
-  const heap = Array.isArray(heapRaw) ? heapRaw : [];
+  const heap = Array.isArray(heapRaw)
+    ? heapRaw.map(block => {
+        if (block && typeof block === 'object' && 'address' in block && 'value' in block) {
+          return { address: block.address, value: normalizeArrayish(block.value) };
+        } else if (block && typeof block === 'object') {
+          const k = Object.keys(block)[0];
+          return { [k]: normalizeArrayish(block[k]) };
+        }
+        return block;
+      })
+    : [];
 
-  // data → data_segment
+  // data → data_segment (값 보정)
   const dataRaw = raw.memory?.data_segment ?? raw.data ?? {};
-  const data_segment = Array.isArray(dataRaw)
-    ? Object.fromEntries(dataRaw.map(([k, v]) => [k, v]))
+  let data_segment = Array.isArray(dataRaw)
+    ? Object.fromEntries(dataRaw.map(([k, v]) => [k, normalizeArrayish(v)]))
     : (dataRaw || {});
+  if (!Array.isArray(dataRaw) && data_segment && typeof data_segment === 'object') {
+    Object.keys(data_segment).forEach(k => {
+      data_segment[k] = normalizeArrayish(data_segment[k]);
+    });
+  }
+
+  // output (printf 보정 포함)
+  let output = raw.output ?? raw.stdout ?? '';
+  if (!output && typeof raw.line === 'string' && raw.line.includes('printf')) {
+    const guessed = derivePrintfOutput(raw.line, stackFrames);
+    if (guessed) output = guessed;
+  }
 
   return {
     time: raw.time ?? null,
     line: raw.line ?? '',
     lineNumber,
-    memory: {
-      stack: stackFrames,
-      heap,
-      data_segment,
-    },
-    output: raw.output ?? '',
+    memory: { stack: stackFrames, heap, data_segment },
+    output,
   };
 }
-// 👸현송 : json 전체 배열을 변환
+
+// 👸현송 : json 전체 배열을 변환 (그대로 사용)
 function normalizeSteps(json) {
   if (!Array.isArray(json)) return [];
   return json.map(normalizeStep);
@@ -85,25 +182,23 @@ function App() {
 // 현송 : 하이라이팅 기능 활성화
 //  FIX: 하이라이트할 현재 라인 계산 (step 안전 정의 + lineNumber 지원)
 function findCurrentLineNumber(steps, stepIndex, code) {
-  const step = Array.isArray(steps) ? steps[stepIndex] : null; // ✅ FIX: step 안전하게 정의
+  const step = Array.isArray(steps) ? steps[stepIndex] : null;
   if (!step) return null;
 
-  // raw 형식(line_index: 0-based)도 처리
-  if (typeof step.line_index === 'number') return step.line_index + 1;
+  // 🔹 현송 : 하이라이팅 공백 부분 하는거 안하도록 수정
+  if (!step.line || !step.line.trim()) return null;
 
-  // FIX: normalizeStep()가 만든 1-based lineNumber도 처리
+  if (typeof step.line_index === 'number') return step.line_index + 1;
   if (typeof step.lineNumber === 'number') return step.lineNumber;
 
-  // 기존: line 문자열 매칭
-  if (step.line) {
-    const currentLineText = (step.line || '').trim();
-    const lines = (code || '').split('\n');
-    const idx = lines.findIndex(l => l.trim() === currentLineText);
-    if (idx >= 0) return idx + 1;
-  }
+  const currentLineText = (step.line || '').trim();
+  const lines = (code || '').split('\n');
+  const idx = lines.findIndex(l => l.trim() === currentLineText);
+  if (idx >= 0) return idx + 1;
 
   return null;
 }
+
 
 
 
@@ -138,9 +233,10 @@ function findCurrentLineNumber(steps, stepIndex, code) {
 
   const inputRef = useRef(null);
   const lineRef = useRef(null);
-  const intervalRef = useRef();
+  const intervalRef = useRef(null);
   const blinkRef = useRef();
   const openWarn = (msg) => { setModalMsg(msg); setModalOpen(true); }; //현송 : 경고 모달 열기 함수
+
 
 
 
@@ -227,7 +323,7 @@ const handleJsonChange = (e) => {
             normalized[0].memory.data_segment = {};
           }
           setLoadedSteps(normalized);
-          setSteps([]);         // ★ 실행 전에는 비워둠
+          setSteps([]);         // 실행 전에는 비워둠
           setStepIndex(0);
           setIsRunning(false);
         })
@@ -301,12 +397,24 @@ const handleJsonChange = (e) => {
   }
 
   function deletedHeapBlocks(curr, next) {
-    const nextLabels = new Set((next || []).map(block => Object.keys(block)[0]));
+    // 현송 _ 수정 포인트 1: 라벨 추출 함수 추가
+    const getLabel = (block) => {
+      if ('address' in block && 'value' in block) {
+        // heap이 address/value 형태인 경우 주소를 라벨로 사용
+        return block.address;
+      }
+      // 기존 형태 유지
+      return Object.keys(block)[0];
+    };
+
+    // 수정 포인트 2: 비교 시 getLabel() 사용
+    const nextLabels = new Set((next || []).map(getLabel));
     return new Set((curr || []).map((block, idx) => {
-      const label = Object.keys(block)[0];
+      const label = getLabel(block);
       return !nextLabels.has(label) ? idx : null;
     }).filter(i => i !== null));
   }
+
 
   // 단계 변경 시 상태 업데이트 (깜빡임, 삭제 등)
   useEffect(() => {
@@ -384,6 +492,7 @@ const handleJsonChange = (e) => {
 
   // 전체 실행 핸들러
   // 현송 : 코드 입력창이 비어있거나 실행할 단계 데이터가 없을 때 경고 메시지 표시
+  // 현송 : 실행 중이면 기존 인터벌 정리 후 새로 시작 (추가)
   const handleRun = () => {
     if (!code.trim()) {
       openWarn('코드를 입력한 뒤 실행해주세요.');
@@ -394,7 +503,7 @@ const handleJsonChange = (e) => {
       openWarn('실행할 단계 데이터가 없습니다.');
       return;
     }
-    setIsRunning(true);  
+    setIsRunning(true);
     setSteps(data);
     setStepIndex(0);
     setAccumulatedOutput("");
@@ -405,11 +514,20 @@ const handleJsonChange = (e) => {
       current++;
       if (current >= data.length) {
         clearInterval(intervalRef.current);
+        setIsRunning(false); // 🔹 실행 종료 처리
+
+        // 🔹 종료 메시지 추가
+        setAccumulatedOutput(prev => 
+          prev + "\n종료: 프로세스가 성공적으로 종료되었습니다. (Exit Code: 0)" //현송 : 다 끝나면 출력창에 종료 메시지 띄우기
+        );
+
       } else {
         setStepIndex(current);
       }
     }, 3000);
   };
+
+
 
   const navigate = useNavigate();
 
@@ -430,25 +548,60 @@ const handleJsonChange = (e) => {
     setInfoVisible(prev => prev === type ? null : type);
   };
 
-// 현송 : 한 줄 실행도 동일 가드
-const handleStepOnce = () => {
-  if (!code.trim()) {
-    openWarn('코드를 입력한 뒤 실행해주세요.');
-    return;
+// 현송 : 한 줄 실행도 동일 
+// 현송 : 전체실행 버튼 누를시 누르면 멈추고 한줄버튼 기능 되도록 추가
+  const handleStepOnce = () => {
+    if (!code.trim()) {
+      openWarn('코드를 입력한 뒤 실행해주세요.');
+      return;
+    }
+    const data = loadedSteps.length ? loadedSteps : stepsData;
+    if (!data.length) {
+      openWarn('실행할 단계 데이터가 없습니다.');
+      return;
+    }
+
+    // 🔹 전체 실행 중이면 먼저 멈추기
+    if (isRunning && intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+      setIsRunning(true); // 실행 상태는 유지 (수동 단계 실행으로 전환)
+    }
+
+    // 실행 전이면 steps 초기 세팅
+    if (!isRunning) {
+      setIsRunning(true);
+      setSteps(data);
+      setStepIndex(0);
+    } else {
+      setStepIndex((i) => Math.min(i + 1, data.length - 1));
+    }
+  };
+
+  // 현송 추가 : Stack 변수 표시 보조 함수 / 'ARR =' 이런식으로' 뜨는 거 방지
+  function renderStackVariable(name, value, heapData) {
+    // null/undefined는 그대로
+    if (value === null || value === undefined) return `${name} = ${value}`;
+
+    // heapData에서 value(주소)에 해당하는 블록 찾기
+    const heapBlock = heapData.find(block => {
+      if (block && typeof block === 'object' && 'address' in block) {
+        return block.address === value;
+      }
+      return false;
+    });
+
+    // Heap 블록이 있으면 arr -> 0, 1, 4, 9, 16 식으로 표시
+    if (heapBlock) {
+      if (Array.isArray(heapBlock.value)) {
+        return `${name} -> ${heapBlock.value.join(', ')}`;
+      }
+      return `${name} -> ${String(heapBlock.value)}`;
+    }
+
+    // 그냥 일반 변수면 기본 표시
+    return `${name} = ${String(value)}`;
   }
-  const data = loadedSteps.length ? loadedSteps : stepsData;
-  if (!data.length) {
-    openWarn('실행할 단계 데이터가 없습니다.');
-    return;
-  }
-  if (!isRunning) {
-    setIsRunning(true);
-    setSteps(data);
-    setStepIndex(0);
-  } else {
-    setStepIndex((i) => Math.min(i + 1, data.length - 1));
-  }
-};
 
 
   // Stack 시각화 컴포넌트
@@ -473,8 +626,11 @@ const handleStepOnce = () => {
           return (
             <div className={className} key={idx}>
               <div className="stack-variable-container">
+                {/* 현송 : 기존 단순 문자열 -> String(value) 대신 renderStackVariable() 함수를 호출 배열이면 값 보여주고 일반변수면 N = 4 처럼 기본 표시*/}
                 {Object.entries(filteredVariables).map(([key, value], i) => (
-                  <div className="stack-variable" key={i}>{key} = {String(value)}</div>
+                  <div className="stack-variable" key={i}>
+                    {renderStackVariable(key, value, currentStep.memory.heap)}
+                  </div>
                 ))}
               </div>
             </div>
@@ -592,7 +748,6 @@ function CustomDataGraph({ data, blinkDataGraph, deletingData, blinkOn }) {
               onChange={handleJsonChange}
               style={{ width: '100%', marginBottom: '8px' }}
             >
-              <option value="sample.json">sample.json</option>
               <option value="test1.json">test1.json</option>
               <option value="test2.json">test2.json</option>
               <option value="test3.json">test3.json</option>
