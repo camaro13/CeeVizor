@@ -593,18 +593,6 @@ return (
               />
           </div>
           <div className="button-container">
-            {/* 👸현송 : 파일 선택 드롭아웃 추가 (임시) */}
-            <select
-              value={selectedFile}
-              onChange={handleJsonChange}
-              style={{ width: '100%', marginBottom: '8px' }}
-            >
-              <option value="sample.json">sample.json</option>
-              <option value="test.json">test.json</option>
-              <option value="test2.json">test2.json</option>
-              <option value="test3.json">test3.json</option>
-            </select>
-
             <div className="top-buttons">
               <button onClick={handleStepOnce}>한 줄 실행</button>  {/* 현송 : 함수 연결 */}
               <button onClick={handleRun} disabled={loading}>전체 실행</button>
