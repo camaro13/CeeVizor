@@ -5,7 +5,7 @@ import MainMenu from './MainMenu'; //메인메뉴 컴포넌트
 import CodeEditor from './App.jsx'; //코드 실행창 컴포넌트
 import GuideMode from './GuideMode'; //가이드 모드 컴포넌트
 
-// ♥현송 : 가이드 모드 주소 추가 및 라우팅, 버튼 연동할거임
+// 현송 : 가이드 모드 주소 추가 및 라우팅, 버튼 연동할거임
 function App() {
   return (
     <Router>

@@ -1,7 +1,6 @@
 import React, { useRef, useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './App.css';
-import stepsData from './steps.json';
 import CodeMirror from '@uiw/react-codemirror';
 import { cpp } from '@codemirror/lang-cpp';
 import { EditorView, Decoration, DecorationSet, ViewPlugin, ViewUpdate } from '@codemirror/view';
@@ -119,7 +118,6 @@ function findCurrentLineNumber(steps, stepIndex, code) {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
   const [showResetMessage, setShowResetMessage] = useState(false); // 👸현송 : 초기화 메시지 표시 여부
-  const [selectedFile, setSelectedFile] = useState('sample.json'); // 👸현송 : 선택된 JSON 파일 이름 (나중에 지울거임)
   // 현송 :  상태 추가 / 메시지창 & 메모리영역 바로실행되는 거 문제 해결을 위한 상태들
   const [loadedSteps, setLoadedSteps] = useState([]);  // 로드만 해두는 원본
   const [isRunning, setIsRunning] = useState(false);   // 실행 중 여부
@@ -199,7 +197,7 @@ function findCurrentLineNumber(steps, stepIndex, code) {
     setIsRunning(false); // 실행 중 상태 해제
     setSteps([]); // steps 상태 초기화
     setStepIndex(0);// 초기화 후에는 실행 전 상태로
-    setTimeout(() => setShowResetMessage(false), 3000); // 1.2초 후 메시지 숨김
+    setTimeout(() => setShowResetMessage(false), 2500); // 2.5초 후 메시지 숨김
 
   };
 
@@ -216,7 +214,7 @@ const handleJsonChange = (e) => {
     
   // JSON 데이터 초기 로드 (첫 단계 데이터 비우기)
   useEffect(() => {
-    fetch('/data/sample.json')
+    fetch('/data/test.json')
       .then(res => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res.json();
@@ -299,8 +297,12 @@ const handleJsonChange = (e) => {
   function deletedStackFrames(curr, next) {
     const currLen = (curr || []).length;
     const nextLen = (next || []).length;
+    if (nextLen >= currLen) return new Set();
+    // 현송 :새프레임이 아래에 생기지 않도록 수정 ( curr의 마지막 인덱스부터 삭제)
     const indices = [];
-    for (let i = nextLen; i < currLen; i++) indices.push(i);
+    for (let i = currLen - 1; i >= nextLen; i--) {
+      indices.push(i);
+    }
     return new Set(indices);
   }
 
@@ -387,34 +389,46 @@ const handleJsonChange = (e) => {
     console.log("current output:", newLine) // 0816 현송  : 제대로 찍히는지 일단 화긴 
   }, [stepIndex, steps]);
 
-  // 전체 실행 핸들러
-  // 현송 : 코드 입력창이 비어있거나 실행할 단계 데이터가 없을 때 경고 메시지 표시
+  // 현송 : 전체 실행버튼 시간차 오류 수정
   const handleRun = () => {
     if (!code.trim()) {
       openWarn('코드를 입력한 뒤 실행해주세요.');
       return;
     }
-  const data = loadedSteps.length ? loadedSteps : normalizeSteps(stepsData);
+    const data = loadedSteps.length ? loadedSteps : stepsData;
     if (!data.length) {
       openWarn('실행할 단계 데이터가 없습니다.');
       return;
     }
-    setIsRunning(true);  
+
+    // 기존 자동실행 타이머가 있으면 먼저 정지
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+
+    setIsRunning(true);
     setSteps(data);
     setStepIndex(0);
     setAccumulatedOutput("");
 
-    let current = 0;
-    clearInterval(intervalRef.current);
+    let i = 0;
     intervalRef.current = setInterval(() => {
-      current++;
-      if (current >= data.length) {
+      i += 1;
+      if (i >= data.length) {
         clearInterval(intervalRef.current);
-      } else {
-        setStepIndex(current);
+        intervalRef.current = null;
+        setIsRunning(false);
+        // 다 끝나면 종료 메시지 추가 
+        setAccumulatedOutput(prev =>
+          prev + "\n종료: 프로세스가 성공적으로 종료되었습니다. (Exit Code: 0)"
+        );
+        return;
       }
-    }, 3000);
+      setStepIndex(i);
+    }, 2500);
   };
+
 
   const navigate = useNavigate();
 
@@ -435,7 +449,7 @@ const handleJsonChange = (e) => {
     setInfoVisible(prev => prev === type ? null : type);
   };
 
-// 현송 : 한 줄 실행도 동일 가드
+// 현송 : 전체, 한줄 버튼 시간 꼬이는 거 수정 코드 
 const handleStepOnce = () => {
   if (!code.trim()) {
     openWarn('코드를 입력한 뒤 실행해주세요.');
@@ -446,48 +460,71 @@ const handleStepOnce = () => {
     openWarn('실행할 단계 데이터가 없습니다.');
     return;
   }
-  if (!isRunning) {
+
+  // 자동실행 중이면 먼저 정지하고 수동 모드로 전환
+  if (intervalRef.current) {
+    clearInterval(intervalRef.current);
+    intervalRef.current = null;
+  }
+
+  // 아직 세션 시작 안 됐으면 초기 세팅(0번째 스텝으로 진입)
+  if (!steps.length) {
     setIsRunning(true);
     setSteps(data);
     setStepIndex(0);
-  } else {
-    setStepIndex((i) => Math.min(i + 1, data.length - 1));
+    return;
   }
+
+  // 한 스텝 전진. 마지막 스텝에 도달하면 종료 메시지 출력
+  setStepIndex(prev => {
+    const next = Math.min(prev + 1, data.length - 1);
+    if (next === data.length - 1 && prev !== next) {
+      setIsRunning(false);
+      setAccumulatedOutput(prevOut =>
+        prevOut + "\n종료: 프로세스가 성공적으로 종료되었습니다. (Exit Code: 0)"
+      );
+    }
+    return next;
+  });
 };
 
 
+
   // Stack 시각화 컴포넌트
-  function CustomStackGraph({ stack }) {
-    if (!stack || stack.length === 0) return null;
-    return (
-      <div className="stack-graph">
-        {stack.map((frame, idx) => {
-          const filteredVariables = {};
-          Object.entries(frame.variables || {}).forEach(([key, value]) => {
-            if ((typeof value === "string" && /^0x[0-9a-f]+$/i.test(value)) || value === null) return;
-            filteredVariables[key] = value;
-          });
-          const isEmpty = Object.keys(filteredVariables).length === 0;
+  // 현송 : 백앤드에서 넘겨주는 데이터는 main -> 호출된 함수 순으로 아래로 쌓이는 구조라, map 돌리기 전에 reverse()g해서 위쪽으로 생기게 변경
+function CustomStackGraph({ stack }) {
+  if (!stack || stack.length === 0) return null;
+  return (
+    <div className="stack-graph">
+      {[...stack].reverse().map((frame, revIdx) => { // r현송 : reverse() 추가
+        const idx = stack.length - 1 - revIdx; // 원래 인덱스 (깜빡임, 삭제 체크할 때 필요)
+        const filteredVariables = {};
+        Object.entries(frame.variables || {}).forEach(([key, value]) => {
+          if ((typeof value === "string" && /^0x[0-9a-f]+$/i.test(value)) || value === null) return;
+          filteredVariables[key] = value;
+        });
+        const isEmpty = Object.keys(filteredVariables).length === 0;
 
-          let className = "stack-frame";
-          if (!isEmpty && blinkStackFrameIdxs.has(idx) && blinkOn) className += " blink";
-          if (!isEmpty && deletingStackIdxs.has(idx) && blinkOn) className += " delete-blink";
-          if (isEmpty) className += " empty-frame";
-          if (isEmpty) return null;
+        let className = "stack-frame";
+        if (!isEmpty && blinkStackFrameIdxs.has(idx) && blinkOn) className += " blink";
+        if (!isEmpty && deletingStackIdxs.has(idx) && blinkOn) className += " delete-blink";
+        if (isEmpty) className += " empty-frame";
+        if (isEmpty) return null;
 
-          return (
-            <div className={className} key={idx}>
-              <div className="stack-variable-container">
-                {Object.entries(filteredVariables).map(([key, value], i) => (
-                  <div className="stack-variable" key={i}>{key} = {String(value)}</div>
-                ))}
-              </div>
+        return (
+          <div className={className} key={idx}>
+            <div className="stack-variable-container">
+              {Object.entries(filteredVariables).map(([key, value], i) => (
+                <div className="stack-variable" key={i}>{key} = {String(value)}</div>
+              ))}
             </div>
-          );
-        })}
-      </div>
-    );
-  }
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 
   // Heap 시각화 컴포넌트
 function CustomHeapGraph({ heap, stack }) {
