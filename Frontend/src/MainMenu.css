@@ -1,22 +1,16 @@
-
-body {
+/* 메인메뉴 전용 배경 */
+body.main-menu-body {
   margin: 0;
   padding: 0;
-  overflow: hidden; /* ← 스크롤바 강제 제거 */
-  background-image: url('./Main_background-001.png');
-  background-size: cover;      /* 화면 비율 유지하며 꽉 채우기 */
-  background-position: center; /* 항상 중앙 정렬 */
-  background-repeat: no-repeat; /* 반복 안함 */
-  height: 100vh;               /* 세로 화면 꽉 채우기 */
+  background: url("./Main_background.png") no-repeat center center fixed;
+  background-size: cover;
 }
-
 
 .main-menu-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 5vh 8vw;
-  background-color: white;
   height: 100vh;
   position: relative;
 }
@@ -37,7 +31,6 @@ body {
   align-items: flex-start;
 }
 
-
 .btn-content {
   display: flex;
   align-items: center;
@@ -50,9 +43,9 @@ body {
 
 .button-group {
   position: absolute;
-  top: 18%; /* 가운데 정렬 */
-  right: 10.4vw;
-  transform: translateY(-40%); /* 정확히 세로 가운데 정렬 */
+  top: 28%; /* 가운데 정렬 */
+  right: -40vw;
+  transform: translateY(-10%); /* 정확히 세로 가운데 정렬 */
   display: flex;
   flex-direction: column;
 }
@@ -140,7 +133,6 @@ body {
 
 /*설정, 메모리구조 설명 창*/
 .modal-overlay {
-  position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
@@ -157,7 +149,7 @@ body {
   border-radius: 1vw;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
   min-width: 200px;
-  max-width: 800px;
+  max-width: 700px;
   font-family: 'Nanum Gothic', sans-serif;
   text-align: center; /* 기본 가운데 */
   line-height: 1.6;
@@ -269,23 +261,31 @@ body {
   min-height: 100vh;
   height: 100vh; /* ← 꼭 추가해줘야 footer가 아래 붙음 */
 }
+
+.main-menu-container {
+  min-height: 100vh; /* 화면 전체 채우기 */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  background: url('./Main_background.png') no-repeat center center;
+  background-size: cover;
+}
+
 .footer {
   margin-top: auto;
   padding-top: 2vh;
   text-align: right;
   position: relative;
+  z-index: 100;   /* ← 강제로 맨 위 */
 }
-.bottom-divider {
-  width: 100%;
-  height: 0.1px;
-  background-color: #ddd;
-  margin-bottom: 3vh;
-}
+
 .hci-logo-main {
   width: 4vw;
   height: auto;
-  margin-right: 1vw;
+  margin-right: 4vw;
   margin-bottom: 2vh;
   opacity: 0.7;
+  z-index: 4;
 }
 

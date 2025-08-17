@@ -1,4 +1,12 @@
 /* App 전체 레이아웃 및 패널 기본 스타일 */
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #fff; /* 기본 흰색으로 */
+  height: 100vh;
+}
+
 .container {
   display: flex;
   flex-direction: row;
