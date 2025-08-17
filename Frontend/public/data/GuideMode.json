@@ -1,0 +1,479 @@
+[
+  {
+    "time": 0,
+    "line_num": 5,
+    "line": "int flight_number = 1234; // 데이터 영역",
+    "stack": {},
+    "heap": {},
+    "data": {
+      "global": {
+        "flight_number": {
+          "name": "flight_number",
+          "type": "int",
+          "value": 1234,
+          "pointer": false,
+          "points_to": null,
+          "scope": "global"
+        }
+      }
+    }
+  },
+  {
+    "time": 1,
+    "line_num": 22,
+    "line": "    passenger_boarding(flight_number);",
+    "stack": {},
+    "heap": {},
+    "data": {
+      "global": {
+        "flight_number": {
+          "name": "flight_number",
+          "type": "int",
+          "value": 1234,
+          "pointer": false,
+          "points_to": null,
+          "scope": "global"
+        }
+      }
+    }
+  },
+  {
+    "time": 2,
+    "line_num": 13,
+    "line": "void passenger_boarding(int ticket) {",
+    "stack": {
+      "passenger_boarding": {
+        "ticket": {
+          "name": "ticket",
+          "type": "int",
+          "value": 1234,
+          "pointer": false,
+          "points_to": null,
+          "scope": "passenger_boarding"
+        }
+      }
+    },
+    "heap": {},
+    "data": {
+      "global": {
+        "flight_number": {
+          "name": "flight_number",
+          "type": "int",
+          "value": 1234,
+          "pointer": false,
+          "points_to": null,
+          "scope": "global"
+        }
+      }
+    }
+  },
+  {
+    "time": 3,
+    "line_num": 14,
+    "line": "    int seat = ticket + 1;",
+    "stack": {
+      "passenger_boarding": {
+        "ticket": {
+          "name": "ticket",
+          "type": "int",
+          "value": 1234,
+          "pointer": false,
+          "points_to": null,
+          "scope": "passenger_boarding"
+        },
+        "seat": {
+          "name": "seat",
+          "type": "int",
+          "value": 1235,
+          "pointer": false,
+          "points_to": null,
+          "scope": "passenger_boarding"
+        }
+      }
+    },
+    "heap": {},
+    "data": {
+      "global": {
+        "flight_number": {
+          "name": "flight_number",
+          "type": "int",
+          "value": 1234,
+          "pointer": false,
+          "points_to": null,
+          "scope": "global"
+        }
+      }
+    }
+  },
+  {
+    "time": 4,
+    "line_num": 15,
+    "line": "    int* cargo = load_cargo();",
+    "stack": {
+      "passenger_boarding": {
+        "ticket": {
+          "name": "ticket",
+          "type": "int",
+          "value": 1234,
+          "pointer": false,
+          "points_to": null,
+          "scope": "passenger_boarding"
+        },
+        "seat": {
+          "name": "seat",
+          "type": "int",
+          "value": 1235,
+          "pointer": false,
+          "points_to": null,
+          "scope": "passenger_boarding"
+        },
+        "cargo": {
+          "name": "cargo",
+          "type": "int*",
+          "value": "&box",
+          "pointer": true,
+          "points_to": "box",
+          "scope": "passenger_boarding"
+        }
+      }
+    },
+    "heap": {},
+    "data": {
+      "global": {
+        "flight_number": {
+          "name": "flight_number",
+          "type": "int",
+          "value": 1234,
+          "pointer": false,
+          "points_to": null,
+          "scope": "global"
+        }
+      }
+    }
+  },
+  {
+    "time": 5,
+    "line_num": 7,
+    "line": "int* load_cargo() {",
+    "stack": {
+      "load_cargo": {}
+    },
+    "heap": {},
+    "data": {
+      "global": {
+        "flight_number": {
+          "name": "flight_number",
+          "type": "int",
+          "value": 1234,
+          "pointer": false,
+          "points_to": null,
+          "scope": "global"
+        }
+      }
+    }
+  },
+  {
+    "time": 6,
+    "line_num": 8,
+    "line": "    int* box = malloc(sizeof(int));",
+    "stack": {
+      "load_cargo": {
+        "box": {
+          "name": "box",
+          "type": "int*",
+          "value": "(heap)",
+          "pointer": true,
+          "points_to": null,
+          "scope": "load_cargo"
+        }
+      }
+    },
+    "heap": {
+      "main": {
+        "box": {
+          "name": "box",
+          "type": "int[]",
+          "value": "(heap)",
+          "pointer": true,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "data": {
+      "global": {
+        "flight_number": {
+          "name": "flight_number",
+          "type": "int",
+          "value": 1234,
+          "pointer": false,
+          "points_to": null,
+          "scope": "global"
+        }
+      }
+    }
+  },
+  {
+    "time": 7,
+    "line_num": 9,
+    "line": "    *box = 42;",
+    "stack": {
+      "load_cargo": {
+        "box": {
+          "name": "box",
+          "type": "int*",
+          "value": "(heap)",
+          "pointer": true,
+          "points_to": null,
+          "scope": "load_cargo"
+        }
+      }
+    },
+    "heap": {
+      "main": {
+        "box": {
+          "name": "box",
+          "type": "int[]",
+          "value": [42],
+          "pointer": true,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "data": {
+      "global": {
+        "flight_number": {
+          "name": "flight_number",
+          "type": "int",
+          "value": 1234,
+          "pointer": false,
+          "points_to": null,
+          "scope": "global"
+        }
+      }
+    }
+  },
+  {
+    "time": 8,
+    "line_num": 10,
+    "line": "    return box;",
+    "stack": {
+      "load_cargo": {
+        "box": {
+          "name": "box",
+          "type": "int*",
+          "value": "&box",
+          "pointer": true,
+          "points_to": "box",
+          "scope": "load_cargo"
+        }
+      }
+    },
+    "heap": {
+      "main": {
+        "box": {
+          "name": "box",
+          "type": "int[]",
+          "value": [42],
+          "pointer": true,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "data": {
+      "global": {
+        "flight_number": {
+          "name": "flight_number",
+          "type": "int",
+          "value": 1234,
+          "pointer": false,
+          "points_to": null,
+          "scope": "global"
+        }
+      }
+    }
+  },
+  {
+    "time": 9,
+    "line_num": 16,
+    "line": "    printf(\"Seat: %d\\n\", seat);",
+    "stack": {
+      "passenger_boarding": {
+        "ticket": {
+          "name": "ticket",
+          "type": "int",
+          "value": 1234,
+          "pointer": false,
+          "points_to": null,
+          "scope": "passenger_boarding"
+        },
+        "seat": {
+          "name": "seat",
+          "type": "int",
+          "value": 1235,
+          "pointer": false,
+          "points_to": null,
+          "scope": "passenger_boarding"
+        },
+        "cargo": {
+          "name": "cargo",
+          "type": "int*",
+          "value": "&box",
+          "pointer": true,
+          "points_to": "box",
+          "scope": "passenger_boarding"
+        }
+      }
+    },
+    "heap": {
+      "main": {
+        "box": {
+          "name": "box",
+          "type": "int[]",
+          "value": [42],
+          "pointer": true,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "data": {
+      "global": {
+        "flight_number": {
+          "name": "flight_number",
+          "type": "int",
+          "value": 1234,
+          "pointer": false,
+          "points_to": null,
+          "scope": "global"
+        }
+      }
+    },
+    "stdout": "Seat: 1235\n"
+  },
+  {
+    "time": 10,
+    "line_num": 17,
+    "line": "    printf(\"Cargo content: %d\\n\",*cargo);",
+    "stack": {
+      "passenger_boarding": {
+        "ticket": {
+          "name": "ticket",
+          "type": "int",
+          "value": 1234,
+          "pointer": false,
+          "points_to": null,
+          "scope": "passenger_boarding"
+        },
+        "seat": {
+          "name": "seat",
+          "type": "int",
+          "value": 1235,
+          "pointer": false,
+          "points_to": null,
+          "scope": "passenger_boarding"
+        },
+        "cargo": {
+          "name": "cargo",
+          "type": "int*",
+          "value": "&box",
+          "pointer": true,
+          "points_to": "box",
+          "scope": "passenger_boarding"
+        }
+      }
+    },
+    "heap": {
+      "main": {
+        "box": {
+          "name": "box",
+          "type": "int[]",
+          "value": [42],
+          "pointer": true,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "data": {
+      "global": {
+        "flight_number": {
+          "name": "flight_number",
+          "type": "int",
+          "value": 1234,
+          "pointer": false,
+          "points_to": null,
+          "scope": "global"
+        }
+      }
+    },
+    "stdout": "Cargo content: 42\n"
+  },
+  {
+    "time": 11,
+    "line_num": 18,
+    "line": "    free(cargo);",
+    "stack": {
+      "passenger_boarding": {
+        "ticket": {
+          "name": "ticket",
+          "type": "int",
+          "value": 1234,
+          "pointer": false,
+          "points_to": null,
+          "scope": "passenger_boarding"
+        },
+        "seat": {
+          "name": "seat",
+          "type": "int",
+          "value": 1235,
+          "pointer": false,
+          "points_to": null,
+          "scope": "passenger_boarding"
+        },
+        "cargo": {
+          "name": "cargo",
+          "type": "int*",
+          "value": "(freed)",
+          "pointer": true,
+          "points_to": "box",
+          "scope": "passenger_boarding"
+        }
+      }
+    },
+    "heap": {},
+    "data": {
+      "global": {
+        "flight_number": {
+          "name": "flight_number",
+          "type": "int",
+          "value": 1234,
+          "pointer": false,
+          "points_to": null,
+          "scope": "global"
+        }
+      }
+    }
+  },
+  {
+    "time": 12,
+    "line_num": 23,
+    "line": "    return 0;",
+    "stack": {},
+    "heap": {},
+    "data": {
+      "global": {
+        "flight_number": {
+          "name": "flight_number",
+          "type": "int",
+          "value": 1234,
+          "pointer": false,
+          "points_to": null,
+          "scope": "global"
+        }
+      }
+    }
+  }
+]

@@ -9,34 +9,36 @@ import { EditorView, Decoration, DecorationSet, ViewPlugin, ViewUpdate } from '@
 // 줄 번호 통일, stack 객체 → [{ function, variables }], heap, data → data_segment ㅇ
 // 이 함수는 steps.json 파일의 각 단계 데이터를 정규화하여 일관된 형식으로 변환
 function normalizeStep(raw) {
+
   // 줄 번호 통일
   const lineNumber =
     typeof raw.line_index === 'number' ? raw.line_index + 1 :
     typeof raw.line_num === 'number' ? raw.line_num : null;
 
-  // stack: 객체 → [{ function, variables }]
+  // stack 변환: [{ function, variables }]
   const stackObj = raw.memory?.stack ?? raw.stack ?? {};
-  const stackFrames = Object.entries(stackObj).map(([funcName, varsObj]) => {
-    const variables = {};
-    Object.entries(varsObj || {}).forEach(([varName, v]) => {
-      if (v && typeof v === 'object' && 'value' in v) {
-        variables[varName] = v.value;
-      } else {
-        variables[varName] = v;
-      }
-    });
-    return { function: funcName, variables };
-  });
+  const stackFrames = Object.entries(stackObj).map(([funcName, varsObj]) => ({
+    function: funcName,
+    variables: Object.entries(varsObj || {}).reduce((acc, [varName, v]) => {
+      acc[varName] = v;
+      return acc;
+    }, {})
+  }));
 
-  // heap
-  const heapRaw = raw.memory?.heap ?? raw.heap ?? [];
-  const heap = Array.isArray(heapRaw) ? heapRaw : [];
+  // heap 변환: [{ scope, name, type, value }]
+  const heapObj = raw.memory?.heap ?? raw.heap ?? {};
+  const heapBlocks = Object.entries(heapObj).flatMap(([scope, vars]) =>
+      Object.entries(vars || {}).map(([varName, v]) => ({
+        scope,
+        name: varName,
+        type: v.type,
+        value: v.value
+      }))
+  );
 
-  // data → data_segment
+  // data_segment
   const dataRaw = raw.memory?.data_segment ?? raw.data ?? {};
-  const data_segment = Array.isArray(dataRaw)
-    ? Object.fromEntries(dataRaw.map(([k, v]) => [k, v]))
-    : (dataRaw || {});
+  const data_segment = dataRaw || {};
 
   return {
     time: raw.time ?? null,
@@ -44,10 +46,9 @@ function normalizeStep(raw) {
     lineNumber,
     memory: {
       stack: stackFrames,
-      heap,
+      heap: heapBlocks,
       data_segment,
     },
-    // ♥현송 : json 파일에서 output이 stdouㅅ으로 되어있길래 그것도 지원가능하도록 추가
     output: raw.output ?? raw.stdout ?? '',
   };
 }
@@ -113,7 +114,30 @@ function findCurrentLineNumber(steps, stepIndex, code) {
   // 기본 상태
   const [cmView, setCmView] = useState(null);
   const [steps, setSteps] = useState([]);
-  const [code, setCode] = useState('');
+  const [code, setCode] = useState(`#include <stdio.h>
+#include <stdlib.h>
+// 위 비행기 아이디어 기반 간단 흐름 코드
+
+int flight_number = 1234; // 데이터 영역
+
+int* load_cargo() {
+    int* box = malloc(sizeof(int));
+    *box = 42;
+    return box;
+}
+
+void passenger_boarding(int ticket) {
+    int seat = ticket + 1;
+    int* cargo = load_cargo();
+    printf("Seat: %d\\n", seat);
+    printf("Cargo content: %d\\n", *cargo);
+    free(cargo);
+}
+
+int main() {
+    passenger_boarding(flight_number);
+    return 0;
+}`);
   const [infoVisible, setInfoVisible] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
@@ -217,7 +241,7 @@ const handleJsonChange = (e) => {
     
   // JSON 데이터 초기 로드 (첫 단계 데이터 비우기)
   useEffect(() => {
-    fetch('/data/test.json')
+    fetch('/data/GuideMode.json')
       .then(res => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res.json();
@@ -384,7 +408,7 @@ const handleJsonChange = (e) => {
     if (!steps.length) return;
     const newLine = steps[stepIndex]?.output || "";
     if (newLine) {
-      setAccumulatedOutput(prev => prev + newLine + "\n");
+      setAccumulatedOutput(prev => prev + newLine);
     }
     console.log("current output:", newLine) // 0816 현송  : 제대로 찍히는지 일단 화긴 
   }, [stepIndex, steps]);
@@ -396,7 +420,7 @@ const handleJsonChange = (e) => {
       openWarn('코드를 입력한 뒤 실행해주세요.');
       return;
     }
-    const data = loadedSteps.length ? loadedSteps : stepsData;
+    const data = loadedSteps;
     if (!data.length) {
       openWarn('실행할 단계 데이터가 없습니다.');
       return;
@@ -446,6 +470,7 @@ const handleJsonChange = (e) => {
         setDeletingStackIdxs(new Set());
         setDeletingData(false);
         setDeletingHeapLabels(new Set());
+        setAccumulatedOutput("종료: 프로세스가 성공적으로 종료되었습니다. (Exit Code: 0)");
       }, 3000);
       // ★★★ 여기까지 실행 끝나고 정리! ★★★
     } else {
@@ -475,7 +500,7 @@ const handleJsonChange = (e) => {
 
 // 현송 : 전체, 한줄 버튼 시간 꼬이는 거 수정 코드 
 const handleStepOnce = () => {
-  const data = loadedSteps.length ? loadedSteps : stepsData;
+const data = loadedSteps;
   const lastStep = data[data.length - 1];
   if (!code.trim()) {
     openWarn('코드를 입력한 뒤 실행해주세요.');
@@ -490,6 +515,18 @@ const handleStepOnce = () => {
   if (intervalRef.current) {
     clearInterval(intervalRef.current);
     intervalRef.current = null;
+  }
+
+  if (accumulatedOutput.includes("종료: 프로세스가 성공적으로 종료되었습니다.")) {
+    setAccumulatedOutput("");
+    setDeletingData(false);
+    setDeletingStackIdxs(new Set());
+    setDeletingHeapLabels(new Set());
+    setBlinkOn(false);
+    setIsRunning(false);
+    setSteps([]);
+    setStepIndex(0);
+    return;
   }
 
   // 아직 세션 시작 안 됐으면 초기 세팅(0번째 스텝으로 진입)
@@ -517,6 +554,7 @@ const handleStepOnce = () => {
           setSteps([]);
           setIsRunning(false);
           setStepIndex(0);
+          setAccumulatedOutput("종료: 프로세스가 성공적으로 종료되었습니다. (Exit Code: 0)");
         }, 3000);
       }
       return nextIndex;
@@ -533,7 +571,7 @@ function CustomStackGraph({ stack }) {
   return (
     <div className="stack-graph">
       {[...stack].map((frame, revIdx) => {
-        const idx = stack.length - 1 - revIdx; // 원래 인덱스 (깜빡임, 삭제 체크할 때 필요)
+        const idx = stack.length - 1 - revIdx;
         const filteredVariables = {};
         Object.entries(frame.variables || {}).forEach(([key, value]) => {
           if ((typeof value === "string" && /^0x[0-9a-f]+$/i.test(value)) || value === null) return;
@@ -551,7 +589,18 @@ function CustomStackGraph({ stack }) {
           <div className={className} key={idx}>
             <div className="stack-variable-container">
               {Object.entries(filteredVariables).map(([key, value], i) => (
-                <div className="stack-variable" key={i}>{key} = {String(value)}</div>
+                <div className="stack-variable" key={i}>
+                  {value && typeof value === "object" && "value" in value
+                    ? (
+                        (value.type ? value.type + " " : "") +
+                        (value.name || key) + " = " +
+                        (Array.isArray(value.value)
+                          ? value.value.join(", ")
+                          : value.value
+                        )
+                      )
+                    : `${key} = ${String(value)}`}
+                </div>
               ))}
             </div>
           </div>
@@ -587,14 +636,22 @@ function CustomHeapGraph({ heap, stack }) {
           [addr, val] = Object.entries(block)[0];
         }
 
-        const displayName = addrToVarName[addr] || addr;
+        // 만약 block이 {type, name, value} 형태면:
+        const displayName =
+          block.type ? `${block.type} ${block.name}` : block.name || addr;
+
         let className = "heap-block";
-        // blinkHeapLabels는 addr 값 그대로를 써야 이전/현재 비교가 일치함
         if (blinkHeapLabels.has(addr) && blinkOn) className += " blink";
         if (deletingHeapLabels.has(idx) && blinkOn) className += " delete-blink";
         return (
           <div className={className} key={idx}>
-            {displayName} = {val !== null ? String(val) : 'null'}
+            {displayName} = {
+              Array.isArray(block.value)
+                ? block.value.join(", ")
+                : (typeof block.value === "object" && block.value !== null)
+                  ? JSON.stringify(block.value)
+                  : block.value || val
+            }
           </div>
         );
       })}
@@ -663,38 +720,12 @@ function CustomDataGraph({ data, blinkDataGraph, deletingData, blinkOn }) {
               {/* 현송 : 코드입력창 약간 수정 */}
               {/* AFTER (FIX: memo된 cmExtensions 그대로 전달) */}
               <CodeMirror
-                value={`#include <stdio.h>
-#include <stdlib.h>
-// 위 비행기 아이디어 기반 간단 흐름 코드
-
-int flight_number = 1234; // 데이터 영역
-
-int* load_cargo() {
-    int* box = malloc(sizeof(int));
-    *box = 42;
-    return box;
-}
-
-void passenger_boarding(int ticket) {
-    int seat = ticket + 1;
-    int* cargo = load_cargo();
-    printf("Seat: %d\\n", seat);
-    printf("Cargo content: %d\\n",*cargo);
-    free(cargo);
-}
-
-int main() {
-    passenger_boarding(flight_number);
-    return 0;
-}`}
+                value={code}
                 height="52vh"
                 extensions={cmExtensions}              // 여기 FIX
-
-                /*준혁 : 코드 수정 불가 */
-                editable={false}
-                
+                editable={false}           // 수정 불가일 경우 false
                 onCreateEditor={(view) => setCmView(view)}
-                onChange={(value) => setCode(value)}
+                onChange={(value) => setCode(value)}    // 상태 갱신
               />
           </div>
           <div className="button-container">
