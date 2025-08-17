@@ -1,7 +1,15 @@
+
 body {
   margin: 0;
+  padding: 0;
   overflow: hidden; /* ← 스크롤바 강제 제거 */
+  background-image: url('./Main_background-001.png');
+  background-size: cover;      /* 화면 비율 유지하며 꽉 채우기 */
+  background-position: center; /* 항상 중앙 정렬 */
+  background-repeat: no-repeat; /* 반복 안함 */
+  height: 100vh;               /* 세로 화면 꽉 채우기 */
 }
+
 
 .main-menu-container {
   display: flex;
@@ -29,28 +37,6 @@ body {
   align-items: flex-start;
 }
 
-.main-title {
-  font-size: 8vw;
-  font-weight: 900;
-  font-family: 'Nanum Gothic', sans-serif;
-  margin: 0;
-  user-select: none;
-  color: #000;
-}
-
-.main-title .cee {
-  color: #c62828; /* 진한 빨강 */
-}
-
-
-.sub-title {
-  font-size: 1.5vw;
-  font-family: 'Nanum Gothic', sans-serif;
-  color: #333;
-  margin-top: 0.1vh;
-  font-weight: bold;
-  z-index: 1000;
-}
 
 .btn-content {
   display: flex;
@@ -88,15 +74,15 @@ body {
   align-items: center;
   justify-content: flex-start;
 
-  width: 15vw;         /* 화면 비율로 고정 */
-  max-width: 270px;
-  height: 12vh;
-  min-height: 60px;
+  width: 100%;
+  max-width: 3400px;   /* 너무 커지지 않게 */
+  min-width: 120px;   /* 너무 작아지지 않게 */
+  padding: 1em;       /* 글자 크기에 비례 */
 
-  padding: 1.2vh 1.6vw; 
+  padding: 3vh 1.6vw; 
 
   font-weight: bold;
-  font-size: 1.6vw;
+  font-size: 3vw;
   font-family: 'Nanum Gothic', sans-serif;
   white-space: nowrap;
 
@@ -107,12 +93,29 @@ body {
   cursor: pointer;
   transition: all 0.25s ease;
 }
+  .menu-btn span {
+    font-size: 2.3rem;  
+  }
 
 .menu-btn img {
   width: 1.8vw;
   height: auto;
   margin-right: 1vw;
 }
+
+@media (max-width: 1200px) {
+  .menu-btn span {
+    font-size: 0.9rem; /* 작은 화면에서는 글씨 줄임 */
+  }
+}
+
+@media (max-width: 738px) {
+  .menu-btn {
+    max-width: 200px;
+    padding: 0.8em;
+  }
+}
+
 /* 특정 버튼 텍스트만 가운데 정렬 */
 .menu-btn.center-text .btn-content {
   justify-content: center;  /* 가운데 정렬 */
@@ -258,41 +261,7 @@ body {
 }
 
 
-/*배경 꾸미기*/
-.bg-magnifier {
-  position: absolute;
-  top: 53%;
-  left: 35%;
-  width: 50vw;
-  transform: translate(-50%, -50%);
-  z-index: 0;
-  pointer-events: none;
-  opacity: 0.7;
-  max-width: 1100px;
-  min-width: 700px;
-}
-.circle {
-  position: absolute;
-  border-radius: 56%;
-  z-index: 0;
-  opacity: 0.3;
-}
-.top-left-circle {
-  top: 42vh;
-  left: -20vw;
-  width: 60vw;
-  height: 60vw;
-  background-color: #b3e5fc;
-}
 
-.bottom-right-circle {
-  bottom: 50vh;
-  right: -8vw;
-  width: 30vw;
-  height: 30vw;
-  border: 6px solid #b3e5fc;
-  background-color: transparent;
-}
 /* 하단 구분선, 로고 */
 .app-wrapper {
   display: flex;

@@ -12,17 +12,7 @@ const MainMenu = () => {
   return (
     <div className="app-wrapper">
       <div className="main-menu-container">
-        <div className="circle top-left-circle" />
-        <div className="circle bottom-right-circle" />
-        <img src="MainMenu_point1.png" alt="돋보기" className="bg-magnifier" />
-
         <div className="center-content">
-          <h1 className="main-title">
-            <span className="cee">Cee</span>Vizor
-          </h1>
-          <p className="sub-title">복잡한 메모리 구조, 눈으로 쉽게!</p>
-        </div>
-
         <ul className="button-group">
           <li>
             <button className="menu-btn" onClick={() => navigate('/editor')}>
