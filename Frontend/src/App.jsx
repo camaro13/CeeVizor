@@ -413,6 +413,7 @@ const handleJsonChange = (e) => {
     setStepIndex(0);
     setAccumulatedOutput("");
 
+        let i = 0;
         let current = 0;
           clearInterval(intervalRef.current);
 
@@ -446,6 +447,9 @@ const handleJsonChange = (e) => {
         setDeletingStackIdxs(new Set());
         setDeletingData(false);
         setDeletingHeapLabels(new Set());
+
+        //*준혁 : 출력 메시지 넣었어요 :>
+        setAccumulatedOutput("종료: 프로세스가 성공적으로 종료되었습니다. (Exit Code: 0)");
       }, 3000);
       // ★★★ 여기까지 실행 끝나고 정리! ★★★
     } else {
@@ -477,6 +481,7 @@ const handleJsonChange = (e) => {
 const handleStepOnce = () => {
   const data = loadedSteps.length ? loadedSteps : stepsData;
   const lastStep = data[data.length - 1];
+
   if (!code.trim()) {
     openWarn('코드를 입력한 뒤 실행해주세요.');
     return;
@@ -486,13 +491,26 @@ const handleStepOnce = () => {
     return;
   }
 
-  // 자동실행 중이면 먼저 정지하고 수동 모드로 전환
+  // 자동실행 타이머가 동작 중이면 정지
   if (intervalRef.current) {
     clearInterval(intervalRef.current);
     intervalRef.current = null;
   }
 
-  // 아직 세션 시작 안 됐으면 초기 세팅(0번째 스텝으로 진입)
+  // *준혁 : 종료 메시지가 출력된 상태라면 초기화 (이 상태에서 한줄 버튼 누르면)
+  if (accumulatedOutput.includes("종료: 프로세스가 성공적으로 종료되었습니다.")) {
+    setAccumulatedOutput("");
+    setDeletingData(false);
+    setDeletingStackIdxs(new Set());
+    setDeletingHeapLabels(new Set());
+    setBlinkOn(false);
+    setIsRunning(false);
+    setSteps([]);
+    setStepIndex(0);
+    return;
+  }
+
+  // 아직 세션 시작 전이면 초기 세팅(0번째 스텝으로)
   if (!steps.length) {
     setIsRunning(true);
     setSteps(data);
@@ -500,6 +518,7 @@ const handleStepOnce = () => {
   } else {
     setStepIndex(i => {
       const nextIndex = Math.min(i + 1, data.length - 1);
+
       if (nextIndex === data.length - 1) {
         setDeletingData(true);
         if ((lastStep.memory.stack || []).length > 0) {
@@ -508,8 +527,8 @@ const handleStepOnce = () => {
         if ((lastStep.memory.heap || []).length > 0) {
           setDeletingHeapLabels(new Set(lastStep.memory.heap.map((_, idx) => idx)));
         }
-        setBlinkOn(false);           // 깜빡임 초기화
-        setTimeout(() => setBlinkOn(true), 50); // 약간의 딜레이 후 다시 켜기
+        setBlinkOn(false);
+        setTimeout(() => setBlinkOn(true), 50);
         setTimeout(() => {
           setDeletingData(false);
           setDeletingStackIdxs(new Set());
@@ -517,6 +536,9 @@ const handleStepOnce = () => {
           setSteps([]);
           setIsRunning(false);
           setStepIndex(0);
+
+          //*준혁 : 종료 메시지 구현 해놨어요!
+          setAccumulatedOutput("종료: 프로세스가 성공적으로 종료되었습니다. (Exit Code: 0)");
         }, 3000);
       }
       return nextIndex;
