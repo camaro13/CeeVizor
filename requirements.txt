@@ -1,0 +1,4 @@
+fastapi
+uvicorn[standard]
+tree-sitter
+python-multipart

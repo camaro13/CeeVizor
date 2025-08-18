@@ -1,0 +1,37 @@
+# ======================
+# Node / React (Frontend)
+# ======================
+Frontend/node_modules/
+Frontend/.cache/
+Frontend/build/
+Frontend/dist/
+Frontend/.vite/
+Frontend/.next/
+*.log
+
+# 환경설정
+Frontend/.env
+Frontend/.env.local
+
+# ======================
+# Python (Backend)
+# ======================
+Backend/venv/
+Backend/.env
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# ======================
+# OS / 에디터
+# ======================
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# ======================
+# 기타
+# ======================
+workspace/

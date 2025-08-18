@@ -1,0 +1,812 @@
+[
+  {
+    "time": 0,
+    "line_num": 3,
+    "line": "int counter = 0;        ",
+    "stack": {},
+    "heap": {},
+    "data": {
+      "global": {
+        "counter": {
+          "name": "counter",
+          "type": "int",
+          "value": "0",
+          "pointer": false,
+          "points_to": null,
+          "scope": "global"
+        }
+      }
+    }
+  },
+  {
+    "time": 1,
+    "line_num": 4,
+    "line": "char msg[20] = \"Hello\"; ",
+    "stack": {},
+    "heap": {},
+    "data": {
+      "global": {
+        "msg[20]": {
+          "name": "msg[20]",
+          "type": "char",
+          "value": "\"Hello\"",
+          "pointer": false,
+          "points_to": null,
+          "scope": "global"
+        }
+      }
+    }
+  },
+  {
+    "time": 2,
+    "line_num": 16,
+    "line": "    int a = 4;",
+    "stack": {
+      "main": {
+        "a": {
+          "name": "a",
+          "type": "int",
+          "value": "4",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main",
+          "pending_init": true
+        }
+      }
+    },
+    "heap": {},
+    "data": {
+      "global": {
+        "counter": {
+          "name": "counter",
+          "type": "int",
+          "value": "0",
+          "pointer": false,
+          "points_to": null,
+          "scope": "global"
+        },
+        "msg[20]": {
+          "name": "msg[20]",
+          "type": "char",
+          "value": "Hello",
+          "pointer": false,
+          "points_to": null,
+          "scope": "global"
+        }
+      }
+    }
+  },
+  {
+    "time": 3,
+    "line_num": 17,
+    "line": "    int b = 5;",
+    "stack": {
+      "main": {
+        "a": {
+          "name": "a",
+          "type": "int",
+          "value": "4",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main",
+          "pending_init": true
+        },
+        "b": {
+          "name": "b",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main",
+          "pending_init": true
+        }
+      }
+    },
+    "heap": {},
+    "data": {
+      "global": {
+        "counter": {
+          "name": "counter",
+          "type": "int",
+          "value": "0",
+          "pointer": false,
+          "points_to": null,
+          "scope": "global"
+        },
+        "msg[20]": {
+          "name": "msg[20]",
+          "type": "char",
+          "value": "Hello",
+          "pointer": false,
+          "points_to": null,
+          "scope": "global"
+        }
+      }
+    }
+  },
+  {
+    "time": 4,
+    "line_num": 18,
+    "line": "    int result = multiply(a, b);",
+    "stack": {
+      "main": {
+        "a": {
+          "name": "a",
+          "type": "int",
+          "value": "4",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main",
+          "pending_init": true
+        },
+        "b": {
+          "name": "b",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main",
+          "pending_init": true
+        },
+        "result": {
+          "name": "result",
+          "type": "int",
+          "value": "multiply(a, b)",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main",
+          "pending_init": true
+        }
+      }
+    },
+    "heap": {},
+    "data": {
+      "global": {
+        "counter": {
+          "name": "counter",
+          "type": "int",
+          "value": "0",
+          "pointer": false,
+          "points_to": null,
+          "scope": "global"
+        },
+        "msg[20]": {
+          "name": "msg[20]",
+          "type": "char",
+          "value": "Hello",
+          "pointer": false,
+          "points_to": null,
+          "scope": "global"
+        }
+      }
+    }
+  },
+  {
+    "time": 5,
+    "line_num": 11,
+    "line": "    int product = x * y;",
+    "stack": {
+      "multiply": {
+        "product": {
+          "name": "product",
+          "type": "int",
+          "value": "x * y",
+          "pointer": false,
+          "points_to": null,
+          "scope": "multiply",
+          "pending_init": true
+        }
+      },
+      "main": {
+        "a": {
+          "name": "a",
+          "type": "int",
+          "value": "4",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main",
+          "pending_init": true
+        },
+        "b": {
+          "name": "b",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main",
+          "pending_init": true
+        },
+        "result": {
+          "name": "result",
+          "type": "int",
+          "value": "multiply(a, b)",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main",
+          "pending_init": true
+        }
+      }
+    },
+    "heap": {},
+    "data": {
+      "global": {
+        "counter": {
+          "name": "counter",
+          "type": "int",
+          "value": "0",
+          "pointer": false,
+          "points_to": null,
+          "scope": "global"
+        },
+        "msg[20]": {
+          "name": "msg[20]",
+          "type": "char",
+          "value": "Hello",
+          "pointer": false,
+          "points_to": null,
+          "scope": "global"
+        }
+      }
+    }
+  },
+  {
+    "time": 6,
+    "line_num": 12,
+    "line": "    return product;",
+    "stack": {
+      "multiply": {
+        "product": {
+          "name": "product",
+          "type": "int",
+          "value": "20",
+          "pointer": false,
+          "points_to": null,
+          "scope": "multiply"
+        }
+      },
+      "main": {
+        "a": {
+          "name": "a",
+          "type": "int",
+          "value": "4",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main",
+          "pending_init": true
+        },
+        "b": {
+          "name": "b",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main",
+          "pending_init": true
+        },
+        "result": {
+          "name": "result",
+          "type": "int",
+          "value": "multiply(a, b)",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main",
+          "pending_init": true
+        }
+      }
+    },
+    "heap": {},
+    "data": {
+      "global": {
+        "counter": {
+          "name": "counter",
+          "type": "int",
+          "value": "0",
+          "pointer": false,
+          "points_to": null,
+          "scope": "global"
+        },
+        "msg[20]": {
+          "name": "msg[20]",
+          "type": "char",
+          "value": "Hello",
+          "pointer": false,
+          "points_to": null,
+          "scope": "global"
+        }
+      }
+    }
+  },
+  {
+    "time": 7,
+    "line_num": 13,
+    "line": "}",
+    "stack": {
+      "multiply": {
+        "product": {
+          "name": "product",
+          "type": "int",
+          "value": "20",
+          "pointer": false,
+          "points_to": null,
+          "scope": "multiply"
+        }
+      },
+      "main": {
+        "a": {
+          "name": "a",
+          "type": "int",
+          "value": "4",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main",
+          "pending_init": true
+        },
+        "b": {
+          "name": "b",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main",
+          "pending_init": true
+        },
+        "result": {
+          "name": "result",
+          "type": "int",
+          "value": "multiply(a, b)",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main",
+          "pending_init": true
+        }
+      }
+    },
+    "heap": {},
+    "data": {
+      "global": {
+        "counter": {
+          "name": "counter",
+          "type": "int",
+          "value": "0",
+          "pointer": false,
+          "points_to": null,
+          "scope": "global"
+        },
+        "msg[20]": {
+          "name": "msg[20]",
+          "type": "char",
+          "value": "Hello",
+          "pointer": false,
+          "points_to": null,
+          "scope": "global"
+        }
+      }
+    }
+  },
+  {
+    "time": 8,
+    "line_num": 20,
+    "line": "    increment_counter();",
+    "stack": {
+      "main": {
+        "a": {
+          "name": "a",
+          "type": "int",
+          "value": "4",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main",
+          "pending_init": true
+        },
+        "b": {
+          "name": "b",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main",
+          "pending_init": true
+        },
+        "result": {
+          "name": "result",
+          "type": "int",
+          "value": "20",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": {},
+    "data": {
+      "global": {
+        "counter": {
+          "name": "counter",
+          "type": "int",
+          "value": "0",
+          "pointer": false,
+          "points_to": null,
+          "scope": "global"
+        },
+        "msg[20]": {
+          "name": "msg[20]",
+          "type": "char",
+          "value": "Hello",
+          "pointer": false,
+          "points_to": null,
+          "scope": "global"
+        }
+      }
+    }
+  },
+  {
+    "time": 9,
+    "line_num": 7,
+    "line": "    counter++;",
+    "stack": {
+      "main": {
+        "a": {
+          "name": "a",
+          "type": "int",
+          "value": "4",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main",
+          "pending_init": true
+        },
+        "b": {
+          "name": "b",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main",
+          "pending_init": true
+        },
+        "result": {
+          "name": "result",
+          "type": "int",
+          "value": "20",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": {},
+    "data": {
+      "global": {
+        "counter": {
+          "name": "counter",
+          "type": "int",
+          "value": "0",
+          "pointer": false,
+          "points_to": null,
+          "scope": "global"
+        },
+        "msg[20]": {
+          "name": "msg[20]",
+          "type": "char",
+          "value": "Hello",
+          "pointer": false,
+          "points_to": null,
+          "scope": "global"
+        }
+      }
+    }
+  },
+  {
+    "time": 10,
+    "line_num": 8,
+    "line": "}",
+    "stack": {
+      "main": {
+        "a": {
+          "name": "a",
+          "type": "int",
+          "value": "4",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main",
+          "pending_init": true
+        },
+        "b": {
+          "name": "b",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main",
+          "pending_init": true
+        },
+        "result": {
+          "name": "result",
+          "type": "int",
+          "value": "20",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": {},
+    "data": {
+      "global": {
+        "counter": {
+          "name": "counter",
+          "type": "int",
+          "value": "1",
+          "pointer": false,
+          "points_to": null,
+          "scope": "global"
+        },
+        "msg[20]": {
+          "name": "msg[20]",
+          "type": "char",
+          "value": "Hello",
+          "pointer": false,
+          "points_to": null,
+          "scope": "global"
+        }
+      }
+    }
+  },
+  {
+    "time": 11,
+    "line_num": 22,
+    "line": "    char *p = msg; ",
+    "stack": {
+      "main": {
+        "a": {
+          "name": "a",
+          "type": "int",
+          "value": "4",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main",
+          "pending_init": true
+        },
+        "b": {
+          "name": "b",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main",
+          "pending_init": true
+        },
+        "result": {
+          "name": "result",
+          "type": "int",
+          "value": "20",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "p": {
+          "name": "p",
+          "type": "int",
+          "value": "msg",
+          "pointer": true,
+          "points_to": "error: Cannot access memory at address 0x1",
+          "scope": "main",
+          "pending_init": true
+        }
+      }
+    },
+    "heap": {},
+    "data": {
+      "global": {
+        "counter": {
+          "name": "counter",
+          "type": "int",
+          "value": "1",
+          "pointer": false,
+          "points_to": null,
+          "scope": "global"
+        },
+        "msg[20]": {
+          "name": "msg[20]",
+          "type": "char",
+          "value": "Hello",
+          "pointer": false,
+          "points_to": null,
+          "scope": "global"
+        }
+      }
+    }
+  },
+  {
+    "time": 12,
+    "line_num": 23,
+    "line": "    printf(\"%s world! Result=%d, Counter=%d\\n\", p, result, counter);",
+    "stack": {
+      "main": {
+        "a": {
+          "name": "a",
+          "type": "int",
+          "value": "4",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main",
+          "pending_init": true
+        },
+        "b": {
+          "name": "b",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main",
+          "pending_init": true
+        },
+        "result": {
+          "name": "result",
+          "type": "int",
+          "value": "20",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "p": {
+          "name": "p",
+          "type": "int",
+          "value": "\"Hello\"",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": {},
+    "data": {
+      "global": {
+        "counter": {
+          "name": "counter",
+          "type": "int",
+          "value": "1",
+          "pointer": false,
+          "points_to": null,
+          "scope": "global"
+        },
+        "msg[20]": {
+          "name": "msg[20]",
+          "type": "char",
+          "value": "Hello",
+          "pointer": false,
+          "points_to": null,
+          "scope": "global"
+        }
+      }
+    },
+    "stdout": "Hello world! Result=20, Counter=1\n"
+  },
+  {
+    "time": 13,
+    "line_num": 25,
+    "line": "    return 0;",
+    "stack": {
+      "main": {
+        "a": {
+          "name": "a",
+          "type": "int",
+          "value": "4",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main",
+          "pending_init": true
+        },
+        "b": {
+          "name": "b",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main",
+          "pending_init": true
+        },
+        "result": {
+          "name": "result",
+          "type": "int",
+          "value": "20",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "p": {
+          "name": "p",
+          "type": "int",
+          "value": "\"Hello\"",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": {},
+    "data": {
+      "global": {
+        "counter": {
+          "name": "counter",
+          "type": "int",
+          "value": "1",
+          "pointer": false,
+          "points_to": null,
+          "scope": "global"
+        },
+        "msg[20]": {
+          "name": "msg[20]",
+          "type": "char",
+          "value": "Hello",
+          "pointer": false,
+          "points_to": null,
+          "scope": "global"
+        }
+      }
+    }
+  },
+  {
+    "time": 14,
+    "line_num": 26,
+    "line": "}",
+    "stack": {
+      "main": {
+        "a": {
+          "name": "a",
+          "type": "int",
+          "value": "4",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main",
+          "pending_init": true
+        },
+        "b": {
+          "name": "b",
+          "type": "int",
+          "value": "5",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main",
+          "pending_init": true
+        },
+        "result": {
+          "name": "result",
+          "type": "int",
+          "value": "20",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        },
+        "p": {
+          "name": "p",
+          "type": "int",
+          "value": "\"Hello\"",
+          "pointer": false,
+          "points_to": null,
+          "scope": "main"
+        }
+      }
+    },
+    "heap": {},
+    "data": {
+      "global": {
+        "counter": {
+          "name": "counter",
+          "type": "int",
+          "value": "1",
+          "pointer": false,
+          "points_to": null,
+          "scope": "global"
+        },
+        "msg[20]": {
+          "name": "msg[20]",
+          "type": "char",
+          "value": "Hello",
+          "pointer": false,
+          "points_to": null,
+          "scope": "global"
+        }
+      }
+    }
+  }
+]

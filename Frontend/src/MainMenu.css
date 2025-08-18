@@ -1,0 +1,322 @@
+body {
+  margin: 0;
+  overflow: hidden; /* ← 스크롤바 강제 제거 */
+}
+
+.main-menu-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5vh 8vw;
+  background-color: white;
+  height: 100vh;
+  position: relative;
+}
+
+
+.center-content {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+}
+
+.left-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.main-title {
+  font-size: 8vw;
+  font-weight: 900;
+  font-family: 'Nanum Gothic', sans-serif;
+  margin: 0;
+  user-select: none;
+  color: #000;
+}
+
+.main-title .cee {
+  color: #c62828; /* 진한 빨강 */
+}
+
+
+.sub-title {
+  font-size: 1.5vw;
+  font-family: 'Nanum Gothic', sans-serif;
+  color: #333;
+  margin-top: 0.1vh;
+  font-weight: bold;
+  z-index: 1000;
+}
+
+.btn-content {
+  display: flex;
+  align-items: center;
+  gap: 0.1vw;
+  white-space: nowrap;
+  line-height: -3;
+  position: relative;
+  top: -0.2vh;
+}
+
+.button-group {
+  position: absolute;
+  top: 18%; /* 가운데 정렬 */
+  right: 10.4vw;
+  transform: translateY(-40%); /* 정확히 세로 가운데 정렬 */
+  display: flex;
+  flex-direction: column;
+}
+
+.button-group li {
+  margin-bottom: -13vh; /* 버튼 간격 조절 */
+}
+
+/* 리스트 점 안 보이게 */
+.button-group {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* 메인메뉴 버튼들  */
+.menu-btn {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+
+  width: 15vw;         /* 화면 비율로 고정 */
+  max-width: 270px;
+  height: 12vh;
+  min-height: 60px;
+
+  padding: 1.2vh 1.6vw; 
+
+  font-weight: bold;
+  font-size: 1.6vw;
+  font-family: 'Nanum Gothic', sans-serif;
+  white-space: nowrap;
+
+  border-radius: 0.6vw;
+  border: 1.5px solid #ccc;
+  background-color: #f9f9f9;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.menu-btn img {
+  width: 1.8vw;
+  height: auto;
+  margin-right: 1vw;
+}
+/* 특정 버튼 텍스트만 가운데 정렬 */
+.menu-btn.center-text .btn-content {
+  justify-content: center;  /* 가운데 정렬 */
+  gap: 0;  /* 아이콘 없으면 간격 제거 */
+}
+.menu-btn:hover {
+  background-color: #e3f6ff;
+  transform: translateY(-3px);
+  border-color: #a5c6ca;
+}
+
+.menu-btn img {
+  width: 2.3vw;
+  height: auto;
+  margin-right: 1vw;
+}
+
+.menu-btn:active {
+  background-color: #d6f1f5;
+}
+
+
+/*설정, 메모리구조 설명 창*/
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+.modal {
+  background-color: white;
+  padding: 4vh 4vw;
+  border-radius: 1vw;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  min-width: 200px;
+  max-width: 800px;
+  font-family: 'Nanum Gothic', sans-serif;
+  text-align: center; /* 기본 가운데 */
+  line-height: 1.6;
+}
+/*팝업창 내용 영어만 글씨체 달라서 통일시키기*/
+.modal code {
+  font-family: 'Nanum Gothic', sans-serif;
+  font-size: 0.95em; /* 필요 시 줄이기 */
+}
+
+.modal.left-align {
+  text-align: left;
+}
+.modal.left-align button {
+  display: block;
+  margin: 2vh auto 0 auto; /* 가운데 정렬 */
+  text-align: center;
+}
+.modal h2 {
+  text-align: center; /* 제목만 가운데 정렬 */
+  margin-bottom: 3vh;
+}
+.modal p,
+.modal ul {
+  margin-bottom: 1.5vh;
+}
+.modal ul {
+  padding-left: 1.2em;
+}
+.modal li {
+  margin-bottom: 1vh;
+}
+
+.modal button {
+  padding: 1.3vh 2vw;
+  margin-top: 1.9vh;
+  font-family: 'Nanum Gothic', sans-serif;
+  font-size: 1.1vw;
+  font-weight: bold;
+  white-space: nowrap;
+  border: 1px solid #ccc;
+  border-radius: 0.5vw;
+  background-color: #f0f0f0;
+  transition: all 0.25s ease;
+  color: rgb(0, 0, 0);
+  cursor: pointer;
+}
+.modal button:hover {
+  background-color: #e0e0e0;
+}
+
+.sub-btn {
+  display: block;
+  font-family: 'Nanum Gothic', sans-serif;
+  margin: 1vh auto;
+  width: 70%;
+}
+/* 프로그램 사용법, 팀 소개 모달 전용 설정 */
+.modal.left-align {
+  text-align: left;
+}
+
+.modal.left-align h2 {
+  text-align: center;
+  font-size: 1.6vw;
+}
+
+.modal.left-align ul {
+  padding-left: 1.3em;
+  margin-bottom: 2vh;
+}
+
+.modal.left-align li {
+  font-size: 1.05vw;
+  margin-bottom: 1vh;
+  line-height: 1.6;
+}
+
+.modal.left-align p {
+  font-size: 1.05vw;
+  line-height: 1.6;
+  margin-bottom: 1.5vh;
+}
+
+.modal.left-align button {
+  display: block;
+  margin: 0 auto;
+  margin-top: 2vh;
+  padding: 1.3vh 2vw;
+  font-size: 1.1vw;
+  font-weight: bold;
+  border: 1px solid #ccc;
+  border-radius: 0.5vw;
+  background-color: #f0f0f0;
+  font-family: 'Nanum Gothic', sans-serif;
+  cursor: pointer;
+}
+
+.modal.left-align button:hover {
+  background-color: #e0e0e0;
+}
+
+
+/*배경 꾸미기*/
+.bg-magnifier {
+  position: absolute;
+  top: 53%;
+  left: 35%;
+  width: 50vw;
+  transform: translate(-50%, -50%);
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.7;
+  max-width: 1100px;
+  min-width: 700px;
+}
+.circle {
+  position: absolute;
+  border-radius: 56%;
+  z-index: 0;
+  opacity: 0.3;
+}
+.top-left-circle {
+  top: 42vh;
+  left: -20vw;
+  width: 60vw;
+  height: 60vw;
+  background-color: #b3e5fc;
+}
+
+.bottom-right-circle {
+  bottom: 50vh;
+  right: -8vw;
+  width: 30vw;
+  height: 30vw;
+  border: 6px solid #b3e5fc;
+  background-color: transparent;
+}
+/* 하단 구분선, 로고 */
+.app-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  height: 100vh; /* ← 꼭 추가해줘야 footer가 아래 붙음 */
+}
+.footer {
+  margin-top: auto;
+  padding-top: 2vh;
+  text-align: right;
+  position: relative;
+}
+.bottom-divider {
+  width: 100%;
+  height: 0.1px;
+  background-color: #ddd;
+  margin-bottom: 3vh;
+}
+.hci-logo-main {
+  width: 4vw;
+  height: auto;
+  margin-right: 1vw;
+  margin-bottom: 2vh;
+  opacity: 0.7;
+}
+

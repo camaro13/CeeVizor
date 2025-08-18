@@ -1,0 +1,1 @@
+python -m uvicorn Backend.fapi.fapi_main:app --reload
