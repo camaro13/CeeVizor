@@ -194,7 +194,7 @@ function App() {
 
   // JSON 데이터 초기 로드 (첫 단계 데이터 비우기)
   useEffect(() => {
-    fetch('http://localhost:8000/steps')
+    fetch('/api/steps')
       .then(res => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res.json();
@@ -388,7 +388,7 @@ function App() {
       formData.append('code', code);
       formData.append('input', '');
 
-      const response = await fetch('http://localhost:8000/compile', {
+      const response = await fetch('/api/compile', {
         method: 'POST',
         body: formData,
       });
@@ -493,7 +493,7 @@ function App() {
     formData.append('code', code);
     formData.append('input', '');
 
-    const response = await fetch('http://localhost:8000/compile', {
+    const response = await fetch('/api/compile', {
       method: 'POST',
       body: formData,
     });

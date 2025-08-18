@@ -131,8 +131,8 @@ const MainMenu = () => {
               <h2>팀 소개</h2>
               <p><b>CeeVizor 팀 (오픈소스 개발자대회 2025)</b></p>
               <ul>
-                <li><b>최강우</b>: 백엔드 (FastAPI)</li>
-                <li><b>김병모</b>: API 연동</li>
+                <li><b>최강우</b>: 백엔드 (FastAPI, GCC, GDB)</li>
+                <li><b>김병모</b>: 백엔드 (Tree-sitter, GCC, GDB)</li>
                 <li><b>허준혁</b>: 메모리 시각화 (D3.js)</li>
                 <li><b>김현송</b>: UI/프론트엔드 (React)</li>
               </ul>
