@@ -85,8 +85,14 @@ const MainMenu = () => {
           <div className="modal-overlay">
             <div className="modal">
               <h2>설정</h2>
-              <button className="sub-btn">일반모드</button>
-              <button className="sub-btn">가이드 모드</button>
+              <button className="sub-btn"
+                onClick={() => { setShowSettings(false); navigate('/editor'); }}>
+                일반 모드
+                </button>
+                <button className="sub-btn"
+                onClick={() => { setShowSettings(false); navigate('/GuideMode'); }}>
+                가이드 모드
+                </button>
               <button className="sub-btn" onClick={() => {
                 setShowUsageInfo(true);
                 setShowSettings(false);

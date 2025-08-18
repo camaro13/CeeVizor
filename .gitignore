@@ -1,13 +1,37 @@
-# 백엔드 가상환경
-venv/
+# ======================
+# Node / React (Frontend)
+# ======================
+Frontend/node_modules/
+Frontend/.cache/
+Frontend/build/
+Frontend/dist/
+Frontend/.vite/
+Frontend/.next/
+*.log
 
-# 프론트엔드 패키지
-frontend/node_modules/
+# 환경설정
+Frontend/.env
+Frontend/.env.local
 
-# 일반 Python 캐시
+# ======================
+# Python (Backend)
+# ======================
+Backend/venv/
+Backend/.env
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
 
-# 환경변수
-*.env
-.env
+# ======================
+# OS / 에디터
+# ======================
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# ======================
+# 기타
+# ======================
+workspace/
