@@ -36,13 +36,13 @@
 
 * 환경 : Windows 11, WSL (Ubuntu 24.04.3 LTS) 
 * 개발 언어 : Python (3.12.3), JavaScript 
-* 주요 라이브러리 - React - FastAPI - D3.js 
-* 도구 및 시스템 - GCC - GDB - Tree-Sitter - Docker - Npm 
-* 버전 관리 - Git - Github 
+* 주요 라이브러리 : React, FastAPI, D3.js 
+* 도구 및 시스템 : GCC, GDB, Tree-Sitter, Docker ,Npm 
+* 버전 관리 : Git, Github 
 
-## 사용 전 사전 설치 사항
+## 설치 및 실행 (Windows)
 
-### Windows 10/11
+### 도커 설치
 
 1. [Docker Desktop](https://www.docker.com/products/docker-desktop/) : 도커 데스크탑 설치 (_설치 중 WSL2 Backend 옵션 유지(권장)_)
 
@@ -55,7 +55,63 @@
 docker --version
 ```
 
-### Ubuntu
+### 프로그램 실행 (Docker Hub 사용)
+
+1. PowerShell 열고 이미지 받기
+
+```
+docker pull kimbyeongmo/ceevizor:latest
+```
+
+2. 컨테이너 실행
+
+```
+docker run -p 8000:8000 kimbyeongmo/ceevizor:latest
+```
+
+3. 브라우저 접속
+
+* 로컬 호스트 주소
+
+[http://localhost:8000](http://localhost:8000)
+
+* 호스트PC IP 주소 (로컬 호스트 주소 오류 시)
+
+```
+http://<호스트PC_IP>:8000
+```
+_Windows 방화벽이 막는 경우 인바운드 규칙으로 TCP 8000 허용 필요._
+
+### 프로그램 직접 빌드 후 실행 (Dockerfile 사용)
+
+1. PowerShell에서 프로젝트 루트로 이동 후 빌드
+
+```
+docker build -t ceevior .
+```
+
+2. 실행
+
+```
+docker run -p 8000:8000 ceevizor
+```
+
+3. 브라우저 접속
+
+* 로컬 호스트 주소
+
+[http://localhost:8000](http://localhost:8000)
+
+* 호스트PC IP 주소 (로컬 호스트 주소 오류 시)
+
+```
+http://<호스트PC_IP>:8000
+```
+_Windows 방화벽이 막는 경우 인바운드 규칙으로 TCP 8000 허용 필요._
+
+## 설치 및 실행 (Ubuntu)
+
+### 도커 설치
 
 1. 기존 도커 제거 (필요시)
 
@@ -110,7 +166,7 @@ sudo service docker start
 docker --version
 ```
 
-## 프로그램 실행 (Docker Hub)
+### 프로그램 실행 (Docker Hub 사용)
 
 1. 이미지 받기
 
@@ -121,18 +177,15 @@ docker pull kimbyeongmo/ceevizor:latest
 2. 컨테이너 실행
 
 ```
-docker run -p 8000:8000 kimbyeongmo/ceevizor:latest
+sudo docker run -p 8000:8000 kimbyeongmo/ceevizor:latest
+//만약 sudo 없이 쓰고 싶다면 sudo usermod -aG docker $USER 후 재로그인
 ```
 
 3. 브라우저 접속
 
-
-
 * 로컬 호스트 주소
 
-```
-http://localhost:8000
-```
+[http://localhost:8000](http://localhost:8000)
 
 * 호스트PC IP 주소 (로컬 호스트 주소 오류 시)
 
@@ -140,22 +193,32 @@ http://localhost:8000
 http://<호스트PC_IP>:8000
 ```
 
-_Windows 방화벽이 막는 경우 인바운드 규칙으로 TCP 8000 허용 필요._
-
-## 프로그램 직접 빌드 후 실행
+### 프로그램 직접 빌드 후 실행 (Dockerfile 사용)
 
 프로젝트 루트에 있는 Dockerfile 기준
 
 1. 프로젝트 파일 빌드
 
 ```
-docker build -t ceevizor .
+sudo docker build -t ceevizor .
 ```
 
 2. 프로젝트 실행
 
 ```
-docker run -p 8000:8000 ceevizor
+sudo docker run -p 8000:8000 ceevizor
+```
+
+3. 브라우저 접속
+
+* 로컬 호스트 주소
+
+[http://localhost:8000](http://localhost:8000)
+
+* 호스트PC IP 주소 (로컬 호스트 주소 오류 시)
+
+```
+http://<호스트PC_IP>:8000
 ```
 
 # 팀
@@ -172,7 +235,7 @@ docker run -p 8000:8000 ceevizor
 
 * 학습자가 메모리 구조 변화를 직관적으로 이해함으로써 학습 효과 향상. 
 
-* 포인터, 동적 메모리, 함수 호출 스택 등 난해한 개념을 시각적으로 학습할 수 있어 프로그래밍 교육 현장에서 효과적으로 활용 가능. 
+* 포인터, 동적 메모리, 함수 호출 스택 등 복잡한 개념을 시각적으로 학습할 수 있어 프로그래밍 교육 현장에서 효과적으로 활용 가능. 
 
 * 코드 실행 결과와 내부 동작을 확인할 수 있어 디버깅 교육, 시뮬레이션 기반 강의 자료 제작에도 활용 가능. 
 
