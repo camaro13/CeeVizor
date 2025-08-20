@@ -5,8 +5,30 @@
     "line": "프로그램 시작 및 전역변수 초기화",
     "memory": {
       "data_segment": {
-        "global_var": 10,
-        "static_var": 20
+        "g_init": {
+          "type": "int",
+          "value": 1
+        },
+        "g_msg": {
+          "type": "char[8]",
+          "value": "Hi"
+        },
+        "g_vol": {
+          "type": "int",
+          "value": 0
+        },
+        "g_zero": {
+          "type": "int",
+          "value": 0
+        },
+        "g_file_static": {
+          "type": "int",
+          "value": 0
+        },
+        "buf": {
+          "type": "char[16]",
+          "value": 0
+        }
       },
       "heap": [],
       "stack": []
@@ -15,12 +37,34 @@
   },
   {
     "time": 1,
-    "line_index": 47,
-    "line": "    foo(50);",
+    "line_index": 155,
+    "line": "    test_auto_and_ops();",
     "memory": {
       "data_segment": {
-        "global_var": 10,
-        "static_var": 20
+        "g_init": {
+          "type": "int",
+          "value": 1
+        },
+        "g_msg": {
+          "type": "char[8]",
+          "value": "Hi"
+        },
+        "g_vol": {
+          "type": "int",
+          "value": 0
+        },
+        "g_zero": {
+          "type": "int",
+          "value": 0
+        },
+        "g_file_static": {
+          "type": "int",
+          "value": 0
+        },
+        "buf": {
+          "type": "char[16]",
+          "value": 0
+        }
       },
       "heap": [],
       "stack": [
@@ -34,24 +78,49 @@
   },
   {
     "time": 2,
-    "line_index": 15,
-    "line": "    int stack_var = 30;    ",
+    "line_index": 31,
+    "line": "    int x = 10;        // 자동 변수 (스택)",
     "memory": {
       "data_segment": {
-        "global_var": 10,
-        "static_var": 20
+        "g_init": {
+          "type": "int",
+          "value": 1
+        },
+        "g_msg": {
+          "type": "char[8]",
+          "value": "Hi"
+        },
+        "g_vol": {
+          "type": "int",
+          "value": 0
+        },
+        "g_zero": {
+          "type": "int",
+          "value": 0
+        },
+        "g_file_static": {
+          "type": "int",
+          "value": 0
+        },
+        "buf": {
+          "type": "char[16]",
+          "value": 0
+        }
       },
       "heap": [],
       "stack": [
         {
-          "function": "main",
-          "variables": {}
+          "function": "test_auto_and_ops",
+          "variables": {
+            "x": {
+              "type": "int",
+              "value": 10
+            }
+          }
         },
         {
-          "function": "foo",
-          "variables": {
-            "stack_var": "30"
-          }
+          "function": "main",
+          "variables": {}
         }
       ]
     },
@@ -59,29 +128,49 @@
   },
   {
     "time": 3,
-    "line_index": 19,
-    "line": "    int* heap_var = (int*)malloc(sizeof(int));",
+    "line_index": 33,
+    "line": "    x = x + 1;         // 단순 대입 (쓰기)",
     "memory": {
       "data_segment": {
-        "global_var": 10,
-        "static_var": 20
-      },
-      "heap": [
-        {
-          "0x55550010": "?"
+        "g_init": {
+          "type": "int",
+          "value": 1
+        },
+        "g_msg": {
+          "type": "char[8]",
+          "value": "Hi"
+        },
+        "g_vol": {
+          "type": "int",
+          "value": 0
+        },
+        "g_zero": {
+          "type": "int",
+          "value": 0
+        },
+        "g_file_static": {
+          "type": "int",
+          "value": 0
+        },
+        "buf": {
+          "type": "char[16]",
+          "value": 0
         }
-      ],
+      },
+      "heap": [],
       "stack": [
+        {
+          "function": "test_auto_and_ops",
+          "variables": {
+            "x": {
+              "type": "int",
+              "value": 10
+            }
+          }
+        },
         {
           "function": "main",
           "variables": {}
-        },
-        {
-          "function": "foo",
-          "variables": {
-            "stack_var": "30",
-            "heap_var": "0x55550010"
-          }
         }
       ]
     },
@@ -89,29 +178,49 @@
   },
   {
     "time": 4,
-    "line_index": 21,
-    "line": "    if (heap_var == NULL) return;",
+    "line_index": 35,
+    "line": "    x += 2;            // 복합 대입 (쓰기)",
     "memory": {
       "data_segment": {
-        "global_var": 10,
-        "static_var": 20
-      },
-      "heap": [
-        {
-          "0x55550010": "?"
+        "g_init": {
+          "type": "int",
+          "value": 1
+        },
+        "g_msg": {
+          "type": "char[8]",
+          "value": "Hi"
+        },
+        "g_vol": {
+          "type": "int",
+          "value": 0
+        },
+        "g_zero": {
+          "type": "int",
+          "value": 0
+        },
+        "g_file_static": {
+          "type": "int",
+          "value": 0
+        },
+        "buf": {
+          "type": "char[16]",
+          "value": 0
         }
-      ],
+      },
+      "heap": [],
       "stack": [
+        {
+          "function": "test_auto_and_ops",
+          "variables": {
+            "x": {
+              "type": "int",
+              "value": 10
+            }
+          }
+        },
         {
           "function": "main",
           "variables": {}
-        },
-        {
-          "function": "foo",
-          "variables": {
-            "stack_var": "30",
-            "heap_var": "0x55550010"
-          }
         }
       ]
     },
@@ -119,29 +228,49 @@
   },
   {
     "time": 5,
-    "line_index": 23,
-    "line": "    *heap_var = 40;",
+    "line_index": 37,
+    "line": "    x *= 3;            // 복합 대입 (쓰기)",
     "memory": {
       "data_segment": {
-        "global_var": 10,
-        "static_var": 20
-      },
-      "heap": [
-        {
-          "0x55550010": 40
+        "g_init": {
+          "type": "int",
+          "value": 1
+        },
+        "g_msg": {
+          "type": "char[8]",
+          "value": "Hi"
+        },
+        "g_vol": {
+          "type": "int",
+          "value": 0
+        },
+        "g_zero": {
+          "type": "int",
+          "value": 0
+        },
+        "g_file_static": {
+          "type": "int",
+          "value": 0
+        },
+        "buf": {
+          "type": "char[16]",
+          "value": 0
         }
-      ],
+      },
+      "heap": [],
       "stack": [
+        {
+          "function": "test_auto_and_ops",
+          "variables": {
+            "x": {
+              "type": "int",
+              "value": 10
+            }
+          }
+        },
         {
           "function": "main",
           "variables": {}
-        },
-        {
-          "function": "foo",
-          "variables": {
-            "stack_var": "30",
-            "heap_var": "0x55550010"
-          }
         }
       ]
     },
@@ -149,175 +278,290 @@
   },
   {
     "time": 6,
-    "line_index": 27,
-    "line": "    printf(\"global_var: %d\\n\", global_var);",
+    "line_index": 39,
+    "line": "    ++x;               // 전위 증감 (쓰기)",
     "memory": {
       "data_segment": {
-        "global_var": 10,
-        "static_var": 20
-      },
-      "heap": [
-        {
-          "0x55550010": 40
+        "g_init": {
+          "type": "int",
+          "value": 1
+        },
+        "g_msg": {
+          "type": "char[8]",
+          "value": "Hi"
+        },
+        "g_vol": {
+          "type": "int",
+          "value": 0
+        },
+        "g_zero": {
+          "type": "int",
+          "value": 0
+        },
+        "g_file_static": {
+          "type": "int",
+          "value": 0
+        },
+        "buf": {
+          "type": "char[16]",
+          "value": 0
         }
-      ],
+      },
+      "heap": [],
       "stack": [
+        {
+          "function": "test_auto_and_ops",
+          "variables": {
+            "x": {
+              "type": "int",
+              "value": 10
+            }
+          }
+        },
         {
           "function": "main",
           "variables": {}
-        },
-        {
-          "function": "foo",
-          "variables": {
-            "stack_var": "30",
-            "heap_var": "0x55550010"
-          }
         }
       ]
     },
-    "output": "global_var: 10\n"
+    "output": ""
   },
   {
     "time": 7,
-    "line_index": 29,
-    "line": "    printf(\"static_var: %d\\n\", static_var);",
+    "line_index": 41,
+    "line": "    x--;               // 후위 감소 (쓰기)",
     "memory": {
       "data_segment": {
-        "global_var": 10,
-        "static_var": 20
-      },
-      "heap": [
-        {
-          "0x55550010": 40
+        "g_init": {
+          "type": "int",
+          "value": 1
+        },
+        "g_msg": {
+          "type": "char[8]",
+          "value": "Hi"
+        },
+        "g_vol": {
+          "type": "int",
+          "value": 0
+        },
+        "g_zero": {
+          "type": "int",
+          "value": 0
+        },
+        "g_file_static": {
+          "type": "int",
+          "value": 0
+        },
+        "buf": {
+          "type": "char[16]",
+          "value": 0
         }
-      ],
+      },
+      "heap": [],
       "stack": [
+        {
+          "function": "test_auto_and_ops",
+          "variables": {
+            "x": {
+              "type": "int",
+              "value": 10
+            }
+          }
+        },
         {
           "function": "main",
           "variables": {}
-        },
-        {
-          "function": "foo",
-          "variables": {
-            "stack_var": "30",
-            "heap_var": "0x55550010"
-          }
         }
       ]
     },
-    "output": "static_var: 20\n"
+    "output": ""
   },
   {
     "time": 8,
-    "line_index": 31,
-    "line": "    printf(\"param: %d\\n\", param);",
+    "line_index": 43,
+    "line": "    g_init = x;        // 전역 쓰기",
     "memory": {
       "data_segment": {
-        "global_var": 10,
-        "static_var": 20
-      },
-      "heap": [
-        {
-          "0x55550010": 40
+        "g_init": {
+          "type": "int",
+          "value": 1
+        },
+        "g_msg": {
+          "type": "char[8]",
+          "value": "Hi"
+        },
+        "g_vol": {
+          "type": "int",
+          "value": 0
+        },
+        "g_zero": {
+          "type": "int",
+          "value": 0
+        },
+        "g_file_static": {
+          "type": "int",
+          "value": 0
+        },
+        "buf": {
+          "type": "char[16]",
+          "value": 0
         }
-      ],
+      },
+      "heap": [],
       "stack": [
+        {
+          "function": "test_auto_and_ops",
+          "variables": {
+            "x": {
+              "type": "int",
+              "value": 10
+            }
+          }
+        },
         {
           "function": "main",
           "variables": {}
-        },
-        {
-          "function": "foo",
-          "variables": {
-            "stack_var": "30",
-            "heap_var": "0x55550010"
-          }
         }
       ]
     },
-    "output": "param: 50\n"
+    "output": ""
   },
   {
     "time": 9,
-    "line_index": 33,
-    "line": "    printf(\"stack_var: %d\\n\", stack_var);",
+    "line_index": 45,
+    "line": "    g_zero++;          // 전역 쓰기(++)",
     "memory": {
       "data_segment": {
-        "global_var": 10,
-        "static_var": 20
-      },
-      "heap": [
-        {
-          "0x55550010": 40
+        "g_init": {
+          "type": "int",
+          "value": 1
+        },
+        "g_msg": {
+          "type": "char[8]",
+          "value": "Hi"
+        },
+        "g_vol": {
+          "type": "int",
+          "value": 0
+        },
+        "g_zero": {
+          "type": "int",
+          "value": 1
+        },
+        "g_file_static": {
+          "type": "int",
+          "value": 0
+        },
+        "buf": {
+          "type": "char[16]",
+          "value": 0
         }
-      ],
+      },
+      "heap": [],
       "stack": [
+        {
+          "function": "test_auto_and_ops",
+          "variables": {
+            "x": {
+              "type": "int",
+              "value": 10
+            }
+          }
+        },
         {
           "function": "main",
           "variables": {}
-        },
-        {
-          "function": "foo",
-          "variables": {
-            "stack_var": "30",
-            "heap_var": "0x55550010"
-          }
         }
       ]
     },
-    "output": "stack_var: 30\n"
+    "output": ""
   },
   {
     "time": 10,
-    "line_index": 35,
-    "line": "    printf(\"*heap_var: %d\\n\", *heap_var);",
+    "line_index": 51,
+    "line": "}",
     "memory": {
       "data_segment": {
-        "global_var": 10,
-        "static_var": 20
-      },
-      "heap": [
-        {
-          "0x55550010": 40
+        "g_init": {
+          "type": "int",
+          "value": 1
+        },
+        "g_msg": {
+          "type": "char[8]",
+          "value": "Hi"
+        },
+        "g_vol": {
+          "type": "int",
+          "value": 0
+        },
+        "g_zero": {
+          "type": "int",
+          "value": 1
+        },
+        "g_file_static": {
+          "type": "int",
+          "value": 0
+        },
+        "buf": {
+          "type": "char[16]",
+          "value": 0
         }
-      ],
+      },
+      "heap": [],
       "stack": [
+        {
+          "function": "test_auto_and_ops",
+          "variables": {
+            "x": {
+              "type": "int",
+              "value": 10
+            }
+          }
+        },
         {
           "function": "main",
           "variables": {}
-        },
-        {
-          "function": "foo",
-          "variables": {
-            "stack_var": "30",
-            "heap_var": "0x55550010"
-          }
         }
       ]
     },
-    "output": "*heap_var: 40\n"
+    "output": ""
   },
   {
     "time": 11,
-    "line_index": 39,
-    "line": "    free(heap_var); ",
+    "line_index": 157,
+    "line": "    test_static_local();",
     "memory": {
       "data_segment": {
-        "global_var": 10,
-        "static_var": 20
+        "g_init": {
+          "type": "int",
+          "value": 1
+        },
+        "g_msg": {
+          "type": "char[8]",
+          "value": "Hi"
+        },
+        "g_vol": {
+          "type": "int",
+          "value": 0
+        },
+        "g_zero": {
+          "type": "int",
+          "value": 1
+        },
+        "g_file_static": {
+          "type": "int",
+          "value": 0
+        },
+        "buf": {
+          "type": "char[16]",
+          "value": 0
+        }
       },
       "heap": [],
       "stack": [
         {
           "function": "main",
           "variables": {}
-        },
-        {
-          "function": "foo",
-          "variables": {
-            "stack_var": "30",
-            "heap_var": "0x55550010"
-          }
         }
       ]
     },
@@ -325,12 +569,1641 @@
   },
   {
     "time": 12,
-    "line_index": 49,
+    "line_index": 59,
+    "line": "    s++;               // 정적 지역 쓰기",
+    "memory": {
+      "data_segment": {
+        "g_init": {
+          "type": "int",
+          "value": 1
+        },
+        "g_msg": {
+          "type": "char[8]",
+          "value": "Hi"
+        },
+        "g_vol": {
+          "type": "int",
+          "value": 0
+        },
+        "g_zero": {
+          "type": "int",
+          "value": 1
+        },
+        "g_file_static": {
+          "type": "int",
+          "value": 0
+        },
+        "buf": {
+          "type": "char[16]",
+          "value": 0
+        }
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "test_static_local",
+          "variables": {}
+        },
+        {
+          "function": "main",
+          "variables": {}
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 13,
+    "line_index": 61,
+    "line": "    g_init += s;       // 전역 쓰기(+=)",
+    "memory": {
+      "data_segment": {
+        "g_init": {
+          "type": "int",
+          "value": 1
+        },
+        "g_msg": {
+          "type": "char[8]",
+          "value": "Hi"
+        },
+        "g_vol": {
+          "type": "int",
+          "value": 0
+        },
+        "g_zero": {
+          "type": "int",
+          "value": 1
+        },
+        "g_file_static": {
+          "type": "int",
+          "value": 0
+        },
+        "buf": {
+          "type": "char[16]",
+          "value": 0
+        }
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "test_static_local",
+          "variables": {}
+        },
+        {
+          "function": "main",
+          "variables": {}
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 14,
+    "line_index": 159,
+    "line": "    test_static_local();             // 두 번 호출해서 static 지역 누적 확인",
+    "memory": {
+      "data_segment": {
+        "g_init": {
+          "type": "int",
+          "value": 1
+        },
+        "g_msg": {
+          "type": "char[8]",
+          "value": "Hi"
+        },
+        "g_vol": {
+          "type": "int",
+          "value": 0
+        },
+        "g_zero": {
+          "type": "int",
+          "value": 1
+        },
+        "g_file_static": {
+          "type": "int",
+          "value": 0
+        },
+        "buf": {
+          "type": "char[16]",
+          "value": 0
+        }
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {}
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 15,
+    "line_index": 59,
+    "line": "    s++;               // 정적 지역 쓰기",
+    "memory": {
+      "data_segment": {
+        "g_init": {
+          "type": "int",
+          "value": 1
+        },
+        "g_msg": {
+          "type": "char[8]",
+          "value": "Hi"
+        },
+        "g_vol": {
+          "type": "int",
+          "value": 0
+        },
+        "g_zero": {
+          "type": "int",
+          "value": 1
+        },
+        "g_file_static": {
+          "type": "int",
+          "value": 0
+        },
+        "buf": {
+          "type": "char[16]",
+          "value": 0
+        }
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "test_static_local",
+          "variables": {}
+        },
+        {
+          "function": "main",
+          "variables": {}
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 16,
+    "line_index": 61,
+    "line": "    g_init += s;       // 전역 쓰기(+=)",
+    "memory": {
+      "data_segment": {
+        "g_init": {
+          "type": "int",
+          "value": 1
+        },
+        "g_msg": {
+          "type": "char[8]",
+          "value": "Hi"
+        },
+        "g_vol": {
+          "type": "int",
+          "value": 0
+        },
+        "g_zero": {
+          "type": "int",
+          "value": 1
+        },
+        "g_file_static": {
+          "type": "int",
+          "value": 0
+        },
+        "buf": {
+          "type": "char[16]",
+          "value": 0
+        }
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "test_static_local",
+          "variables": {}
+        },
+        {
+          "function": "main",
+          "variables": {}
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 17,
+    "line_index": 161,
+    "line": "    test_pointer_and_array();",
+    "memory": {
+      "data_segment": {
+        "g_init": {
+          "type": "int",
+          "value": 1
+        },
+        "g_msg": {
+          "type": "char[8]",
+          "value": "Hi"
+        },
+        "g_vol": {
+          "type": "int",
+          "value": 0
+        },
+        "g_zero": {
+          "type": "int",
+          "value": 1
+        },
+        "g_file_static": {
+          "type": "int",
+          "value": 0
+        },
+        "buf": {
+          "type": "char[16]",
+          "value": 0
+        }
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {}
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 18,
+    "line_index": 69,
+    "line": "    int arr[3] = {10, 20, 30};",
+    "memory": {
+      "data_segment": {
+        "g_init": {
+          "type": "int",
+          "value": 1
+        },
+        "g_msg": {
+          "type": "char[8]",
+          "value": "Hi"
+        },
+        "g_vol": {
+          "type": "int",
+          "value": 0
+        },
+        "g_zero": {
+          "type": "int",
+          "value": 1
+        },
+        "g_file_static": {
+          "type": "int",
+          "value": 0
+        },
+        "buf": {
+          "type": "char[16]",
+          "value": 0
+        }
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "test_pointer_and_array",
+          "variables": {}
+        },
+        {
+          "function": "main",
+          "variables": {}
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 19,
+    "line_index": 71,
+    "line": "    int *p = arr;      // p 값(주소) 변경",
+    "memory": {
+      "data_segment": {
+        "g_init": {
+          "type": "int",
+          "value": 1
+        },
+        "g_msg": {
+          "type": "char[8]",
+          "value": "Hi"
+        },
+        "g_vol": {
+          "type": "int",
+          "value": 0
+        },
+        "g_zero": {
+          "type": "int",
+          "value": 1
+        },
+        "g_file_static": {
+          "type": "int",
+          "value": 0
+        },
+        "buf": {
+          "type": "char[16]",
+          "value": 0
+        }
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "test_pointer_and_array",
+          "variables": {}
+        },
+        {
+          "function": "main",
+          "variables": {}
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 20,
+    "line_index": 73,
+    "line": "    p = p + 1;         // 포인터 산술(주소만 변경)",
+    "memory": {
+      "data_segment": {
+        "g_init": {
+          "type": "int",
+          "value": 1
+        },
+        "g_msg": {
+          "type": "char[8]",
+          "value": "Hi"
+        },
+        "g_vol": {
+          "type": "int",
+          "value": 0
+        },
+        "g_zero": {
+          "type": "int",
+          "value": 1
+        },
+        "g_file_static": {
+          "type": "int",
+          "value": 0
+        },
+        "buf": {
+          "type": "char[16]",
+          "value": 0
+        }
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "test_pointer_and_array",
+          "variables": {}
+        },
+        {
+          "function": "main",
+          "variables": {}
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 21,
+    "line_index": 75,
+    "line": "    (*p)++;            // 역참조 쓰기: arr[1]이 21이 됨",
+    "memory": {
+      "data_segment": {
+        "g_init": {
+          "type": "int",
+          "value": 1
+        },
+        "g_msg": {
+          "type": "char[8]",
+          "value": "Hi"
+        },
+        "g_vol": {
+          "type": "int",
+          "value": 0
+        },
+        "g_zero": {
+          "type": "int",
+          "value": 1
+        },
+        "g_file_static": {
+          "type": "int",
+          "value": 0
+        },
+        "buf": {
+          "type": "char[16]",
+          "value": 0
+        }
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "test_pointer_and_array",
+          "variables": {}
+        },
+        {
+          "function": "main",
+          "variables": {}
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 22,
+    "line_index": 77,
+    "line": "    arr[0] += 1;       // 배열 원소 쓰기",
+    "memory": {
+      "data_segment": {
+        "g_init": {
+          "type": "int",
+          "value": 1
+        },
+        "g_msg": {
+          "type": "char[8]",
+          "value": "Hi"
+        },
+        "g_vol": {
+          "type": "int",
+          "value": 0
+        },
+        "g_zero": {
+          "type": "int",
+          "value": 1
+        },
+        "g_file_static": {
+          "type": "int",
+          "value": 0
+        },
+        "buf": {
+          "type": "char[16]",
+          "value": 0
+        }
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "test_pointer_and_array",
+          "variables": {}
+        },
+        {
+          "function": "main",
+          "variables": {}
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 23,
+    "line_index": 81,
+    "line": "    char *m = g_msg;   // 전역 배열을 가리키는 포인터",
+    "memory": {
+      "data_segment": {
+        "g_init": {
+          "type": "int",
+          "value": 1
+        },
+        "g_msg": {
+          "type": "char[8]",
+          "value": "Hi"
+        },
+        "g_vol": {
+          "type": "int",
+          "value": 0
+        },
+        "g_zero": {
+          "type": "int",
+          "value": 1
+        },
+        "g_file_static": {
+          "type": "int",
+          "value": 0
+        },
+        "buf": {
+          "type": "char[16]",
+          "value": 0
+        }
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "test_pointer_and_array",
+          "variables": {
+            "m": {
+              "type": "char*",
+              "value": "&g_msg[0]"
+            }
+          }
+        },
+        {
+          "function": "main",
+          "variables": {}
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 24,
+    "line_index": 83,
+    "line": "    m = m + 1;         // 포인터 산술",
+    "memory": {
+      "data_segment": {
+        "g_init": {
+          "type": "int",
+          "value": 1
+        },
+        "g_msg": {
+          "type": "char[8]",
+          "value": "Hi"
+        },
+        "g_vol": {
+          "type": "int",
+          "value": 0
+        },
+        "g_zero": {
+          "type": "int",
+          "value": 1
+        },
+        "g_file_static": {
+          "type": "int",
+          "value": 0
+        },
+        "buf": {
+          "type": "char[16]",
+          "value": 0
+        }
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "test_pointer_and_array",
+          "variables": {
+            "m": {
+              "type": "char*",
+              "value": "&g_msg[0]"
+            }
+          }
+        },
+        {
+          "function": "main",
+          "variables": {}
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 25,
+    "line_index": 85,
+    "line": "    *m = 'e';          // \"Hi\" -> \"He\"",
+    "memory": {
+      "data_segment": {
+        "g_init": {
+          "type": "int",
+          "value": 1
+        },
+        "g_msg": {
+          "type": "char[8]",
+          "value": "Hi"
+        },
+        "g_vol": {
+          "type": "int",
+          "value": 0
+        },
+        "g_zero": {
+          "type": "int",
+          "value": 1
+        },
+        "g_file_static": {
+          "type": "int",
+          "value": 0
+        },
+        "buf": {
+          "type": "char[16]",
+          "value": 0
+        }
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "test_pointer_and_array",
+          "variables": {
+            "m": {
+              "type": "char*",
+              "value": "&g_msg[0]"
+            }
+          }
+        },
+        {
+          "function": "main",
+          "variables": {}
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 26,
+    "line_index": 163,
+    "line": "    test_heap();",
+    "memory": {
+      "data_segment": {
+        "g_init": {
+          "type": "int",
+          "value": 1
+        },
+        "g_msg": {
+          "type": "char[8]",
+          "value": "Hi"
+        },
+        "g_vol": {
+          "type": "int",
+          "value": 0
+        },
+        "g_zero": {
+          "type": "int",
+          "value": 1
+        },
+        "g_file_static": {
+          "type": "int",
+          "value": 0
+        },
+        "buf": {
+          "type": "char[16]",
+          "value": 0
+        }
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {}
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 27,
+    "line_index": 93,
+    "line": "    int *hp = (int*)malloc(sizeof *hp); // malloc 할당(힙)",
+    "memory": {
+      "data_segment": {
+        "g_init": {
+          "type": "int",
+          "value": 1
+        },
+        "g_msg": {
+          "type": "char[8]",
+          "value": "Hi"
+        },
+        "g_vol": {
+          "type": "int",
+          "value": 0
+        },
+        "g_zero": {
+          "type": "int",
+          "value": 1
+        },
+        "g_file_static": {
+          "type": "int",
+          "value": 0
+        },
+        "buf": {
+          "type": "char[16]",
+          "value": 0
+        }
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "test_heap",
+          "variables": {}
+        },
+        {
+          "function": "main",
+          "variables": {}
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 28,
+    "line_index": 95,
+    "line": "    if (!hp) return;",
+    "memory": {
+      "data_segment": {
+        "g_init": {
+          "type": "int",
+          "value": 1
+        },
+        "g_msg": {
+          "type": "char[8]",
+          "value": "Hi"
+        },
+        "g_vol": {
+          "type": "int",
+          "value": 0
+        },
+        "g_zero": {
+          "type": "int",
+          "value": 1
+        },
+        "g_file_static": {
+          "type": "int",
+          "value": 0
+        },
+        "buf": {
+          "type": "char[16]",
+          "value": 0
+        }
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "test_heap",
+          "variables": {}
+        },
+        {
+          "function": "main",
+          "variables": {}
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 29,
+    "line_index": 97,
+    "line": "    *hp = 42;           // 힙 블록 쓰기",
+    "memory": {
+      "data_segment": {
+        "g_init": {
+          "type": "int",
+          "value": 1
+        },
+        "g_msg": {
+          "type": "char[8]",
+          "value": "Hi"
+        },
+        "g_vol": {
+          "type": "int",
+          "value": 0
+        },
+        "g_zero": {
+          "type": "int",
+          "value": 1
+        },
+        "g_file_static": {
+          "type": "int",
+          "value": 0
+        },
+        "buf": {
+          "type": "char[16]",
+          "value": 0
+        }
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "test_heap",
+          "variables": {}
+        },
+        {
+          "function": "main",
+          "variables": {}
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 30,
+    "line_index": 99,
+    "line": "    *hp = *hp + 1;      // 힙 블록 쓰기(43)",
+    "memory": {
+      "data_segment": {
+        "g_init": {
+          "type": "int",
+          "value": 1
+        },
+        "g_msg": {
+          "type": "char[8]",
+          "value": "Hi"
+        },
+        "g_vol": {
+          "type": "int",
+          "value": 0
+        },
+        "g_zero": {
+          "type": "int",
+          "value": 1
+        },
+        "g_file_static": {
+          "type": "int",
+          "value": 0
+        },
+        "buf": {
+          "type": "char[16]",
+          "value": 0
+        }
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "test_heap",
+          "variables": {}
+        },
+        {
+          "function": "main",
+          "variables": {}
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 31,
+    "line_index": 101,
+    "line": "    free(hp);           // 해제",
+    "memory": {
+      "data_segment": {
+        "g_init": {
+          "type": "int",
+          "value": 1
+        },
+        "g_msg": {
+          "type": "char[8]",
+          "value": "Hi"
+        },
+        "g_vol": {
+          "type": "int",
+          "value": 0
+        },
+        "g_zero": {
+          "type": "int",
+          "value": 1
+        },
+        "g_file_static": {
+          "type": "int",
+          "value": 0
+        },
+        "buf": {
+          "type": "char[16]",
+          "value": 0
+        }
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "test_heap",
+          "variables": {}
+        },
+        {
+          "function": "main",
+          "variables": {}
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 32,
+    "line_index": 165,
+    "line": "    test_mem_functions();",
+    "memory": {
+      "data_segment": {
+        "g_init": {
+          "type": "int",
+          "value": 1
+        },
+        "g_msg": {
+          "type": "char[8]",
+          "value": "Hi"
+        },
+        "g_vol": {
+          "type": "int",
+          "value": 0
+        },
+        "g_zero": {
+          "type": "int",
+          "value": 1
+        },
+        "g_file_static": {
+          "type": "int",
+          "value": 0
+        },
+        "buf": {
+          "type": "char[16]",
+          "value": 0
+        }
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {}
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 33,
+    "line_index": 111,
+    "line": "    memset(buf, 0, sizeof buf);     // 버퍼 0으로 채움",
+    "memory": {
+      "data_segment": {
+        "g_init": {
+          "type": "int",
+          "value": 1
+        },
+        "g_msg": {
+          "type": "char[8]",
+          "value": "Hi"
+        },
+        "g_vol": {
+          "type": "int",
+          "value": 0
+        },
+        "g_zero": {
+          "type": "int",
+          "value": 1
+        },
+        "g_file_static": {
+          "type": "int",
+          "value": 0
+        },
+        "buf": {
+          "type": "char[16]",
+          "value": 0
+        }
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "test_mem_functions",
+          "variables": {}
+        },
+        {
+          "function": "main",
+          "variables": {}
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 34,
+    "line_index": 113,
+    "line": "    memset(buf, 'A', 4);            // \"AAAA\"",
+    "memory": {
+      "data_segment": {
+        "g_init": {
+          "type": "int",
+          "value": 1
+        },
+        "g_msg": {
+          "type": "char[8]",
+          "value": "Hi"
+        },
+        "g_vol": {
+          "type": "int",
+          "value": 0
+        },
+        "g_zero": {
+          "type": "int",
+          "value": 1
+        },
+        "g_file_static": {
+          "type": "int",
+          "value": 0
+        },
+        "buf": {
+          "type": "char[16]",
+          "value": 0
+        }
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "test_mem_functions",
+          "variables": {}
+        },
+        {
+          "function": "main",
+          "variables": {}
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 35,
+    "line_index": 115,
+    "line": "    memcpy(buf + 4, \"OK\", 3);       // \"AAAAOK\\0\"",
+    "memory": {
+      "data_segment": {
+        "g_init": {
+          "type": "int",
+          "value": 1
+        },
+        "g_msg": {
+          "type": "char[8]",
+          "value": "Hi"
+        },
+        "g_vol": {
+          "type": "int",
+          "value": 0
+        },
+        "g_zero": {
+          "type": "int",
+          "value": 1
+        },
+        "g_file_static": {
+          "type": "int",
+          "value": 0
+        },
+        "buf": {
+          "type": "char[16]",
+          "value": 0
+        }
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "test_mem_functions",
+          "variables": {}
+        },
+        {
+          "function": "main",
+          "variables": {}
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 36,
+    "line_index": 117,
+    "line": "    memmove(buf + 1, buf, 6);       // 겹침 복사 (쓰기 발생)",
+    "memory": {
+      "data_segment": {
+        "g_init": {
+          "type": "int",
+          "value": 1
+        },
+        "g_msg": {
+          "type": "char[8]",
+          "value": "Hi"
+        },
+        "g_vol": {
+          "type": "int",
+          "value": 0
+        },
+        "g_zero": {
+          "type": "int",
+          "value": 1
+        },
+        "g_file_static": {
+          "type": "int",
+          "value": 0
+        },
+        "buf": {
+          "type": "char[16]",
+          "value": 0
+        }
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "test_mem_functions",
+          "variables": {}
+        },
+        {
+          "function": "main",
+          "variables": {}
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 37,
+    "line_index": 119,
+    "line": "    g_msg[0] = buf[0];              // 전역 배열 첫 글자 갱신",
+    "memory": {
+      "data_segment": {
+        "g_init": {
+          "type": "int",
+          "value": 1
+        },
+        "g_msg": {
+          "type": "char[8]",
+          "value": "Hi"
+        },
+        "g_vol": {
+          "type": "int",
+          "value": 0
+        },
+        "g_zero": {
+          "type": "int",
+          "value": 1
+        },
+        "g_file_static": {
+          "type": "int",
+          "value": 0
+        },
+        "buf": {
+          "type": "char[16]",
+          "value": 0
+        }
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "test_mem_functions",
+          "variables": {}
+        },
+        {
+          "function": "main",
+          "variables": {}
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 38,
+    "line_index": 167,
+    "line": "    test_struct_and_ptr();",
+    "memory": {
+      "data_segment": {
+        "g_init": {
+          "type": "int",
+          "value": 1
+        },
+        "g_msg": {
+          "type": "char[8]",
+          "value": "Hi"
+        },
+        "g_vol": {
+          "type": "int",
+          "value": 0
+        },
+        "g_zero": {
+          "type": "int",
+          "value": 1
+        },
+        "g_file_static": {
+          "type": "int",
+          "value": 0
+        },
+        "buf": {
+          "type": "char[16]",
+          "value": 0
+        }
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {}
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 39,
+    "line_index": 127,
+    "line": "    struct Pair s = {1, 2};         // 구조체 로컬",
+    "memory": {
+      "data_segment": {
+        "g_init": {
+          "type": "int",
+          "value": 1
+        },
+        "g_msg": {
+          "type": "char[8]",
+          "value": "Hi"
+        },
+        "g_vol": {
+          "type": "int",
+          "value": 0
+        },
+        "g_zero": {
+          "type": "int",
+          "value": 1
+        },
+        "g_file_static": {
+          "type": "int",
+          "value": 0
+        },
+        "buf": {
+          "type": "char[16]",
+          "value": 0
+        }
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "test_struct_and_ptr",
+          "variables": {}
+        },
+        {
+          "function": "main",
+          "variables": {}
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 40,
+    "line_index": 131,
+    "line": "    t = s;                           // 구조체 대입(쓰기)",
+    "memory": {
+      "data_segment": {
+        "g_init": {
+          "type": "int",
+          "value": 1
+        },
+        "g_msg": {
+          "type": "char[8]",
+          "value": "Hi"
+        },
+        "g_vol": {
+          "type": "int",
+          "value": 0
+        },
+        "g_zero": {
+          "type": "int",
+          "value": 1
+        },
+        "g_file_static": {
+          "type": "int",
+          "value": 0
+        },
+        "buf": {
+          "type": "char[16]",
+          "value": 0
+        }
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "test_struct_and_ptr",
+          "variables": {}
+        },
+        {
+          "function": "main",
+          "variables": {}
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 41,
+    "line_index": 133,
+    "line": "    int *pa = &t.a;                  // 구조체 필드 주소",
+    "memory": {
+      "data_segment": {
+        "g_init": {
+          "type": "int",
+          "value": 1
+        },
+        "g_msg": {
+          "type": "char[8]",
+          "value": "Hi"
+        },
+        "g_vol": {
+          "type": "int",
+          "value": 0
+        },
+        "g_zero": {
+          "type": "int",
+          "value": 1
+        },
+        "g_file_static": {
+          "type": "int",
+          "value": 0
+        },
+        "buf": {
+          "type": "char[16]",
+          "value": 0
+        }
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "test_struct_and_ptr",
+          "variables": {}
+        },
+        {
+          "function": "main",
+          "variables": {}
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 42,
+    "line_index": 135,
+    "line": "    *pa = 7;                         // 포인터 역참조로 구조체 필드 쓰기",
+    "memory": {
+      "data_segment": {
+        "g_init": {
+          "type": "int",
+          "value": 1
+        },
+        "g_msg": {
+          "type": "char[8]",
+          "value": "Hi"
+        },
+        "g_vol": {
+          "type": "int",
+          "value": 0
+        },
+        "g_zero": {
+          "type": "int",
+          "value": 1
+        },
+        "g_file_static": {
+          "type": "int",
+          "value": 0
+        },
+        "buf": {
+          "type": "char[16]",
+          "value": 0
+        }
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "test_struct_and_ptr",
+          "variables": {}
+        },
+        {
+          "function": "main",
+          "variables": {}
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 43,
+    "line_index": 169,
+    "line": "    test_volatile();",
+    "memory": {
+      "data_segment": {
+        "g_init": {
+          "type": "int",
+          "value": 1
+        },
+        "g_msg": {
+          "type": "char[8]",
+          "value": "Hi"
+        },
+        "g_vol": {
+          "type": "int",
+          "value": 0
+        },
+        "g_zero": {
+          "type": "int",
+          "value": 1
+        },
+        "g_file_static": {
+          "type": "int",
+          "value": 0
+        },
+        "buf": {
+          "type": "char[16]",
+          "value": 0
+        }
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {}
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 44,
+    "line_index": 143,
+    "line": "    g_vol = 123;                     // volatile 전역 쓰기(실제 메모리 접근)",
+    "memory": {
+      "data_segment": {
+        "g_init": {
+          "type": "int",
+          "value": 1
+        },
+        "g_msg": {
+          "type": "char[8]",
+          "value": "Hi"
+        },
+        "g_vol": {
+          "type": "int",
+          "value": 123
+        },
+        "g_zero": {
+          "type": "int",
+          "value": 1
+        },
+        "g_file_static": {
+          "type": "int",
+          "value": 0
+        },
+        "buf": {
+          "type": "char[16]",
+          "value": 0
+        }
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "test_volatile",
+          "variables": {}
+        },
+        {
+          "function": "main",
+          "variables": {}
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 45,
+    "line_index": 145,
+    "line": "    volatile int *reg = &g_vol;      // volatile 포인터",
+    "memory": {
+      "data_segment": {
+        "g_init": {
+          "type": "int",
+          "value": 1
+        },
+        "g_msg": {
+          "type": "char[8]",
+          "value": "Hi"
+        },
+        "g_vol": {
+          "type": "int",
+          "value": 123
+        },
+        "g_zero": {
+          "type": "int",
+          "value": 1
+        },
+        "g_file_static": {
+          "type": "int",
+          "value": 0
+        },
+        "buf": {
+          "type": "char[16]",
+          "value": 0
+        }
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "test_volatile",
+          "variables": {}
+        },
+        {
+          "function": "main",
+          "variables": {}
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 46,
+    "line_index": 147,
+    "line": "    *reg = *reg + 1;                 // volatile 위치에 쓰기(124)",
+    "memory": {
+      "data_segment": {
+        "g_init": {
+          "type": "int",
+          "value": 1
+        },
+        "g_msg": {
+          "type": "char[8]",
+          "value": "Hi"
+        },
+        "g_vol": {
+          "type": "int",
+          "value": 123
+        },
+        "g_zero": {
+          "type": "int",
+          "value": 1
+        },
+        "g_file_static": {
+          "type": "int",
+          "value": 0
+        },
+        "buf": {
+          "type": "char[16]",
+          "value": 0
+        }
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "test_volatile",
+          "variables": {}
+        },
+        {
+          "function": "main",
+          "variables": {}
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 47,
+    "line_index": 175,
+    "line": "    printf(\"g_init=%d g_zero=%d g_msg=\\\"%s\\\" g_vol=%d\\n\",",
+    "memory": {
+      "data_segment": {
+        "g_init": {
+          "type": "int",
+          "value": 1
+        },
+        "g_msg": {
+          "type": "char[8]",
+          "value": "Hi"
+        },
+        "g_vol": {
+          "type": "int",
+          "value": 123
+        },
+        "g_zero": {
+          "type": "int",
+          "value": 1
+        },
+        "g_file_static": {
+          "type": "int",
+          "value": 0
+        },
+        "buf": {
+          "type": "char[16]",
+          "value": 0
+        }
+      },
+      "heap": [],
+      "stack": [
+        {
+          "function": "main",
+          "variables": {}
+        }
+      ]
+    },
+    "output": ""
+  },
+  {
+    "time": 48,
+    "line_index": 179,
     "line": "    return 0;",
     "memory": {
       "data_segment": {
-        "global_var": 10,
-        "static_var": 20
+        "g_init": {
+          "type": "int",
+          "value": 1
+        },
+        "g_msg": {
+          "type": "char[8]",
+          "value": "Hi"
+        },
+        "g_vol": {
+          "type": "int",
+          "value": 123
+        },
+        "g_zero": {
+          "type": "int",
+          "value": 1
+        },
+        "g_file_static": {
+          "type": "int",
+          "value": 0
+        },
+        "buf": {
+          "type": "char[16]",
+          "value": 0
+        }
       },
       "heap": [],
       "stack": [

@@ -1,22 +1,6 @@
 [
   {
     "kind": "function",
-    "name": "foo",
-    "return_type": "void",
-    "parameters": [
-      {
-        "name": "param",
-        "type": "int"
-      }
-    ],
-    "location": "code",
-    "scope": {
-      "kind": "global"
-    },
-    "line": 7
-  },
-  {
-    "kind": "function",
     "name": "main",
     "return_type": "int",
     "parameters": [],
@@ -24,64 +8,245 @@
     "scope": {
       "kind": "global"
     },
-    "line": 23
+    "line": 77
   },
   {
-    "kind": "var",
-    "name": "heap_var",
-    "type": "int*",
+    "kind": "function",
+    "name": "test_auto_and_ops",
+    "return_type": "void",
+    "parameters": [],
+    "location": "code",
     "scope": {
-      "kind": "function",
-      "func": "foo"
+      "kind": "global"
     },
-    "storage": "auto",
-    "location": "heap",
-    "value": "(int*)malloc(sizeof(int))",
-    "pointer": true,
-    "points_to": null,
-    "line": 10
+    "line": 15
+  },
+  {
+    "kind": "function",
+    "name": "test_heap",
+    "return_type": "void",
+    "parameters": [],
+    "location": "code",
+    "scope": {
+      "kind": "global"
+    },
+    "line": 46
+  },
+  {
+    "kind": "function",
+    "name": "test_mem_functions",
+    "return_type": "void",
+    "parameters": [],
+    "location": "code",
+    "scope": {
+      "kind": "global"
+    },
+    "line": 54
+  },
+  {
+    "kind": "function",
+    "name": "test_pointer_and_array",
+    "return_type": "void",
+    "parameters": [],
+    "location": "code",
+    "scope": {
+      "kind": "global"
+    },
+    "line": 34
+  },
+  {
+    "kind": "function",
+    "name": "test_static_local",
+    "return_type": "void",
+    "parameters": [],
+    "location": "code",
+    "scope": {
+      "kind": "global"
+    },
+    "line": 28
+  },
+  {
+    "kind": "function",
+    "name": "test_struct_and_ptr",
+    "return_type": "void",
+    "parameters": [],
+    "location": "code",
+    "scope": {
+      "kind": "global"
+    },
+    "line": 63
+  },
+  {
+    "kind": "function",
+    "name": "test_volatile",
+    "return_type": "void",
+    "parameters": [],
+    "location": "code",
+    "scope": {
+      "kind": "global"
+    },
+    "line": 71
   },
   {
     "kind": "var",
-    "name": "stack_var",
+    "name": "x",
     "type": "int",
     "scope": {
       "kind": "function",
-      "func": "foo"
+      "func": "test_auto_and_ops"
     },
     "storage": "auto",
     "location": "stack",
-    "value": "30",
+    "value": "10",
     "pointer": false,
     "points_to": null,
-    "line": 8
+    "line": 16
   },
   {
     "kind": "var",
-    "name": "global_var",
+    "name": "hp",
+    "type": "int*",
+    "scope": {
+      "kind": "function",
+      "func": "test_heap"
+    },
+    "storage": "auto",
+    "location": "heap",
+    "value": "(int*)malloc(sizeof *hp)",
+    "pointer": true,
+    "points_to": null,
+    "line": 47
+  },
+  {
+    "kind": "var",
+    "name": "arr[3]",
+    "type": "int",
+    "scope": {
+      "kind": "function",
+      "func": "test_pointer_and_array"
+    },
+    "storage": "auto",
+    "location": "stack",
+    "value": "{10, 20, 30}",
+    "pointer": false,
+    "points_to": null,
+    "line": 35
+  },
+  {
+    "kind": "var",
+    "name": "m",
+    "type": "char*",
+    "scope": {
+      "kind": "function",
+      "func": "test_pointer_and_array"
+    },
+    "storage": "auto",
+    "location": "stack",
+    "value": "g_msg",
+    "pointer": true,
+    "points_to": null,
+    "line": 41
+  },
+  {
+    "kind": "var",
+    "name": "p",
+    "type": "int*",
+    "scope": {
+      "kind": "function",
+      "func": "test_pointer_and_array"
+    },
+    "storage": "auto",
+    "location": "stack",
+    "value": "arr",
+    "pointer": true,
+    "points_to": null,
+    "line": 36
+  },
+  {
+    "kind": "var",
+    "name": "pa",
+    "type": "int*",
+    "scope": {
+      "kind": "function",
+      "func": "test_struct_and_ptr"
+    },
+    "storage": "auto",
+    "location": "stack",
+    "value": "&t.a",
+    "pointer": true,
+    "points_to": null,
+    "line": 67
+  },
+  {
+    "kind": "var",
+    "name": "s",
+    "type": "",
+    "scope": {
+      "kind": "function",
+      "func": "test_struct_and_ptr"
+    },
+    "storage": "auto",
+    "location": "stack",
+    "value": "{1, 2}",
+    "pointer": false,
+    "points_to": null,
+    "line": 64
+  },
+  {
+    "kind": "var",
+    "name": "reg",
+    "type": "int*",
+    "scope": {
+      "kind": "function",
+      "func": "test_volatile"
+    },
+    "storage": "auto",
+    "location": "stack",
+    "value": "&g_vol",
+    "pointer": true,
+    "points_to": null,
+    "line": 73
+  },
+  {
+    "kind": "var",
+    "name": "g_init",
     "type": "int",
     "scope": {
       "kind": "global"
     },
     "storage": "auto",
     "location": "data",
-    "value": "10",
+    "value": "1",
     "pointer": false,
     "points_to": null,
-    "line": 4
+    "line": 7
   },
   {
     "kind": "var",
-    "name": "static_var",
+    "name": "g_msg[8]",
+    "type": "char",
+    "scope": {
+      "kind": "global"
+    },
+    "storage": "auto",
+    "location": "data",
+    "value": "\"Hi\"",
+    "pointer": false,
+    "points_to": null,
+    "line": 9
+  },
+  {
+    "kind": "var",
+    "name": "g_vol",
     "type": "int",
     "scope": {
       "kind": "global"
     },
-    "storage": "static",
+    "storage": "auto",
     "location": "data",
-    "value": "20",
+    "value": "0",
     "pointer": false,
     "points_to": null,
-    "line": 5
+    "line": 11
   }
 ]

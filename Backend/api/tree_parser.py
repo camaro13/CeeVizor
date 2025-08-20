@@ -224,21 +224,3 @@ def _main():
         print(json.dumps(symbols, indent=2, ensure_ascii=False))
     else:
         print(f"[+] Wrote {len(symbols)} symbols → {args.out}")
-
-if __name__ == "__main__":
-    sample_code = r"""
-    #include <stdlib.h>
-    int g1 = 10;
-    int g2;
-    static int sg1 = 3;
-    static int sg2;
-    void foo(void) {
-        int x = 42;
-        static int s_local;
-        int *p = malloc(64);
-        char buf[32];
-    }
-    """
-    result = analyze_c_code(sample_code)
-    import json
-    print(json.dumps(result, indent=2, ensure_ascii=False))

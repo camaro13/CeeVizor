@@ -294,63 +294,95 @@ def simulate_c_code_to_timeline(
 ) -> List[Dict[str, Any]]:
     IDENT = re.compile(r'^[A-Za-z_]\w*$')
 
-    def _is_empty_slot(val: Any) -> bool:
-        if val is None:
-            return True
-        s = str(val).strip()
-        return (s == "") or (s in _EMPTY_SENTINELS) or (s == "0x0") or (s.upper() == "NULL")
-
-    pending_args_pos: Dict[str, List[List[Optional[int]]]] = {}
-    last_vars_by_func: Dict[str, Dict[str, Any]] = {}
-
-    def _read_int(token: Any, merged: Dict[str, Any], cache_fn: str, last_vars: Dict[str, Dict[str, Any]]) -> Optional[int]:
-        s = str(token).strip() if token is not None else ""
-        if _NUM_LIT.match(s):
+    # 간단 evaluator: 정수/식별자/+, - 만
+    def _eval_simple(expr: str, env: Dict[str, Any]) -> Optional[int]:
+        s = (expr or "").strip()
+        if re.fullmatch(r'-?(?:0[xX][0-9a-fA-F]+|\d+)', s):
             try:
                 return int(s, 0)
             except:
                 return None
-        v = merged.get(s)
-        if v is None:
-            v = (last_vars.get(cache_fn, {}) or {}).get(s)
-        if v is not None:
-            try:
-                return int(v, 0) if isinstance(v, str) else int(v)
-            except:
-                return None
-        pos_stack = pending_args_pos.get(cache_fn)
-        if pos_stack and len(pos_stack) > 0:
-            top = pos_stack[-1]
-            if len(top) == 1 and top[0] is not None:
+        parts = re.split(r'(\+|\-)', s)
+        total, sign = 0, 1
+        for t in parts:
+            t = t.strip()
+            if t == '+': sign = 1; continue
+            if t == '-': sign = -1; continue
+            if not t: continue
+            if re.fullmatch(r'-?(?:0[xX][0-9a-fA-F]+|\d+)', t):
+                val = int(t, 0)
+            elif IDENT.match(t):
+                raw = env.get(t)
+                if raw is None: return None
                 try:
-                    return int(top[0])
+                    val = int(raw, 0) if isinstance(raw, str) else int(raw)
                 except:
                     return None
-        return None
+            else:
+                return None
+            total += sign * val
+        return total
+
+    def _intify(v):
+        if isinstance(v, str) and re.fullmatch(r'-?(?:0[xX][0-9a-fA-F]+|\d+)', v.strip()):
+            try: return int(v, 0)
+            except: return v
+        return v
+
+    # 전역 갱신 감지
+    ASSIGN_RE = re.compile(r'^\s*([A-Za-z_]\w*)\s*=\s*([^;]+);')
+    ADDEQ_RE  = re.compile(r'^\s*([A-Za-z_]\w*)\s*\+=\s*([^;]+);')
+    SUBEQ_RE  = re.compile(r'^\s*([A-Za-z_]\w*)\s*-=\s*([^;]+);')
+    INC_RE    = re.compile(r'(?:\+\+\s*([A-Za-z_]\w*)|([A-Za-z_]\w*)\s*\+\+)')
+    DEC_RE    = re.compile(r'(?:--\s*([A-Za-z_]\w*)|([A-Za-z_]\w*)\s*--)')
+
+    # 호출/리턴 전파
+    CALL_WITH_ARGS_RE = re.compile(
+        r'^\s*(?:[A-Za-z_]\w*(?:\s*\*+)?\s+)?([A-Za-z_]\w*)\s*=\s*([A-Za-z_]\w*)\s*\(([^)]*)\)\s*;')
+    CALL_NOASSIGN_RE  = re.compile(r'^\s*([A-Za-z_]\w*)\s*\(([^)]*)\)\s*;')
+    RETURN_RE         = re.compile(r'^\s*return\s+(.+?)\s*;')
+
+    # 전역 char 배열의 문자열 초기값 (예: char msg[20] = "Hello";)
+    STRING_INIT_RE = re.compile(r'\bchar\s+([A-Za-z_]\w*)\s*\[\s*[^\]]*\s*\]\s*=\s*"([^"]*)"')
 
     run_dir = out_dir or make_run_dir("workspace")
     bin_name = binary_name or ("a.exe" if os.name == "nt" else "a.out")
 
     with pushd(run_dir):
         save_code_to_file(code, filename=source_file_name)
-        ret = compile_code(source_file=source_file_name, output_file=bin_name)
-        ok = ret[0] if isinstance(ret, (list, tuple)) else bool(ret)
+        ok = bool(compile_code(source_file=source_file_name, output_file=bin_name))
         if not ok:
             raise RuntimeError("컴파일 실패")
 
         exec_lines, _ = calc_executable_lines(source_file_name)
-        decl_map_ts   = build_decl_map_from_treesitter(code)
-        params_by_fn  = build_params_map_from_treesitter(code)
 
-        # 파라미터 폴백(소스 파싱으로 이름만이라도 확보)
-        params_fallback = build_params_map_from_source(code)
-        for fn, names in params_fallback.items():
-            if not params_by_fn.get(fn):
-                params_by_fn[fn] = names
+        # 타입 맵 구성 (Tree-sitter 결과 + char 배열 보정)
+        symbols = analyze_c_code(code) or []
+        GLOBAL_TYPES = {
+            s["name"]: (s.get("type") or "int")
+            for s in symbols
+            if s.get("kind") == "var" and (s.get("scope") or {}).get("kind") == "global"
+        }
+        # char 배열: char name[dim] → char[dim]
+        for nm, dim in re.findall(r'\bchar\s+([A-Za-z_]\w*)\s*\[([^\]]*)\]', code):
+            dim = dim.strip()
+            GLOBAL_TYPES[nm] = f"char[{dim or '?'}]"
 
-        initial_mem   = get_initial_memory(code)
-        globals_env   = dict(initial_mem.get("data_segment", {}))
-        init_map      = _initializers_map(code)
+        FUNC_VAR_TYPES = {
+            ((s.get("scope") or {}).get("func"), s["name"]): (s.get("type") or "int")
+            for s in symbols
+            if s.get("kind") == "var" and (s.get("scope") or {}).get("kind") == "function"
+        }
+        PARAM_NAMES = build_params_map_from_source(code)  # 이름만이라도 확보
+
+        def _var_type(fn: Optional[str], name: str) -> str:
+            return (
+                FUNC_VAR_TYPES.get((fn, name))
+                or GLOBAL_TYPES.get(name)
+                or "int"
+            )
+
+        decl_map_ts = build_decl_map_from_treesitter(code)
 
         try:
             gdb_output = run_gdb(binary=bin_name, exec_lines=exec_lines, source_file=source_file_name)
@@ -368,285 +400,235 @@ def simulate_c_code_to_timeline(
         except TypeError:
             stdout_lines = run_program_and_capture_stdout(binary=bin_name)
 
+        # 초기 전역 메모리(배열/중복키 정리 + 문자열 초기값 반영)
+        initial_mem = get_initial_memory(code)
+        globals_env: Dict[str, Any] = {}
+
+        # 1) base 이름으로 통합 (msg[20] → msg)
+        for k, v in (initial_mem.get("data_segment") or {}).items():
+            base = k.split("[", 1)[0] if "[" in k else k
+            if isinstance(v, str) and len(v) >= 2 and v[0] == v[-1] == '"':
+                v = v[1:-1]  # "Hello" → Hello
+            globals_env.setdefault(base, v)
+
+        # 2) 선언만 있고 빠진 전역은 0으로 채움
+        for name in list(GLOBAL_TYPES.keys()):
+            globals_env.setdefault(name, 0)
+
+        # 3) char 배열의 문자열 초기값 덮어쓰기
+        for nm, s in STRING_INIT_RE.findall(code):
+            globals_env[nm] = s
+
+        def _data_snapshot_typed() -> Dict[str, Any]:
+            # 브래킷 이름(msg[20])은 숨김
+            snap = {}
+            for name, val in globals_env.items():
+                if "[" in name:
+                    continue
+                snap[name] = {"type": GLOBAL_TYPES.get(name, "int"), "value": val}
+            return snap
+
         timeline: List[Dict[str, Any]] = [{
             "time": 0,
             "line_index": 0,
             "line": "프로그램 시작 및 전역변수 초기화",
-            "memory": initial_mem,
+            "memory": {"data_segment": _data_snapshot_typed(), "heap": [], "stack": []},
             "output": ""
         }]
 
-        heap_map: Dict[str, Any] = {}
-        heap_ptrs: Dict[str, set] = {}
-        last_vars_by_func = {}
-        pending_ret: Dict[str, List[Dict[str, str]]] = {}
-        pending_argmap: Dict[str, List[Dict[str, Optional[int]]]] = {}
-        pending_args_pos = {}
-        last_for_key_by_func: Dict[str, tuple] = {}
-        loop_iters: Dict[tuple, Dict[str, int]] = {}
-        last_body_ln_by_func: Dict[str, int] = {}
-        alloc_seq = 0
-
-        def _eval_expr_simple(expr: str, env: Dict[str, Any]) -> Optional[int]:
-            parts = re.split(r'(\+|\-)', expr)
-            total, sign = 0, 1
-            for t in parts:
-                t = t.strip()
-                if t == '+':
-                    sign = 1; continue
-                if t == '-':
-                    sign = -1; continue
-                if not t:
-                    continue
-                if _NUM_LIT.match(t):
-                    val = int(t, 0)
-                elif IDENT.match(t):
-                    raw = env.get(t)
-                    if raw is None:
-                        raw = globals_env.get(t)
-                    if raw is None:
-                        return None
-                    val = int(raw, 0) if isinstance(raw, str) else int(raw)
-                else:
-                    return None
-                total += sign * val
-            return total
-
-        # malloc에서만 새 주소 생성(create=True). 그 외엔 create=False로 주소 재사용.
-        def _heap_key_for(ptr_name: str, merged: Dict[str, Any], func: str, create: bool=False) -> Optional[str]:
-            nonlocal alloc_seq
-            cur = merged.get(ptr_name)
-            if cur is None:
-                cur = (last_vars_by_func.get(func, {}) or {}).get(ptr_name)
-            addr = _addr_from_val(cur)
-            if addr:
-                return addr
-            if not create:
-                return None
-            if ptr_name not in (heap_ptrs.get(func) or set()):
-                return None
-            alloc_seq += 1
-            addr_int = SYNTH_ADDR_BASE + alloc_seq * SYNTH_ADDR_STEP
-            key = f"0x{addr_int:08x}"
-            merged[ptr_name] = key
-            last_vars_by_func[func] = {**(last_vars_by_func.get(func, {}) or {}), ptr_name: key}
-            return key
-
-        # 정규식들
-        DEREF_INIT_RE     = re.compile(r'^\s*(?:int|char|float|double|bool)\s+([A-Za-z_]\w*)\s*=\s*\*([A-Za-z_]\w*)\s*;')
-        ASSIGN_STAR_STAR  = re.compile(r'^\s*\*([A-Za-z_]\w*)\s*=\s*\*([A-Za-z_]\w*)\s*;')
-        ASSIGN_STAR_VAL   = re.compile(r'^\s*\*([A-Za-z_]\w*)\s*=\s*([^;]+)\s*;')
-        DEREF_SUM_ASSIGN  = re.compile(r'^\s*(?:int\s+)?([A-Za-z_]\w*)\s*=\s*\*([A-Za-z_]\w*)\s*\+\s*\*([A-Za-z_]\w*)\s*;')
-        CALL_WITH_ARGS_RE = re.compile(r'^\s*(?:int\s+)?([A-Za-z_]\w*)\s*=\s*([A-Za-z_]\w*)\s*\(([^)]*)\)\s*;')
-        CALL_NOASSIGN_RE  = re.compile(r'^\s*([A-Za-z_]\w*)\s*\(([^)]*)\)\s*;')
-        RETURN_RE         = re.compile(r'^\s*return\s+([A-Za-z_]\w*|-?(?:0[xX][0-9a-fA-F]+|\d+))\s*;')
-        FOR_HEADER_RE     = re.compile(r'^\s*for\s*\(\s*(?:int\s+)?([A-Za-z_]\w*)\s*=\s*([0-9]+)\s*;')
-        ACCUM_RE          = re.compile(r'^\s*([A-Za-z_]\w*)\s*\+=\s*\*([A-Za-z_]\w*)\s*\+\s*([A-Za-z_]\w*)\s*;')
-        MALLOC_ASSIGN_RE  = re.compile(r'^\s*(?:[A-Za-z_]\w*(?:\s*\*+)?\s+)?([A-Za-z_]\w*)\s*=\s*.*\bmalloc\s*\(')
-        FREE_CALL_RE      = re.compile(r'\s*free\s*\(\s*([A-Za-z_]\w*)\s*\)\s*;')
+        last_vars_by_func: Dict[str, Dict[str, Any]] = {}
+        pending_calls: Dict[str, List[Dict[str, Any]]] = {}  # { callee: [ {caller, target, raw_args, param_names, env} ] }
 
         for i, (ln, code_line, frame) in enumerate(zip(executed_lines, executed_code, frames), start=1):
-            f = frame.get("func", "main")
-            args = frame.get("args") or {}
+            fn = frame.get("func", "main")
+            args_raw = frame.get("args") or {}
             locals_raw = frame.get("locals") or {}
 
-            # 선언 라인 이후의 로컬만 노출
+            # 선언 전 로컬 숨김
             filtered_locals: Dict[str, Any] = {}
-            fn_decl_map = decl_map_ts.get(f, {})
+            fn_decl_map = decl_map_ts.get(fn, {})
             for name, val in locals_raw.items():
                 dln = fn_decl_map.get(name)
                 if dln is None or ln > dln:
                     filtered_locals[name] = val
 
-            # 한 줄 선언(for의 init 포함) 보정
+            # ---- 호출 인자/대입 타겟 기록 ----
+            m_call = CALL_WITH_ARGS_RE.match(code_line)
+            if m_call:
+                target, callee, argstr = m_call.groups()
+                raw_args = [t.strip() for t in argstr.split(",") if t.strip()]
+                pnames = PARAM_NAMES.get(callee) or []
+                caller_env = {**globals_env, **(last_vars_by_func.get(fn, {}) or {}), **args_raw, **filtered_locals}
+                info = {"caller": fn, "target": target, "raw_args": raw_args, "param_names": pnames, "env": caller_env}
+                pending_calls.setdefault(callee, []).append(info)
+
+                # ★ 대입 대상 placeholder 생성 (호출 직후부터 보이게)
+                prev = last_vars_by_func.get(fn, {}) or {}
+                if target not in prev:
+                    prev[target] = None
+                last_vars_by_func[fn] = prev
+
+            m_call2 = CALL_NOASSIGN_RE.match(code_line)
+            if m_call2 and not m_call:
+                callee, argstr = m_call2.groups()
+                raw_args = [t.strip() for t in argstr.split(",") if t.strip()]
+                pnames = PARAM_NAMES.get(callee) or []
+                caller_env = {**globals_env, **(last_vars_by_func.get(fn, {}) or {}), **args_raw, **filtered_locals}
+                info = {"caller": fn, "target": None, "raw_args": raw_args, "param_names": pnames, "env": caller_env}
+                pending_calls.setdefault(callee, []).append(info)
+            # ---------------------------------
+
+            # 이 프레임이 callee라면, 저장해둔 호출자 환경으로 인자 값 선주입
+            if pending_calls.get(fn):
+                top = pending_calls[fn][-1]
+                merged_pre = {**args_raw, **filtered_locals}
+                for idx, name in enumerate(top["param_names"]):
+                    if name and name not in merged_pre:
+                        val = None
+                        if idx < len(top["raw_args"]):
+                            val = _eval_simple(top["raw_args"][idx], top["env"])
+                        merged_pre[name] = val
+            else:
+                merged_pre = {**args_raw, **filtered_locals}
+
+            # 인라인 선언 보정: 리터럴만 덮어쓰기, 그 외는 GDB 값 유지
             decl_inline = _parse_inline_decl(code_line)
             if decl_inline:
                 for nm in decl_inline.keys():
-                    filtered_locals.pop(nm, None)
+                    merged_pre.pop(nm, None)
+
+                # 1) 숫자/문자 리터럴
                 for nm, val in decl_inline.items():
-                    filtered_locals[nm] = val if val is not None else None
-
-            # treesitter가 잡은 초기화값 보정
-            for k, v in (init_map.get((f, ln), {}) or {}).items():
-                filtered_locals[k] = v
-
-            merged: Dict[str, Any] = {**args, **filtered_locals}
-
-            # 스택 함수 목록
-            cs = frame.get("callstack")
-            if cs:
-                stack_funcs = [d.get("func", "?") for d in cs] if isinstance(cs[0], dict) else list(cs)
-            else:
-                st = frame.get("stack")
-                stack_funcs = [s if isinstance(s, str) else str(s) for s in (st or [f])]
-
-            caller_fn = stack_funcs[-2] if len(stack_funcs) >= 2 else None
-            caller_cache = last_vars_by_func.get(caller_fn, {}) if caller_fn else {}
-
-            # 대입 있는 호출로 전달된 인자 → 피호출자 프레임 준비
-            m_call = CALL_WITH_ARGS_RE.match(code_line)
-            if m_call:
-                target_var, callee_name, argstr = m_call.groups()
-                env_base = {**(last_vars_by_func.get(f, {}) or {}), **merged}
-                arg_vals: List[Optional[int]] = []
-                arg_texts = [x.strip() for x in argstr.split(',') if x.strip()]
-                for raw in arg_texts:
-                    arg_vals.append(_eval_expr_simple(raw, env_base))
-                names = params_by_fn.get(callee_name, [])
-                amap: Dict[str, Optional[int]] = {}
-                for idx, val in enumerate(arg_vals):
-                    if idx < len(names):
-                        amap[names[idx]] = val
-                pending_argmap.setdefault(callee_name, []).append(amap)
-                pending_args_pos.setdefault(callee_name, []).append(arg_vals)
-                pending_ret.setdefault(callee_name, []).append({'caller': f, 'var': target_var})
-
-            # 대입 없는 호출도 인자 추적 (오타 수정: dict 호출 제거)
-            m_call2 = CALL_NOASSIGN_RE.match(code_line)
-            if m_call2 and not m_call:
-                callee_name, argstr = m_call2.groups()
-                env_base = {**(last_vars_by_func.get(f, {}) or {}), **merged}
-                arg_vals: List[Optional[int]] = []
-                arg_texts = [x.strip() for x in argstr.split(',') if x.strip()]
-                for raw in arg_texts:
-                    arg_vals.append(_eval_expr_simple(raw, env_base))
-                names = params_by_fn.get(callee_name, [])
-                # 인자 이름 → 값 매핑
-                amap: Dict[str, Optional[int]] = {}
-                for idx, val in enumerate(arg_vals):
-                    if idx < len(names):
-                        amap[names[idx]] = val
-                pending_argmap.setdefault(callee_name, []).append(amap)
-                pending_args_pos.setdefault(callee_name, []).append(arg_vals)
-
-            # tmp = *a; (호출자 캐시 역참조 읽기)
-            m_deref = DEREF_INIT_RE.match(code_line)
-            if m_deref and caller_fn:
-                lhs, srcptr = m_deref.groups()
-                if srcptr in caller_cache:
-                    merged[lhs] = caller_cache[srcptr]
-
-            # *a = *b; (호출자 캐시에 쓰기 반영)
-            m_ss = ASSIGN_STAR_STAR.match(code_line)
-            if m_ss and caller_fn:
-                dstptr, srcptr = m_ss.groups()
-                if srcptr in caller_cache:
-                    val = caller_cache[srcptr]
                     if val is not None:
-                        cc = {**caller_cache, dstptr: val}
-                        last_vars_by_func[caller_fn] = cc
-                        caller_cache = cc
+                        merged_pre[nm] = val
+                    else:
+                        if nm in locals_raw:
+                            merged_pre[nm] = locals_raw[nm]
 
-            # malloc 할당 발견 → 포인터 등록 + 주소 발급
-            m_malloc = MALLOC_ASSIGN_RE.match(code_line)
-            if m_malloc:
-                name = m_malloc.group(1)
-                heap_ptrs.setdefault(f, set()).add(name)
-                key = _heap_key_for(name, merged, f, create=True)
-                if key and key not in heap_map:
-                    heap_map[key] = "?"
+                # 2) int lhs = r1 * r2; (r1,r2는 식별자 또는 정수)
+                m_mul = re.match(
+                    r'.*\b([A-Za-z_]\w*)\s*=\s*([A-Za-z_]\w*|-?(?:0[xX][0-9a-fA-F]+|\d+))\s*\*\s*([A-Za-z_]\w*|-?(?:0[xX][0-9a-fA-F]+|\d+))\s*;',
+                    code_line
+                )
+                if m_mul:
+                    lhs, r1, r2 = m_mul.groups()
+                    if lhs in decl_inline and lhs not in merged_pre:
+                        def _get(v):
+                            if re.fullmatch(r'-?(?:0[xX][0-9a-fA-F]+|\d+)', v): return int(v, 0)
+                            return merged_pre.get(v)
+                        v1, v2 = _get(r1), _get(r2)
+                        try:
+                            if v1 is not None and v2 is not None:
+                                v1 = int(v1, 0) if isinstance(v1, str) else int(v1)
+                                v2 = int(v2, 0) if isinstance(v2, str) else int(v2)
+                                merged_pre[lhs] = v1 * v2
+                        except Exception:
+                            pass
 
-            # *ptr = expr; (주소 생성 금지, 기존 주소만 사용)
-            m_sv = ASSIGN_STAR_VAL.match(code_line)
-            if m_sv:
-                dstptr, rhs_expr = m_sv.groups()
-                key = _heap_key_for(dstptr, merged, f, create=False)
-                env_eval = {**(last_vars_by_func.get(f, {}) or {}), **merged}
-                val_num = _eval_expr_simple(rhs_expr, env_eval)
-                if key and val_num is not None:
-                    heap_map[key] = val_num
-                if caller_fn and (dstptr in (params_by_fn.get(f, []) or [])):
-                    wb_val = _eval_expr_simple(rhs_expr, env_eval)
-                    if wb_val is not None:
-                        cc = {**caller_cache, dstptr: wb_val}
-                        last_vars_by_func[caller_fn] = cc
-                        caller_cache = cc
+                # 3) char* p = msg;  (글로벌 char 배열을 가리키는 포인터)
+                m_ptr = re.match(r'^\s*char\s*\*\s*([A-Za-z_]\w*)\s*=\s*([A-Za-z_]\w*)\s*;', code_line)
+                if m_ptr:
+                    lhs, rhs = m_ptr.groups()
+                    if lhs in decl_inline and lhs not in merged_pre:
+                        if (GLOBAL_TYPES.get(rhs) or "").startswith("char["):
+                            merged_pre[lhs] = f"&{rhs}[0]"
 
-            # free(ptr); (주소 생성 금지, 기존 주소만 제거)
-            m_free = FREE_CALL_RE.match(code_line)
-            if m_free:
-                ptr = m_free.group(1)
-                key = _heap_key_for(ptr, merged, f, create=False)
-                if key in heap_map:
-                    del heap_map[key]
+            merged = merged_pre
 
-            # acc += *p + i;
-            m_acc = ACCUM_RE.match(code_line)
-            if m_acc:
-                acc_name, p_name, i_name = m_acc.groups()
-                p_key = _heap_key_for(p_name, merged, f, create=False)
-                p_val = heap_map.get(p_key) if p_key else None
-                try:
-                    p_val = int(p_val)
-                except Exception:
-                    p_val = None
-                i_val = _read_int(i_name, merged, f, last_vars_by_func)
-                acc_prev = _read_int(acc_name, merged, f, last_vars_by_func) or 0
-                if p_val is not None and i_val is not None:
-                    merged[acc_name] = acc_prev + p_val + i_val
+            # ===== 전역 변수 갱신 (data_segment 실시간 반영) =====
+            env_for_eval = {**globals_env, **merged}
 
-            # r = *p + *q;
-            m_sum = DEREF_SUM_ASSIGN.match(code_line)
-            if m_sum:
-                target, p1, p2 = m_sum.groups()
-                k1 = _heap_key_for(p1, merged, f, create=False)
-                k2 = _heap_key_for(p2, merged, f, create=False)
-                v1 = heap_map.get(k1) if k1 else None
-                v2 = heap_map.get(k2) if k2 else None
-                try:
-                    merged[target] = (int(v1) if v1 is not None else 0) + (int(v2) if v2 is not None else 0)
-                except Exception:
-                    pass
+            m = ASSIGN_RE.match(code_line)
+            if m and (m.group(1) in globals_env):
+                name, rhs = m.group(1), m.group(2)
+                val = _eval_simple(rhs, env_for_eval)
+                if val is not None:
+                    globals_env[name] = val
 
-            # return ...
+            for g in INC_RE.findall(code_line):
+                name = g[0] or g[1]
+                if name in globals_env:
+                    try: globals_env[name] = int(globals_env.get(name, 0)) + 1
+                    except: pass
+
+            for g in DEC_RE.findall(code_line):
+                name = g[0] or g[1]
+                if name in globals_env:
+                    try: globals_env[name] = int(globals_env.get(name, 0)) - 1
+                    except: pass
+
+            m = ADDEQ_RE.match(code_line)
+            if m and (m.group(1) in globals_env):
+                name, rhs = m.group(1), m.group(2)
+                delta = _eval_simple(rhs, env_for_eval)
+                if delta is not None:
+                    try: globals_env[name] = int(globals_env.get(name, 0)) + int(delta)
+                    except: pass
+
+            m = SUBEQ_RE.match(code_line)
+            if m and (m.group(1) in globals_env):
+                name, rhs = m.group(1), m.group(2)
+                delta = _eval_simple(rhs, env_for_eval)
+                if delta is not None:
+                    try: globals_env[name] = int(globals_env.get(name, 0)) - int(delta)
+                    except: pass
+            # =====================================================
+
+            # ===== return 전파 (호출자 환경으로 결과 반영) =====
             m_ret = RETURN_RE.match(code_line)
-            if m_ret:
+            if m_ret and pending_calls.get(fn):
                 rv = m_ret.group(1)
-                ret_val = _read_int(rv, merged, f, last_vars_by_func)
-                if pending_ret.get(f):
-                    info = pending_ret[f].pop()
-                    caller = info['caller']
-                    var = info['var']
-                    cc = {**(last_vars_by_func.get(caller, {}) or {})}
-                    if ret_val is not None:
-                        cc[var] = ret_val
-                    last_vars_by_func[caller] = cc
-                if pending_argmap.get(f):
-                    pending_argmap[f].pop()
-                if pending_args_pos.get(f):
-                    pending_args_pos[f].pop()
+                # ★ 여기서 env에 '이전 프레임 캐시(last_vars_by_func[fn])'도 합쳐서 product 등을 안정적으로 읽음
+                rval = _eval_simple(rv, {**globals_env, **(last_vars_by_func.get(fn, {}) or {}), **merged})
+                top = pending_calls[fn].pop()
+                if top["target"]:
+                    caller = top["caller"]; var = top["target"]
+                    prev = last_vars_by_func.get(caller, {}) or {}
+                    prev[var] = rval  # None 허용(그래도 보이게)
+                    last_vars_by_func[caller] = prev
+            # =====================================================
 
-            # 프레임에서 관측된 주소는 힙 테이블에 등록 (문자열/정수 모두 허용)
-            for _, v in merged.items():
-                addr = _addr_from_val(v)
-                if addr and addr not in heap_map:
-                    heap_map[addr] = "?"
+            # 콜스택(현재 함수가 맨 위로 오게)
+            cs = frame.get("callstack")
+            if cs and isinstance(cs[0], dict):
+                stack_funcs = [d.get("func", "?") for d in cs]
+            elif cs and isinstance(cs[0], str):
+                stack_funcs = list(cs)
+            else:
+                stack_funcs = [fn]
+            stack_funcs = [fn] + [s for s in stack_funcs if s != fn]
 
-            # 스택 표시(포인터 역참조 키 제거)
-            current_display = {**(last_vars_by_func.get(f, {}) or {}), **merged}
+            # 표시용 스택(타입/숫자 캐스팅 포함)
+            # ★ 현재 함수는 merged가 None인 값으로 캐시를 덮어쓰지 않도록 병합
+            base_self = dict(last_vars_by_func.get(fn, {}) or {})
+            for k, v in merged.items():
+                if v is not None:
+                    base_self[k] = v
             stack_entries = []
-            for fn in stack_funcs:
-                if fn == f:
-                    vars_for_fn_raw = current_display
+            for sfn in stack_funcs:
+                if sfn == fn:
+                    vars_for_fn = base_self
                 else:
-                    vars_for_fn_raw = (last_vars_by_func.get(fn, {}) or {})
-                vars_for_fn_raw = _decorate_ptrs_for_display(fn, vars_for_fn_raw, heap_map, heap_ptrs)
-                vars_for_fn = {k: v for k, v in vars_for_fn_raw.items() if not (isinstance(k, str) and k.startswith('*'))}
-                stack_entries.append({
-                    "function": fn,
-                    "variables": _normalize_nulls_for_display(vars_for_fn)
-                })
+                    vars_for_fn = (last_vars_by_func.get(sfn, {}) or {})
+                typed_vars = {
+                    k: {"type": _var_type(sfn, k), "value": _intify(v)}
+                    for k, v in vars_for_fn.items()
+                    if not (isinstance(k, str) and k.startswith('*'))
+                }
+                stack_entries.append({"function": sfn, "variables": typed_vars})
 
+            # 캐시 업데이트(캐시는 그대로 merged 반영 — None도 저장 가능)
             if merged:
-                last_vars_by_func[f] = {**(last_vars_by_func.get(f, {}) or {}), **merged}
-            elif f not in last_vars_by_func:
-                last_vars_by_func[f] = {}
+                last_vars_by_func[fn] = {**(last_vars_by_func.get(fn, {}) or {}), **merged}
+            elif fn not in last_vars_by_func:
+                last_vars_by_func[fn] = {}
 
             mem_state = {
-                "data_segment": dict(initial_mem["data_segment"]),
-                "heap": [{addr: val} for addr, val in heap_map.items()],
+                "data_segment": _data_snapshot_typed(),
+                "heap": [],  # (이 예제는 heap 미사용. 필요 시 기존 heap 추적 로직 연결)
                 "stack": stack_entries
             }
+
             timeline.append({
                 "time": i,
                 "line_index": ln,
@@ -655,31 +637,11 @@ def simulate_c_code_to_timeline(
                 "output": ""
             })
 
+        # stdout 매핑
         _attach_stdout_to_timeline(timeline, stdout_lines)
+
         if save_json:
             with open(out_json_name, "w", encoding="utf-8") as f:
                 json.dump(timeline, f, ensure_ascii=False, indent=2)
 
     return timeline
-
-if __name__ == "__main__":
-    import argparse
-    parser = argparse.ArgumentParser(description="Run simulator and save all outputs to one folder")
-    parser.add_argument("--code-file", "-i", type=str, required=True, help="C source file path")
-    parser.add_argument("--out-dir", "-o", type=str, default=None, help="Output folder (single run folder)")
-    parser.add_argument("--binary-name", type=str, default=None, help="Output binary name (a.exe/a.out default)")
-    parser.add_argument("--no-save-json", action="store_true", help="Do not write timeline.json")
-    parser.add_argument("--dump-gdb", action="store_true", help="Dump raw gdb output to gdb_raw.txt")
-    args = parser.parse_args()
-
-    with open(args.code_file, "r", encoding="utf-8") as f:
-        code = f.read()
-
-    timeline = simulate_c_code_to_timeline(
-        code,
-        out_dir=args.out_dir,
-        binary_name=args.binary_name,
-        save_json=not args.no_save_json,
-        dump_gdb=args.dump_gdb,
-    )
-    print("[+] timeline length:", len(timeline))
