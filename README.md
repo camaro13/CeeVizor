@@ -46,7 +46,7 @@
 
 1. [Docker Desktop](https://www.docker.com/products/docker-desktop/) : 도커 데스크탑 설치
 
-****_설치 중 WSL2 Backend 옵션 유지(권장)_****
+    _설치 중 WSL2 Backend 옵션 유지(권장)_
 
 2. 설치 후 **Docker Desktop** 실행
 
