@@ -4,6 +4,7 @@ from fastapi.responses import JSONResponse
 from tree_parser import analyze_c_code
 import os, shutil, subprocess, json, re, shutil as sh
 from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 
 app = FastAPI()
 
@@ -20,6 +21,10 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 UPLOAD_DIR = os.path.join(BASE_DIR, "workspace")
 FILENAME = "main.c"
 EXEC_NAME = "a.out"  # ★ WSL/Linux: a.out
+
+FRONTEND_BUILD_DIR = os.path.join(BASE_DIR, "Frontend/build")
+
+app.mount("/static", StaticFiles(directory=os.path.join(FRONTEND_BUILD_DIR, "static")), name="static")
 
 def simulate_execution(code: str):
     lines = code.splitlines()
@@ -724,3 +729,14 @@ async def health_check():
 async def get_steps():
     file_path = os.path.join(UPLOAD_DIR, "steps.json")
     return FileResponse(file_path, media_type="application/json")
+
+@app.get("/")
+async def serve_index():
+     return FileResponse(os.path.join(FRONTEND_BUILD_DIR, "index.html"))
+
+@app.get("/{full_path:path}")
+async def serve_react_routes(full_path: str):
+    target = os.path.join(FRONTEND_BUILD_DIR, full_path)
+    if os.path.exists(target) and os.path.isfile(target):
+        return FileResponse(target)
+    return FileResponse(os.path.join(FRONTEND_BUILD_DIR, "index.html"))
