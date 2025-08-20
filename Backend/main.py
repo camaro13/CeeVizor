@@ -1,18 +1,17 @@
 from fastapi import FastAPI, Form
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse, FileResponse
+from fastapi.responses import JSONResponse
 from tree_parser import analyze_c_code
 import os, shutil, subprocess, json, re, shutil as sh
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 
 app = FastAPI()
 
 # CORS: 리액트 개발서버 도메인 허용 (localhost/127.0.0.1)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000", "http://127.0.0.1:3000",
-        "http://localhost:3001", "http://127.0.0.1:3001",
-    ],
+    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000","http://localhost:3001","http://127.0.0.1:3001",],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"]
@@ -21,7 +20,11 @@ app.add_middleware(
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 UPLOAD_DIR = os.path.join(BASE_DIR, "workspace")
 FILENAME = "main.c"
-EXEC_NAME = "a.out"  # Linux/WSL: a.out
+EXEC_NAME = "a.out"  # ★ WSL/Linux: a.out
+
+FRONTEND_BUILD_DIR = os.path.join(BASE_DIR, "Frontend/build")
+
+app.mount("/static", StaticFiles(directory=os.path.join(FRONTEND_BUILD_DIR, "static")), name="static")
 
 def simulate_execution(code: str):
     lines = code.splitlines()
@@ -32,10 +35,13 @@ def simulate_execution(code: str):
         "data": {},
         "heap_counter": 1
     }
+    
     analysis = analyze_c_code(code)
 
     for time, raw_line in enumerate(lines, start=1):
         relevant_symbols = [s for s in analysis if s.get("line") == time]
+
+        # int x = 5;
         for symbol in relevant_symbols:
             loc = symbol.get("location")
             if loc in ["stack", "heap", "data"]:
@@ -48,6 +54,8 @@ def simulate_execution(code: str):
                     "points_to": symbol.get("points_to"),
                     "scope": symbol.get("scope", "global")
                 }
+
+        # 타임라인에 상태 복사
         timeline.append({
             "time": time,
             "line": raw_line,
@@ -55,7 +63,9 @@ def simulate_execution(code: str):
             "heap": list(memory["heap"].values()),
             "data": list(memory["data"].values()),
         })
+
     return timeline
+
 
 
 def simulate_with_gdb(code: str, exec_path: str, source_path: str):
@@ -76,12 +86,15 @@ def simulate_with_gdb(code: str, exec_path: str, source_path: str):
             if val is None:
                 return val
             s = str(val).strip()
+            # 문자열 리터럴이면 마지막 쿼트만
             qs = re.findall(r'"([^"\\]*(?:\\.[^"\\]*)*)"', s)
             if qs:
                 return '"' + qs[-1] + '"'
+            # 0x.. <sym>  → &sym 로 정규화
             mtag = re.search(r'<([^>]+)>', s)
             if mtag:
                 return f"&{mtag.group(1)}"
+            # 순수 주소 토막 제거(남는 게 없으면 이전값 유지 로직이 살려줌)
             s = re.sub(r'^0x[0-9a-fA-F]+\s*(<[^>]+>)?\s*', '', s)
             return s
 
@@ -98,6 +111,7 @@ def simulate_with_gdb(code: str, exec_path: str, source_path: str):
             for var in curr_vars:
                 nm = var["name"]
                 newv = var.get("value")
+                # 새 값이 비었으면 이전값 유지(값 사라짐 방지)
                 if nm in prev_map and (newv is None or newv == "" or newv == []):
                     out[nm] = prev_map[nm]
                     continue
@@ -108,6 +122,7 @@ def simulate_with_gdb(code: str, exec_path: str, source_path: str):
                     out[nm] = v
             return list(out.values())
 
+        # 선언 줄 초기화 파싱(문자열/괄호 안전)
         def parse_decl_inits_for_line(line_text: str):
             line_text = re.sub(r'//.*$', '', line_text)
             parts, buf, depth = [], [], 0
@@ -142,6 +157,7 @@ def simulate_with_gdb(code: str, exec_path: str, source_path: str):
                 init_map[m.group(1)] = rhs
             return init_map
 
+        # 백트레이스 파서(우리 소스 프레임만)
         bt_frame_full_re = re.compile(r'^#(\d+)\s+([A-Za-z_]\w*)\s*\([^)]*\)\s+at\s+(.+):(\d+)\b')
         def parse_user_frames(bt_lines):
             frames = []
@@ -155,7 +171,7 @@ def simulate_with_gdb(code: str, exec_path: str, source_path: str):
 
         def top_user_frame(bt_lines):
             u = parse_user_frames(bt_lines)
-            return min(u, key=lambda t: t[0]) if u else None
+            return min(u, key=lambda t: t[0]) if u else None  # (#가 가장 작은 = 현재 유저 프레임)
 
         def is_loopy(text: str) -> bool:
             return bool(re.search(r'\b(for|while)\s*\(', text) or re.search(r'\bdo\b', text))
@@ -186,51 +202,15 @@ def simulate_with_gdb(code: str, exec_path: str, source_path: str):
                 buf.append(ch)
             if buf: args.append(''.join(buf).strip())
             return args
-
         def unescape_basic(s: str):
             return s.replace(r'\n', '\n').replace(r'\t', '\t').replace(r'\"', '"').replace(r"\\", "\\")
-
         def to_int(val):
             if val is None: return 0
             s = str(val).strip().strip('"')
-            try:
-                return int(s, 0)
+            try: return int(s, 0)
             except:
                 m = re.search(r'-?\d+', s)
                 return int(m.group(0)) if m else 0
-
-        # 안전 산술 평가기
-        def eval_arith(expr: str, locals_map: dict, globals_map: dict):
-            """
-            'g_value + 1' 같은 단순 산술식을 현재 스택/전역 값으로 계산.
-            허용: 식별자, (), + - * / %, 숫자, 공백.
-            식별자는 없으면 0으로 치환.
-            """
-            if expr is None:
-                return None
-            s = str(expr)
-
-            # 문자열/주소 리터럴은 스킵
-            if '"' in s or "'" in s or s.strip().startswith('&'):
-                return None
-
-            def repl_ident(m):
-                name = m.group(0)
-                if name in locals_map and locals_map[name] is not None:
-                    return str(to_int(locals_map[name]))
-                if name in globals_map and globals_map[name] is not None:
-                    return str(to_int(globals_map[name]))
-                return "0"
-
-            s2 = re.sub(r'[A-Za-z_]\w*', repl_ident, s)
-            if not re.fullmatch(r'[\d\.\+\-\*/%\(\)\s]+', s2):
-                return None
-
-            try:
-                val = eval(s2, {"__builtins__": None}, {})
-                return int(val)
-            except Exception:
-                return None
 
         # ---------- 분석 맵 ----------
         scope_map = {sym["name"]: sym.get("scope", "global")
@@ -240,7 +220,7 @@ def simulate_with_gdb(code: str, exec_path: str, source_path: str):
         initial_values = {sym["name"]: sym.get("value")
                           for sym in analysis if sym.get("location") in ("stack","heap","data") and sym.get("value") is not None}
 
-        # 전역 프로브
+        # 전역 프로브(문자열/스칼라)
         global_symbols = [sym for sym in analysis if sym.get("location") == "data"]
         gv_probe_lines = ['printf "__GV_BEGIN__\\n"']
         for sym in global_symbols:
@@ -254,10 +234,11 @@ def simulate_with_gdb(code: str, exec_path: str, source_path: str):
                 gv_probe_lines.append('printf "\\n"')
         gv_probe_lines.append('printf "__GV_END__\\n"')
 
-        # ---------- GDB 스크립트 ----------
+        # ---------- GDB 스크립트(printf/CRT skip, step 유지) ----------
         gdb_script = "\n".join([
             "set pagination off",
             "set print pretty off",
+            # CRT/표준IO 안으로는 들어가지 않게
             "skip function printf",
             "skip function fprintf",
             "skip function vfprintf",
@@ -278,7 +259,7 @@ def simulate_with_gdb(code: str, exec_path: str, source_path: str):
             '  printf "__BT_BEGIN__\\n"',
             "  bt",
             '  printf "__BT_END__\\n"',
-            "  step",
+            "  step",   # next로 바꾸지 않음
             "end",
             "quit",
         ])
@@ -294,51 +275,37 @@ def simulate_with_gdb(code: str, exec_path: str, source_path: str):
         with open(gdb_output_path, "r", encoding="utf-8", errors="replace") as f:
             output = f.read()
 
-        # ---------- 힙 트래커 ----------
+        # ---------- 힙 트래커(네가 쓰던 버전 유지) ----------
         heap_state = {}
         freed_ptrs = set()
-
-        # 캐스트 유무 모두 인식
-        re_malloc  = re.compile(r'\b([A-Za-z_]\w*)\s*=\s*(?:\([^;]*?\)\s*)?malloc\s*\(\s*(.+?)\s*\)')
-        re_calloc  = re.compile(r'\b([A-Za-z_]\w*)\s*=\s*(?:\([^;]*?\)\s*)?calloc\s*\(\s*(.+?)\s*,\s*(.+?)\s*\)')
-        re_realloc = re.compile(r'\b([A-Za-z_]\w*)\s*=\s*(?:\([^;]*?\)\s*)?realloc\s*\(\s*([A-Za-z_]\w*)\s*,\s*(.+?)\s*\)')
+        re_malloc  = re.compile(r'\b([A-Za-z_]\w*)\s*=\s*\([^;]*?\)\s*malloc\s*\(\s*(.+?)\s*\)')
+        re_calloc  = re.compile(r'\b([A-Za-z_]\w*)\s*=\s*\([^;]*?\)\s*calloc\s*\(\s*(.+?)\s*,\s*(.+?)\s*\)')
+        re_realloc = re.compile(r'\b([A-Za-z_]\w*)\s*=\s*\([^;]*?\)\s*realloc\s*\(\s*([A-Za-z_]\w*)\s*,\s*(.+?)\s*\)')
         re_free    = re.compile(r'\bfree\s*\(\s*([A-Za-z_]\w*)\s*\)')
         re_write   = re.compile(r'\b([A-Za-z_]\w*)\s*\[\s*(\d+)\s*\]\s*=\s*([^;]+)')
-
-        # 간접 대입
-        re_deref_write    = re.compile(r'\*\s*([A-Za-z_]\w*)\s*=\s*([^;]+)')                          # *p = rhs;
-        re_ptr_plus_write = re.compile(r'\*\s*\(\s*([A-Za-z_]\w*)\s*\+\s*(\d+)\s*\)\s*=\s*([^;]+)')  # *(p+i) = rhs;
+        re_strcpy  = re.compile(r'\bstrcpy\s*\(\s*([A-Za-z_]\w*)\s*,\s*"([^"]*)"\s*\)')
 
         def guess_count(expr: str):
-            if not expr:
-                return None
-            s = str(expr).strip()
-            m = re.search(r'(\d+)\s*\*\s*sizeof\s*\(', s)  # N * sizeof(T)
+            if not expr: return None
+            m = re.search(r'(\d+)\s*\*\s*sizeof', expr)
             if m: return int(m.group(1))
-            m = re.search(r'sizeof\s*\([^)]*\)\s*\*\s*(\d+)', s)  # sizeof(T) * N
-            if m: return int(m.group(1))
-            if re.search(r'^\s*sizeof\s*\([^)]*\)\s*$', s):  # sizeof(T)
-                return 1
-            m = re.fullmatch(r'\s*(\d+)\s*', s)  # 숫자
+            m = re.fullmatch(r'\s*(\d+)\s*', expr)
             if m: return int(m.group(1))
             return None
 
         def heap_alloc(var, count=None, kind="int[]"):
             d = heap_state.get(var, {})
-            d["freed"] = False
-            d["string"] = None
+            d["freed"] = False; d["string"] = None
+            d["type"] = f"int[{count}]" if (kind=="int[]" and count is not None) else ("char[]" if kind=="char[]" else kind)
             if kind == "int[]":
-                if count is None:
-                    count = 1
-                d["type"] = f"int[{count}]"
-                vals = d.get("values")
-                if not isinstance(vals, list) or len(vals) != count:
-                    d["values"] = ["?"] * count
+                if count is not None:
+                    d["values"] = d.get("values") or ["?"]*count
+                    if len(d["values"]) != count:
+                        d["values"] = (d["values"][:count] + ["?"]*count)[:count]
+                else:
+                    d["values"] = d.get("values") or None
             elif kind == "char[]":
-                d["type"] = "char[]"
                 d["values"] = None
-            else:
-                d["type"] = kind
             heap_state[var] = d
 
         def heap_zero(var, count):
@@ -356,7 +323,7 @@ def simulate_with_gdb(code: str, exec_path: str, source_path: str):
                 if d.get("values") is None:
                     d["values"] = ["?"]*(idx+1)
                 if idx >= len(d["values"]):
-                    d["values"].extend(["?"]*(idx+1-len(d["values"])))
+                    d["values"].extend(["?"]*(idx+1-len(d["values"]))); 
                 d["values"][idx] = val; d["string"] = None
             elif d.get("type") == "char[]":
                 d["string"] = None
@@ -384,7 +351,7 @@ def simulate_with_gdb(code: str, exec_path: str, source_path: str):
         prev_stack, prev_heap = [], []
         prev_data = global_data.copy()
         step_counter = 0
-        seen_lines = set()
+        data_decls, seen_lines = [], set()
         last_func, last_line = None, None
 
         # 전역 선언 먼저 스냅샷
@@ -409,7 +376,7 @@ def simulate_with_gdb(code: str, exec_path: str, source_path: str):
             if not lines: continue
 
             info_line_no = None
-            locals_raw = []
+            locals_raw = []   # info locals에서 수집(나중에 유저 프레임일 때만 사용)
             gv_reading = False
             bt_reading = False
             gv_values = {}
@@ -453,14 +420,16 @@ def simulate_with_gdb(code: str, exec_path: str, source_path: str):
                 if s == "__BT_END__":   bt_reading = False; continue
                 if bt_reading: bt_lines.append(s); continue
 
-            # 현재 유저 프레임(#0) 기준
+            # 현재 유저 프레임(#0) 기준으로 라인/함수 결정
             tuf = top_user_frame(bt_lines)
             if tuf:
                 _, curr_func, curr_line = tuf
             else:
                 curr_func, curr_line = None, info_line_no
 
+            # ★None으로 흔들릴 때 직전 함수로 고정해서 같은 함수로 간주
             eff_func = curr_func or last_func
+
             if curr_line is None or not (1 <= curr_line <= len(code_lines)):
                 continue
 
@@ -468,28 +437,32 @@ def simulate_with_gdb(code: str, exec_path: str, source_path: str):
             sanitized = re.sub(r'//.*$', '', line_text)
             is_printf_line = printf_re.search(sanitized) is not None
 
-            # 역행 필터
+            # ---- 역행 필터(강화): 같은 함수(효과적으로)에서만 뒤로 가는 이동 차단 ----
             if last_line is not None and last_func is not None and curr_line is not None:
                 if eff_func == last_func and curr_line < last_line:
                     prev_txt = code_lines[last_line - 1] if 1 <= last_line <= len(code_lines) else ""
                     if not (is_loopy(line_text) or is_loopy(prev_txt)):
                         continue
 
-            # 같은 줄 중복 스킵(printf 줄 예외)
+            # ---- 같은 줄 연속 중복 스킵(printf 줄은 예외) ----
             if timeline and timeline[-1].get("line_num") == curr_line and not is_printf_line:
+                # 단, 다른 함수-같은 줄(매크로 등) 케이스는 드뭄 → 필요시 확장
                 continue
 
-            # 현재 프레임이 유저 소스인지
+            # 현재 프레임이 유저 소스인지(#0 프레임 검사)
             curr_is_user = False
             if bt_lines:
                 m0 = bt_frame_full_re.match(bt_lines[0].strip())
                 if m0 and os.path.basename(m0.group(3)) == source_basename:
                     curr_is_user = True
 
+            # 허용 스코프 = 현재까지의 유저 프레임 함수 + main
             allowed_scopes = {fn for _, fn, _ in parse_user_frames(bt_lines)} | {"main"}
+
+            # 로컬 변수: 현재 프레임이 유저 소스일 때만 반영(외부 프레임 로컬 차단)
             stack_vars = locals_raw if curr_is_user else []
 
-            # 선언 전 로컬 차단 + 선언 줄 초기값
+            # 선언 전 로컬 차단 + 선언 줄 초기값 반영
             decl_inits_on_line = parse_decl_inits_for_line(line_text)
             filtered_stack_vars = []
             for v in stack_vars:
@@ -523,55 +496,22 @@ def simulate_with_gdb(code: str, exec_path: str, source_path: str):
                         "pointer": True, "points_to": prhs, "scope": curr_func or "main"
                     })
 
-            # ----- 이전 스냅샷으로 간단한 eval 환경 구성 (선택사항 포함) -----
-            def make_env_from_prev(prev_stack_list, prev_data_list):
-                lm = {v["name"]: v.get("value") for v in prev_stack_list}
-                gm = {v["name"]: v.get("value") for v in prev_data_list if v.get("name")}
-                return lm, gm
-            loc_env_prev, glob_env_prev = make_env_from_prev(prev_stack, prev_data)
-
             # 힙 트래킹(줄 분석)
             m = re_malloc.search(sanitized)
             if m:
-                var, expr = m.group(1), m.group(2)
-                cnt = guess_count(expr)
-                if cnt is None: cnt = 1
-                heap_alloc(var, cnt, "int[]")
-
+                var, expr = m.group(1), m.group(2); heap_alloc(var, guess_count(expr), "int[]")
             m = re_calloc.search(sanitized)
             if m:
-                var, n_expr, _sz = m.group(1), m.group(2), m.group(3)
-                cnt = guess_count(n_expr) or 1
-                heap_zero(var, cnt)
-
+                var, n_expr, _sz = m.group(1), m.group(2), m.group(3); heap_zero(var, guess_count(n_expr) or 1)
             m = re_realloc.search(sanitized)
             if m:
-                lhs, inner, expr = m.group(1), m.group(2), m.group(3)
-                cnt = guess_count(expr) or 1
-                heap_alloc(lhs, cnt, "int[]")
-
-            # p[i] = rhs;
+                lhs, inner, expr = m.group(1), m.group(2), m.group(3); heap_alloc(lhs, guess_count(expr), "int[]")
             for mm in re_write.finditer(sanitized):
-                var, idx, rhs = mm.group(1), int(mm.group(2)), mm.group(3)
-                rhs_eval = eval_arith(rhs, loc_env_prev, glob_env_prev)
-                heap_write_index(var, idx, rhs if rhs_eval is None else rhs_eval)
-
-            # *p = rhs;
-            m = re_deref_write.search(sanitized)
-            if m:
-                var, rhs = m.group(1), m.group(2)
-                rhs_eval = eval_arith(rhs, loc_env_prev, glob_env_prev)
-                heap_write_index(var, 0, rhs if rhs_eval is None else rhs_eval)
-
-            # *(p+i) = rhs;
-            for mm in re_ptr_plus_write.finditer(sanitized):
-                var, idx, rhs = mm.group(1), int(mm.group(2)), mm.group(3)
-                rhs_eval = eval_arith(rhs, loc_env_prev, glob_env_prev)
-                heap_write_index(var, idx, rhs if rhs_eval is None else rhs_eval)
-
+                var, idx, rhs = mm.group(1), int(mm.group(2)), mm.group(3); heap_write_index(var, idx, rhs)
+            m = re_strcpy.search(sanitized)
+            if m: heap_set_string(m.group(1), m.group(2))
             m = re_free.search(sanitized)
-            if m:
-                heap_free(m.group(1))
+            if m: heap_free(m.group(1))
 
             for v in filtered_stack_vars:
                 if v["name"] in freed_ptrs:
@@ -610,7 +550,7 @@ def simulate_with_gdb(code: str, exec_path: str, source_path: str):
             heap  = update_memory(prev_heap, heap_vars_now)
             data  = update_memory(prev_data, data_vars)
 
-            # printf 캡처(+ *p/*(p+i) 힙 역참조 및 표현식 재평가)
+            # printf 캡처(+ *p 역참조)
             printed = None
             mprintf = printf_re.search(sanitized)
             if mprintf:
@@ -623,38 +563,17 @@ def simulate_with_gdb(code: str, exec_path: str, source_path: str):
                 merged_obj = {**prev_stack_obj_map, **stack_obj_map}
 
                 snap_locals = {k: v.get("value") for k, v in merged_obj.items()}
-                snap_globals = {v["name"]: v.get("value") for v in data}
+                snap_globals = {}
+                for dv in data:
+                    for _scope_name, items in group_by_scope([dv]).items():
+                        for k, v in items.items():
+                            snap_globals[k] = v.get("value")
 
                 def resolve_arg(tok: str):
                     tok0 = re.sub(r'^\(.*?\)\s*', '', tok).strip()
-
-                    # *(p+i)
-                    md_plus = re.match(r'^\*\s*\(\s*([A-Za-z_]\w*)\s*\+\s*(\d+)\s*\)\s*$', tok0)
-                    if md_plus:
-                        base, idx = md_plus.group(1), int(md_plus.group(2))
-                        hb = heap_state.get(base)
-                        if hb and isinstance(hb.get("values"), list) and idx < len(hb["values"]):
-                            v = hb["values"][idx]
-                            if isinstance(v, str):
-                                ev = eval_arith(v, snap_locals, snap_globals)
-                                if ev is not None:
-                                    return ev
-                            return v
-
-                    # *p
                     md = re.match(r'^\*([A-Za-z_]\w*)$', tok0)
                     if md:
                         base = md.group(1)
-                        hb = heap_state.get(base)
-                        if hb and isinstance(hb.get("values"), list) and hb["values"]:
-                            v = hb["values"][0]
-                            if isinstance(v, str):
-                                ev = eval_arith(v, snap_locals, snap_globals)
-                                if ev is not None:
-                                    return ev
-                            return v
-
-                        # 기존 로컬/전역 역참조도 유지
                         pobj = merged_obj.get(base, {})
                         target = pobj.get("points_to")
                         if not target:
@@ -666,8 +585,6 @@ def simulate_with_gdb(code: str, exec_path: str, source_path: str):
                                 return snap_locals[target]
                             if target in snap_globals and snap_globals[target] is not None:
                                 return snap_globals[target]
-
-                    # 문자열/상수/로컬/전역
                     if len(tok0) >= 2 and tok0[0] == '"' and tok0[-1] == '"':
                         return tok0
                     if tok0 in snap_locals and snap_locals[tok0] is not None:
@@ -743,24 +660,31 @@ async def compile_and_analyze(code: str = Form(...), input: str = Form("")):
     os.makedirs(UPLOAD_DIR)
 
     file_path = os.path.join(UPLOAD_DIR, FILENAME)
-    exec_path = os.path.abspath(os.path.join(UPLOAD_DIR, EXEC_NAME))
+    exec_path = os.path.abspath(os.path.join(UPLOAD_DIR, EXEC_NAME))   # ★ a.out
     json_path = os.path.join(UPLOAD_DIR, "memory_analysis.json")
 
     # 1. 코드 저장
     with open(file_path, "w", encoding="utf-8", newline="") as f:
         f.write(code)
 
-    # 2. 컴파일
+    # 2. 컴파일 (Linux/WSL: a.out)
     try:
         subprocess.run(["gcc", "-g", "-O0", FILENAME, "-o", EXEC_NAME],
-                       cwd=UPLOAD_DIR, check=True, capture_output=True, text=True)
+                       cwd=UPLOAD_DIR,
+                       check=True,
+                       capture_output=True,
+                       text=True)
+
     except subprocess.CalledProcessError as e:
         return JSONResponse(status_code=400, content={"error": e.stderr})
 
     # 3. 실행
     try:
         result = subprocess.run([exec_path],
-                                cwd=UPLOAD_DIR, check=True, capture_output=True, text=True)
+                                cwd=UPLOAD_DIR,
+                                check=True,
+                                capture_output=True,
+                                text=True)
         run_output = result.stdout
     except subprocess.CalledProcessError as e:
         return JSONResponse(status_code=400, content={"error": e.stderr})
@@ -771,7 +695,15 @@ async def compile_and_analyze(code: str = Form(...), input: str = Form("")):
     except Exception as e:
         analysis = {"error": str(e)}
 
-    # 5. 실행 시뮬레이션 (타임라인)
+    #5. 실행 시뮬레이션 (타임라인)
+    # try:
+    #     timeline = simulate_execution(code)
+    #     timeline_path = os.path.join(UPLOAD_DIR, "timeline.json")
+    #     with open(timeline_path, "w", encoding="utf-8") as f:
+    #         json.dump(timeline, f, indent=2, ensure_ascii=False)
+    # except Exception as e:
+    #     timeline = {"error": str(e)}
+
     try:
         timeline = simulate_with_gdb(code, exec_path, file_path)
         timeline_path = os.path.join(UPLOAD_DIR, "steps.json")
@@ -797,3 +729,14 @@ async def health_check():
 async def get_steps():
     file_path = os.path.join(UPLOAD_DIR, "steps.json")
     return FileResponse(file_path, media_type="application/json")
+
+@app.get("/")
+async def serve_index():
+     return FileResponse(os.path.join(FRONTEND_BUILD_DIR, "index.html"))
+
+@app.get("/{full_path:path}")
+async def serve_react_routes(full_path: str):
+    target = os.path.join(FRONTEND_BUILD_DIR, full_path)
+    if os.path.exists(target) and os.path.isfile(target):
+        return FileResponse(target)
+    return FileResponse(os.path.join(FRONTEND_BUILD_DIR, "index.html"))

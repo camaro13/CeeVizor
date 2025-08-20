@@ -1,4 +1,8 @@
 fastapi
 uvicorn[standard]
-tree-sitter
+pydantic
+pygdbmi
+tree_sitter
+tree_sitter_languages
+tree_sitter_c
 python-multipart
