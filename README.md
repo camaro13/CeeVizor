@@ -46,7 +46,7 @@
 
 1. [Docker Desktop](https://www.docker.com/products/docker-desktop/) : 도커 데스크탑 설치
 
-               _설치 중 WSL2 Backend 옵션 유지(권장)_
+_설치 중 WSL2 Backend 옵션 유지(권장)_
 
 2. 설치 후 **Docker Desktop** 실행
 
@@ -128,20 +128,25 @@ docker run -p 8000:8000 kimbyeongmo/ceevizor:latest
 
 3. 브라우저 접속
 
-로컬 호스트 주소
 
-[http://localhost:8000](http://localhost:8000)
 
-호스트PC IP 주소 (로컬 호스트 주소 오류 시)
+* 로컬 호스트 주소
 
+```
+http://localhost:8000
+```
+
+* 호스트PC IP 주소 (로컬 호스트 주소 오류 시)
+
+```
 http://<호스트PC_IP>:8000
+```
 
-
-//Windows 방화벽이 막는 경우 인바운드 규칙으로 TCP 8000 허용 필요.
+_Windows 방화벽이 막는 경우 인바운드 규칙으로 TCP 8000 허용 필요._
 
 ## 프로그램 직접 빌드 후 실행
 
-//프로젝트 루트에 있는 Dockerfile 기준
+프로젝트 루트에 있는 Dockerfile 기준
 
 1. 프로젝트 파일 빌드
 
