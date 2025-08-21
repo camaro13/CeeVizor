@@ -274,7 +274,7 @@ http://<호스트PC_IP>:8000
 <br>
 
 
-## 🔮 향후 개선 방향 (Future Improvements)
+## 🚀 향후 개선 방향 (Future Improvements)
 
 -  **다언어 지원** (C++ / Python / Java)  
 -  **가이드 모드 / 포인터 집중 모드** 제공  
