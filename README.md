@@ -1,13 +1,13 @@
 <div align="center">
 
-# 🚀 CeeVizor
+# 🔎 CeeVizor
 
 코드 실행 흐름과 메모리 구조를 직관적으로 시각화하는 교육용 도구  
 코딩 언어 프로그램의 **Stack / Heap / Data** 영역 변화를 실행 단계별로 추적하고 시각화합니다.
 
 ![License](https://img.shields.io/badge/License-MIT-blue.svg)
 ![Docker](https://img.shields.io/badge/Docker-ready-blue)
-![React](https://img.shields.io/badge/Frontend-React&d3.js-blue)
+![React](https://img.shields.io/badge/Frontend-React,d3.js-blue)
 ![FastAPI](https://img.shields.io/badge/Backend-FastAPI,GDB,GCC-green)
 
 <p align="center">
@@ -20,23 +20,23 @@
 
 </div>
 
----
 
-## 🚀 프로젝트 개요 (Project Overview)
+
+## 🔎 프로젝트 개요 (Project Overview)
 * 프로젝트명: **"CeeVizor: 코드 실행 흐름과 메모리 구조를 시각화 하는 도구"**
 * 목적: 프로그래밍 학습자가 메모리 구조와 실행 흐름을 시각적으로 이해하도록 지원
 * 특징: 단순 출력이 아닌 실행 중 메모리 변화를 단계별로 확인
 
----
+
 
 ## ✨ 주요 기능 (Key Features)
-- 🖥 **C 코드 실행 및 시각화** (추후 Python, Java 등 언어 확장 예정)
+- ⚡ **C 코드 실행 및 시각화** (추후 Python, Java 등 언어 확장 예정)
 - 🌳 **Tree-sitter** 기반 정적 분석으로 변수/함수 파싱
-- 🐞 **GCC + GDB** 기반 코드 흐름 동적 추적 (실행 흐름, 스택 프레임, 힙 할당/해제)
-- 🧩 **Stack / Heap / Data** 메모리 단계별 갱신 후 시각화
+- 🧭 **GCC + GDB** 기반 코드 흐름 동적 추적 (실행 흐름, 스택 프레임, 힙 할당/해제)
+- 🧱 **Stack / Heap / Data** 메모리 단계별 갱신 후 시각화
 - 🎨 **React UI + D3.js** 인터랙티브 시각화
 
----
+
 
 ## 🛠 시스템 아키텍처 (System Architecture)
 
@@ -256,7 +256,7 @@ http://<호스트PC_IP>:8000
 | 🎨 허준혁 | **시각화 및 애니메이션 (D3.js)** |
 | 💻 김현송 | **UI/UX 설계 및 구현 (React)** |
 
----
+
 
 ## 📈 기대효과 (Expected Outcomes)
 
@@ -264,7 +264,7 @@ http://<호스트PC_IP>:8000
 - ✅ **포인터, 동적 메모리, 함수 호출 스택** 등 복잡한 개념을 시각적으로 습득  
 - ✅ **코드 실행 결과 + 내부 동작** 확인 → 디버깅 교육, 시뮬레이션 강의 자료에 활용  
 
----
+
 
 ## 🔮 향후 개선 방향 (Future Improvements)
 
@@ -272,7 +272,7 @@ http://<호스트PC_IP>:8000
 - 🎯 **가이드 모드 / 포인터 집중 모드** 제공  
 - 🤖 **AI 도우미** (힌트 제공, 코드 리팩터링 지원)  
 
----
+
 
 ## 📄 라이선스 (License)
 
