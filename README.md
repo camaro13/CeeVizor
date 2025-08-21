@@ -7,6 +7,11 @@
   <img src="./Screenshots/CeeVizor_play.gif" width="800">
 </p>
 
+<p align="center">
+  👉 [전체 시연 영상 보러가기](https://youtu.be/XXXXXX)
+</p>
+
+
 
 ## 프로젝트 개요
 * 프로젝트명: "CeeVizor: 코드 실행 흐름과 메모리 구조를 시각화 하는 도구"
