@@ -130,8 +130,10 @@ docker run -p 8000:8000 ceevizor
 http://<호스트PC_IP>:8000
 ```
 _Windows 방화벽이 막는 경우 인바운드 규칙으로 TCP 8000 허용 필요._
+</details>
 
 ## 설치 및 실행 (Ubuntu)
+<details> <summary>🔽 Ubuntu 설치 가이드</summary>
 
 ### 도커 설치
 
@@ -242,6 +244,8 @@ sudo docker run -p 8000:8000 ceevizor
 ```
 http://<호스트PC_IP>:8000
 ```
+</details>
+
 
 # 👨‍💻 팀
 
