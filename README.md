@@ -3,6 +3,8 @@
 
 코딩 언어 프로그램의 Stack / Heap / Data 영역 변화를 실행 단계별로 추적하고 시각화합니다. 
 
+![데모 GIF](./Screenshots/CeeVizor_play.gif)
+
 ## 프로젝트 개요
 * 프로젝트명: "CeeVizor: 코드 실행 흐름과 메모리 구조를 시각화 하는 도구"
 
