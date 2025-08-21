@@ -11,11 +11,11 @@
 ![FastAPI](https://img.shields.io/badge/Backend-FastAPI,GDB,GCC-green)
 
 <p align="center">
-  <img src="./Screenshots/giftest2.gif">
+  <img src="./Screenshots/CeeVizor_Run_Demo.gif">
 </p>
 
 <p align="center">
-  [시연 영상 보러가기](유튜브링크)
+  [시연 영상]([유튜브링크](https://youtu.be/SdSRpGugE1I?si=wRPoa3kyOzAsL5Ll))
 </p>
 
 </div>
