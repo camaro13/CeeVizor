@@ -83,13 +83,13 @@ docker --version
 
 1. PowerShell 열고 이미지 받기
 
-```
+```powershell
 docker pull kimbyeongmo/ceevizor:latest
 ```
 
 2. 컨테이너 실행
 
-```
+```powershell
 docker run -p 8000:8000 kimbyeongmo/ceevizor:latest
 ```
 
@@ -106,17 +106,19 @@ http://<호스트PC_IP>:8000
 ```
 _Windows 방화벽이 막는 경우 인바운드 규칙으로 TCP 8000 허용 필요._
 
+---
+
 ### 프로그램 직접 빌드 후 실행 (Dockerfile 사용)
 
 1. PowerShell에서 프로젝트 루트로 이동 후 빌드
 
-```
+```powershell
 docker build -t ceevior .
 ```
 
 2. 실행
 
-```
+```powershell
 docker run -p 8000:8000 ceevizor
 ```
 
@@ -133,7 +135,7 @@ http://<호스트PC_IP>:8000
 ```
 _Windows 방화벽이 막는 경우 인바운드 규칙으로 TCP 8000 허용 필요._
 </details>
-<br>
+
 ## ⚙️ 설치 및 실행 (Ubuntu)
 <details> <summary>🔽 Ubuntu 설치 가이드</summary>
 
@@ -141,20 +143,20 @@ _Windows 방화벽이 막는 경우 인바운드 규칙으로 TCP 8000 허용 �
 
 1. 기존 도커 제거 (필요시)
 
-```
+```bash
 sudo apt remove -y docker docker-engine docker.io containerd runc
 ```
 
 2. 패키지 준비
 
-```
+```bash
 sudo apt update
 sudo apt install -y ca-certificates curl gnupg
 ```
 
 3. Docker GPG 키 등록
 
-```
+```bash
 // 디렉토리 생성
 sudo install -m 0755 -d /etc/apt/keyrings
 
@@ -167,7 +169,7 @@ sudo chmod a+r /etc/apt/keyrings/docker.gpg
 
 4. Docker 레포지토리 추가
 
-```
+```bash
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
 https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | \
 sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
@@ -175,14 +177,14 @@ sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
 5. Docker 설치
 
-```
+```bash
 sudo apt update
 sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 ```
 
 6. 서비스 시작
 
-```
+```bash
 sudo service docker start
 ```
 
@@ -202,7 +204,7 @@ docker pull kimbyeongmo/ceevizor:latest
 
 2. 컨테이너 실행
 
-```
+```bash
 sudo docker run -p 8000:8000 kimbyeongmo/ceevizor:latest
 //만약 sudo 없이 쓰고 싶다면 sudo usermod -aG docker $USER 후 재로그인
 ```
@@ -219,19 +221,21 @@ sudo docker run -p 8000:8000 kimbyeongmo/ceevizor:latest
 http://<호스트PC_IP>:8000
 ```
 
+---
+
 ### 프로그램 직접 빌드 후 실행 (Dockerfile 사용)
 
 프로젝트 루트에 있는 Dockerfile 기준
 
 1. 프로젝트 파일 빌드
 
-```
+```bash
 sudo docker build -t ceevizor .
 ```
 
 2. 프로젝트 실행
 
-```
+```bash
 sudo docker run -p 8000:8000 ceevizor
 ```
 
