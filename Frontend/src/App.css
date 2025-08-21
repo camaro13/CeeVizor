@@ -264,23 +264,13 @@
   margin-bottom: 3vh;
 }
 
-.hci-logo {
-  width: 4vw;
-  height: auto;
-  margin-right: 1vw;
-  margin-bottom: 2vh;
-  opacity: 0.7;
-  cursor: default !important; /* 기본 화살표 커서 */
-}
+
 
 /* 푸터/로고에서 텍스트 커서/드래그/선택 방지 */
 .footer, .footer * {
   cursor: default !important;
   user-select: none;
   -webkit-user-drag: none;
-}
-.hci-logo {
-  pointer-events: none; /* 로고 클릭 자체 비활성화(링크여도 클릭 안 됨) */
 }
 
 
