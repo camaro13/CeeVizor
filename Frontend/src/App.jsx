@@ -821,7 +821,6 @@ function App() {
       </div>
       <div className="footer">
         <div className="bottom-divider"></div>
-        <img className="hci-logo" src="/hci_logo.png" alt="HCI Logo" />
       </div>
     </div>
   );

@@ -131,10 +131,10 @@ const MainMenu = () => {
               <h2>팀 소개</h2>
               <p><b>CeeVizor 팀 (오픈소스 개발자대회 2025)</b></p>
               <ul>
-                <li><b>최강우</b>: 백엔드 (FastAPI, GCC, GDB)</li>
-                <li><b>김병모</b>: 백엔드 (Tree-sitter, GCC, GDB)</li>
-                <li><b>허준혁</b>: 메모리 시각화 (D3.js)</li>
-                <li><b>김현송</b>: UI/프론트엔드 (React)</li>
+                <li><b>팀장</b>: 메모리 시각화 (D3.js)</li>
+                <li><b>팀원1</b>: 백엔드 (FastAPI, GCC, GDB)</li>
+                <li><b>팀원2</b>: 백엔드 (Tree-sitter, GCC, GDB)</li>
+                <li><b>팀원3</b>: UI/프론트엔드 (React)</li>
               </ul>
               <p>메모리 구조를 쉽게 이해할 수 있도록 시각화한 교육용 프로그램입니다.</p>
               <button onClick={() => setShowTeamInfo(false)}>닫기</button>
@@ -145,7 +145,6 @@ const MainMenu = () => {
 
       <div className="footer">
         <div className="bottom-divider"></div>
-        <img src="/hci_logo.png" alt="hci logo" className="hci-logo-main" />
       </div>
     </div>
   );
