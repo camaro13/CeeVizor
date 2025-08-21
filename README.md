@@ -11,7 +11,7 @@
 ![FastAPI](https://img.shields.io/badge/Backend-FastAPI-green)
 
 <p align="center">
-  <img src="./Screenshots/giftest1.gif" width="800">
+  <img src="./Screenshots/giftest1.gif">
 </p>
 
 <p align="center">
