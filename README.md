@@ -71,13 +71,13 @@
 2. 설치 중 WSL2 Backend 옵션 유지 **(권장)**
 3. 설치 후 **Docker Desktop** 실행
 
----
-
 4. PowerShell에서 설치, 버전 확인
 
 ```powershell
 docker --version
 ```
+
+---
 
 ### 프로그램 실행 (Docker Hub 사용)
 
@@ -193,6 +193,8 @@ sudo service docker start
 ```
 docker --version
 ```
+
+---
 
 ### 프로그램 실행 (Docker Hub 사용)
 
