@@ -10,12 +10,8 @@
 ![React](https://img.shields.io/badge/Frontend-React-blue)
 ![FastAPI](https://img.shields.io/badge/Backend-FastAPI-green)
 
----
-
-## 🎥 시연 영상
-
 <p align="center">
-  <img src="./Screenshots/CeeVizor_play.gif" width="800">
+  <img src="./Screenshots/giftest1.gif" width="800">
 </p>
 
 <p align="center">
