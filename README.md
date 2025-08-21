@@ -7,8 +7,8 @@
 
 ![License](https://img.shields.io/badge/License-MIT-blue.svg)
 ![Docker](https://img.shields.io/badge/Docker-ready-blue)
-![React](https://img.shields.io/badge/Frontend-React-blue)
-![FastAPI](https://img.shields.io/badge/Backend-FastAPI-green)
+![React](https://img.shields.io/badge/Frontend-React&d3.js-blue)
+![FastAPI](https://img.shields.io/badge/Backend-FastAPI,GDB,GCC-green)
 
 <p align="center">
   <img src="./Screenshots/giftest1.gif">
@@ -64,7 +64,7 @@
 ## ⚙️ 설치 및 실행 (Windows)
 <details> <summary>🔽 Windows 설치 가이드</summary>
   
-### 도커 설치
+### 🐋 도커 설치
 
 1. [Docker Desktop](https://www.docker.com/products/docker-desktop/) : 도커 데스크탑 설치
 2. 설치 중 WSL2 Backend 옵션 유지(권장)
@@ -135,7 +135,7 @@ _Windows 방화벽이 막는 경우 인바운드 규칙으로 TCP 8000 허용 �
 ## 설치 및 실행 (Ubuntu)
 <details> <summary>🔽 Ubuntu 설치 가이드</summary>
 
-### 도커 설치
+### 🐋 도커 설치
 
 1. 기존 도커 제거 (필요시)
 
@@ -247,32 +247,33 @@ http://<호스트PC_IP>:8000
 </details>
 
 
-# 👨‍💻 팀
+## 👨‍💻 팀 (Team Members)
 
-* 김병모 : Tree_sitter, GCC, GDB 구현
+| 이름 | 역할 |
+|------|------|
+| 🛠️ 김병모 | **Tree-sitter**, **GCC**, **GDB** 구현 |
+| ⚡ 최강우 | **FastAPI 설계**, GCC/GDB 로그 최적화 |
+| 🎨 허준혁 | **시각화 및 애니메이션 (D3.js)** |
+| 💻 김현송 | **UI/UX 설계 및 구현 (React)** |
 
-* 최강우 : FastAPI 설계 및 GCC, GDB 로그 최적화
+---
 
-* 허준혁 : 시각화 및 애니메이션 (D3.js)
+## 📈 기대효과 (Expected Outcomes)
 
-* 김현송 : UI/UX 설계 및 구현 (React)
+- ✅ **메모리 구조 변화**를 직관적으로 이해 → 학습 효과 증대  
+- ✅ **포인터, 동적 메모리, 함수 호출 스택** 등 복잡한 개념을 시각적으로 습득  
+- ✅ **코드 실행 결과 + 내부 동작** 확인 → 디버깅 교육, 시뮬레이션 강의 자료에 활용  
 
-# 📈 기대효과
+---
 
-* 학습자가 메모리 구조 변화를 직관적으로 이해함으로써 학습 효과 향상. 
+## 🔮 향후 개선 방향 (Future Improvements)
 
-* 포인터, 동적 메모리, 함수 호출 스택 등 복잡한 개념을 시각적으로 학습할 수 있어 프로그래밍 교육 현장에서 효과적으로 활용 가능. 
+- 🌐 **다언어 지원** (C++ / Python / Java)  
+- 🎯 **가이드 모드 / 포인터 집중 모드** 제공  
+- 🤖 **AI 도우미** (힌트 제공, 코드 리팩터링 지원)  
 
-* 코드 실행 결과와 내부 동작을 확인할 수 있어 디버깅 교육, 시뮬레이션 기반 강의 자료 제작에도 활용 가능. 
+---
 
-# 🔮 향후 개선 방향
+## 📄 라이선스 (License)
 
-* 다언어(C++/Python/Java) 지원
-
-* 가이드/포인터 집중 모드
-
-* AI 도우미(힌트/리팩터링)
-
-# 📄 라이선스
-
-MIT License
+📝 본 프로젝트는 **MIT License**를 따릅니다.
