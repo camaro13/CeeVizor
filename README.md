@@ -29,7 +29,7 @@
 <br>
 
 
-## ✨ 주요 기능 (Key Features)
+## 🔥 주요 기능 (Key Features)
 -  **C 코드 실행 및 시각화** (추후 Python, Java 등 언어 확장 예정)
 -  **Tree-sitter** 기반 정적 분석으로 변수/함수 파싱
 -  **GCC + GDB** 기반 코드 흐름 동적 추적 (실행 흐름, 스택 프레임, 힙 할당/해제)
