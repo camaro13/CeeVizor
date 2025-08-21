@@ -26,7 +26,7 @@
 * 프로젝트명: **"CeeVizor: 코드 실행 흐름과 메모리 구조를 시각화 하는 도구"**
 * 목적: 프로그래밍 학습자가 메모리 구조와 실행 흐름을 시각적으로 이해하도록 지원
 * 특징: 단순 출력이 아닌 실행 중 메모리 변화를 단계별로 확인
-
+<br>
 
 
 ## ✨ 주요 기능 (Key Features)
@@ -35,7 +35,7 @@
 - 🧭 **GCC + GDB** 기반 코드 흐름 동적 추적 (실행 흐름, 스택 프레임, 힙 할당/해제)
 - 🧱 **Stack / Heap / Data** 메모리 단계별 갱신 후 시각화
 - 🎨 **React UI + D3.js** 인터랙티브 시각화
-
+<br>
 
 
 ## 🛠 시스템 아키텍처 (System Architecture)
@@ -49,6 +49,7 @@
         ▼
 [메모리 변화 JSON]  →  시각화(Render)
 ```
+<br>
 
 ## 🛠 기술 스택 (Tech Stack)
 
@@ -59,7 +60,7 @@
 | 주요 라이브러리 | React, FastAPI, D3.js |
 | 도구 및 시스템 | GCC, GDB, Tree-Sitter, Docker, Npm |
 | 버전 관리     | Git, GitHub |
-
+<br>
 
 ## ⚙️ 설치 및 실행 (Windows)
 <details> <summary>🔽 Windows 설치 가이드</summary>
@@ -70,10 +71,11 @@
 2. 설치 중 WSL2 Backend 옵션 유지(권장)
 3. 설치 후 **Docker Desktop** 실행
 
+---
 
 4. PowerShell에서 설치, 버전 확인
 
-```
+```powershell
 docker --version
 ```
 
@@ -131,7 +133,7 @@ http://<호스트PC_IP>:8000
 ```
 _Windows 방화벽이 막는 경우 인바운드 규칙으로 TCP 8000 허용 필요._
 </details>
-
+<br>
 ## ⚙️ 설치 및 실행 (Ubuntu)
 <details> <summary>🔽 Ubuntu 설치 가이드</summary>
 
@@ -245,7 +247,7 @@ sudo docker run -p 8000:8000 ceevizor
 http://<호스트PC_IP>:8000
 ```
 </details>
-
+<br>
 
 ## 👨‍💻 팀 (Team Members)
 
@@ -255,7 +257,7 @@ http://<호스트PC_IP>:8000
 | ⚡ 최강우 | **FastAPI 설계**, GCC/GDB 로그 최적화 |
 | 🎨 허준혁 | **시각화 및 애니메이션 (D3.js)** |
 | 💻 김현송 | **UI/UX 설계 및 구현 (React)** |
-
+<br>
 
 
 ## 📈 기대효과 (Expected Outcomes)
@@ -263,7 +265,7 @@ http://<호스트PC_IP>:8000
 - ✅ **메모리 구조 변화**를 직관적으로 이해 → 학습 효과 증대  
 - ✅ **포인터, 동적 메모리, 함수 호출 스택** 등 복잡한 개념을 시각적으로 습득  
 - ✅ **코드 실행 결과 + 내부 동작** 확인 → 디버깅 교육, 시뮬레이션 강의 자료에 활용  
-
+<br>
 
 
 ## 🔮 향후 개선 방향 (Future Improvements)
@@ -271,7 +273,7 @@ http://<호스트PC_IP>:8000
 - 🌐 **다언어 지원** (C++ / Python / Java)  
 - 🎯 **가이드 모드 / 포인터 집중 모드** 제공  
 - 🤖 **AI 도우미** (힌트 제공, 코드 리팩터링 지원)  
-
+<br>
 
 
 ## 📄 라이선스 (License)
