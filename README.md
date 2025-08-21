@@ -15,7 +15,7 @@
 </p>
 
 <p align="center">
-  [시연 영상]([유튜브링크](https://youtu.be/SdSRpGugE1I?si=wRPoa3kyOzAsL5Ll))
+  [시연 영상] -> (https://youtu.be/SdSRpGugE1I?si=wRPoa3kyOzAsL5Ll)) <-
 </p>
 
 </div>
