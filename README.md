@@ -50,24 +50,28 @@
 [메모리 변화 JSON]  →  시각화(Render)
 ```
 
-## 기술 스택
+## 🛠 기술 스택
 
-* 환경 : Windows 11, WSL (Ubuntu 24.04.3 LTS) 
-* 개발 언어 : Python (3.12.3), JavaScript 
-* 주요 라이브러리 : React, FastAPI, D3.js 
-* 도구 및 시스템 : GCC, GDB, Tree-Sitter, Docker ,Npm 
-* 버전 관리 : Git, Github 
+| 분류          | 내용 |
+|---------------|------------------------------------------------|
+| 환경          | Windows 11, WSL (Ubuntu 24.04.3 LTS) |
+| 개발 언어     | Python (3.12.3), JavaScript |
+| 주요 라이브러리 | React, FastAPI, D3.js |
+| 도구 및 시스템 | GCC, GDB, Tree-Sitter, Docker, Npm |
+| 버전 관리     | Git, GitHub |
 
-## 설치 및 실행 (Windows)
 
+## ⚙️ 설치 및 실행 (Windows)
+<details> <summary>🔽 Windows 설치 가이드</summary>
+  
 ### 도커 설치
 
-1. [Docker Desktop](https://www.docker.com/products/docker-desktop/) : 도커 데스크탑 설치 (_설치 중 WSL2 Backend 옵션 유지(권장)_)
+1. [Docker Desktop](https://www.docker.com/products/docker-desktop/) : 도커 데스크탑 설치
+2. 설치 중 WSL2 Backend 옵션 유지(권장)
+3. 설치 후 **Docker Desktop** 실행
 
-2. 설치 후 **Docker Desktop** 실행
 
-
-3. PowerShell에서 설치, 버전 확인
+4. PowerShell에서 설치, 버전 확인
 
 ```
 docker --version
@@ -239,7 +243,7 @@ sudo docker run -p 8000:8000 ceevizor
 http://<호스트PC_IP>:8000
 ```
 
-# 팀
+# 👨‍💻 팀
 
 * 김병모 : Tree_sitter, GCC, GDB 구현
 
@@ -249,7 +253,7 @@ http://<호스트PC_IP>:8000
 
 * 김현송 : UI/UX 설계 및 구현 (React)
 
-# 기대효과
+# 📈 기대효과
 
 * 학습자가 메모리 구조 변화를 직관적으로 이해함으로써 학습 효과 향상. 
 
@@ -257,7 +261,7 @@ http://<호스트PC_IP>:8000
 
 * 코드 실행 결과와 내부 동작을 확인할 수 있어 디버깅 교육, 시뮬레이션 기반 강의 자료 제작에도 활용 가능. 
 
-# 향후 개선 방향
+# 🔮 향후 개선 방향
 
 * 다언어(C++/Python/Java) 지원
 
@@ -265,6 +269,6 @@ http://<호스트PC_IP>:8000
 
 * AI 도우미(힌트/리팩터링)
 
-# 라이선스
+# 📄 라이선스
 
 MIT License
