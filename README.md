@@ -1,37 +1,48 @@
-# CeeVizor
-코드 실행 흐름과 메모리 구조를 직관적으로 시각화하는 교육용 도구
+<div align="center">
 
-코딩 언어 프로그램의 Stack / Heap / Data 영역 변화를 실행 단계별로 추적하고 시각화합니다. 
+# 🚀 CeeVizor
+
+코드 실행 흐름과 메모리 구조를 직관적으로 시각화하는 교육용 도구  
+코딩 언어 프로그램의 **Stack / Heap / Data** 영역 변화를 실행 단계별로 추적하고 시각화합니다.
+
+![License](https://img.shields.io/badge/License-MIT-blue.svg)
+![Docker](https://img.shields.io/badge/Docker-ready-blue)
+![React](https://img.shields.io/badge/Frontend-React-blue)
+![FastAPI](https://img.shields.io/badge/Backend-FastAPI-green)
+
+---
+
+## 🎥 시연 영상
 
 <p align="center">
   <img src="./Screenshots/CeeVizor_play.gif" width="800">
 </p>
 
 <p align="center">
-  👉 [전체 시연 영상 보러가기](https://youtu.be/XXXXXX)
+  👉 [전체 시연 영상 보러가기](유튜브링크)
 </p>
 
+</div>
 
+---
 
-## 프로젝트 개요
-* 프로젝트명: "CeeVizor: 코드 실행 흐름과 메모리 구조를 시각화 하는 도구"
-
+## 🚀 프로젝트 개요
+* 프로젝트명: **"CeeVizor: 코드 실행 흐름과 메모리 구조를 시각화 하는 도구"**
 * 목적: 프로그래밍 학습자가 메모리 구조와 실행 흐름을 시각적으로 이해하도록 지원
-
 * 특징: 단순 출력이 아닌 실행 중 메모리 변화를 단계별로 확인
 
-## 주요 기능
-- C 코드 실행 및 시각화 (추후 Python, Java 등 언어 확장 예정)
+---
 
-- Tree‑sitter 기반 정적 분석으로 변수/함수 파싱
+## ✨ 주요 기능
+- 🖥 **C 코드 실행 및 시각화** (추후 Python, Java 등 언어 확장 예정)
+- 🌳 **Tree-sitter** 기반 정적 분석으로 변수/함수 파싱
+- 🐞 **GCC + GDB** 기반 코드 흐름 동적 추적 (실행 흐름, 스택 프레임, 힙 할당/해제)
+- 🧩 **Stack / Heap / Data** 메모리 단계별 갱신 후 시각화
+- 🎨 **React UI + D3.js** 인터랙티브 시각화
 
-- GCC + GDB 기반 코드 흐름 동적 추적(실행 흐름, 스택 프레임, 힙 할당/해제)
+---
 
-- Stack / Heap / Data 메모리 단계별 갱신 후 시각화
-
-- React UI, D3 인터랙티브 시각화
-
-## 시스템 아키텍처
+## 🛠 시스템 아키텍처
 
 ```
 [React Frontend]  ◀──▶  [FastAPI Backend]
